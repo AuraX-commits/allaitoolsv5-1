@@ -1,17 +1,20 @@
 
 import { useState, useEffect } from "react";
-import { Search, Filter, ArrowUpDown, X } from "lucide-react";
-import { aiTools, categories, pricingOptions, AITool } from "@/utils/toolsData";
+import { Search, X } from "lucide-react";
+import { aiTools, AITool } from "@/utils/toolsData";
 import ToolCard from "./ToolCard";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import AdvancedFilters, { FilterOptions } from "../common/AdvancedFilters";
 
 const ToolsDirectory = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedPricing, setSelectedPricing] = useState("All");
-  const [sortBy, setSortBy] = useState<"rating" | "reviewCount">("rating");
-  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<FilterOptions>({
+    category: "All",
+    pricing: "All",
+    rating: null,
+    features: [],
+    sortBy: "rating"
+  });
   const [filteredTools, setFilteredTools] = useState<AITool[]>(aiTools);
 
   // Filter and sort tools whenever filters change
@@ -30,27 +33,50 @@ const ToolsDirectory = () => {
     }
     
     // Filter by category
-    if (selectedCategory !== "All") {
+    if (filters.category !== "All") {
       result = result.filter(tool => 
-        tool.category.some(cat => cat === selectedCategory)
+        tool.category.some(cat => cat === filters.category)
       );
     }
     
     // Filter by pricing
-    if (selectedPricing !== "All") {
-      result = result.filter(tool => tool.pricing === selectedPricing);
+    if (filters.pricing !== "All") {
+      result = result.filter(tool => tool.pricing === filters.pricing);
+    }
+    
+    // Filter by rating
+    if (filters.rating !== null) {
+      result = result.filter(tool => tool.rating >= filters.rating!);
+    }
+    
+    // Filter by features
+    if (filters.features.length > 0) {
+      result = result.filter(tool => 
+        filters.features.every(feature => 
+          tool.features?.includes(feature)
+        )
+      );
     }
     
     // Sort by selected criteria
-    result.sort((a, b) => b[sortBy] - a[sortBy]);
+    if (filters.sortBy === "newest") {
+      result.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    } else {
+      result.sort((a, b) => b[filters.sortBy] - a[filters.sortBy]);
+    }
     
     setFilteredTools(result);
-  }, [searchTerm, selectedCategory, selectedPricing, sortBy]);
+  }, [searchTerm, filters]);
 
   const resetFilters = () => {
     setSearchTerm("");
-    setSelectedCategory("All");
-    setSelectedPricing("All");
+    setFilters({
+      category: "All",
+      pricing: "All",
+      rating: null,
+      features: [],
+      sortBy: "rating"
+    });
   };
 
   return (
@@ -65,90 +91,32 @@ const ToolsDirectory = () => {
 
         {/* Search and Filters */}
         <div className="max-w-5xl mx-auto mb-10">
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="relative flex-grow">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search AI tools..."
-                className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
-                  onClick={() => setSearchTerm("")}
-                  aria-label="Clear search"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              )}
+          <div className="relative flex-grow mb-6">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-muted-foreground" />
             </div>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="md:w-auto w-full inline-flex items-center justify-center py-3 px-6 border border-input rounded-lg bg-white hover:bg-secondary transition-colors text-foreground"
-            >
-              <Filter className="h-5 w-5 mr-2" />
-              Filters
-            </button>
-            <button
-              onClick={() => setSortBy(sortBy === "rating" ? "reviewCount" : "rating")}
-              className="md:w-auto w-full inline-flex items-center justify-center py-3 px-6 border border-input rounded-lg bg-white hover:bg-secondary transition-colors text-foreground"
-            >
-              <ArrowUpDown className="h-5 w-5 mr-2" />
-              {sortBy === "rating" ? "Sort by Popularity" : "Sort by Rating"}
-            </button>
+            <input
+              type="text"
+              placeholder="Search AI tools..."
+              className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
+                onClick={() => setSearchTerm("")}
+                aria-label="Clear search"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
           </div>
 
-          {/* Expanded Filters */}
-          <div
-            className={cn(
-              "grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 overflow-hidden transition-all duration-300",
-              showFilters ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-            )}
-          >
-            <div>
-              <label className="block text-sm font-medium mb-2">Categories</label>
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={cn(
-                      "px-3 py-1.5 rounded-full text-sm transition-colors",
-                      selectedCategory === category
-                        ? "bg-primary text-white"
-                        : "bg-white hover:bg-secondary border border-input text-foreground"
-                    )}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Pricing Options</label>
-              <div className="flex flex-wrap gap-2">
-                {pricingOptions.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => setSelectedPricing(option)}
-                    className={cn(
-                      "px-3 py-1.5 rounded-full text-sm transition-colors",
-                      selectedPricing === option
-                        ? "bg-primary text-white"
-                        : "bg-white hover:bg-secondary border border-input text-foreground"
-                    )}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          <AdvancedFilters 
+            filters={filters}
+            onFilterChange={setFilters}
+          />
         </div>
 
         {/* Results */}

@@ -2,6 +2,7 @@
 import { useRef, useEffect } from "react";
 import { ArrowDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -76,9 +77,9 @@ const Hero = () => {
           >
             Explore Tools
           </button>
-          <button className="px-8 py-3 bg-white text-foreground rounded-full font-medium border border-input hover:bg-secondary transition-colors">
+          <Link to="/submit-tool" className="px-8 py-3 bg-white text-foreground rounded-full font-medium border border-input hover:bg-secondary transition-colors">
             Submit Your Tool
-          </button>
+          </Link>
         </div>
         
         <div className="mt-16 md:mt-24 animate-pulse">

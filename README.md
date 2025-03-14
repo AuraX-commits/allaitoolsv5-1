@@ -31,6 +31,7 @@ npm run dev
 
 - Comprehensive AI tool directory
 - Tool comparison functionality
-- Category-based filtering
+- Category-based filtering with advanced filter options
 - Rating and review system
 - Newsletter subscription
+- Responsive design for all devices

@@ -3,16 +3,24 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
-import { aiTools, categories } from "@/utils/toolsData";
+import { aiTools } from "@/utils/toolsData";
 import ToolCard from "../components/home/ToolCard";
 import { ArrowLeft, Search, X } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import AdvancedFilters, { FilterOptions } from "@/components/common/AdvancedFilters";
 
 const Categories = () => {
   const { category } = useParams<{ category: string }>();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTools, setFilteredTools] = useState(aiTools);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
+  const [filters, setFilters] = useState<FilterOptions>({
+    category: "All",
+    pricing: "All",
+    rating: null,
+    features: [],
+    sortBy: "rating"
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -20,12 +28,24 @@ const Categories = () => {
     let decodedCategory = category ? decodeURIComponent(category) : null;
     setCurrentCategory(decodedCategory);
     
+    // Update filters if category changes from URL
+    if (decodedCategory && decodedCategory !== "All") {
+      setFilters(prev => ({
+        ...prev,
+        category: decodedCategory || "All"
+      }));
+    }
+  }, [category]);
+
+  // Apply filters whenever they change
+  useEffect(() => {
     let filtered = [...aiTools];
     
-    // Filter by category
-    if (decodedCategory && decodedCategory !== "All") {
+    // Filter by category (from URL or filter selection)
+    const categoryToUse = currentCategory || filters.category;
+    if (categoryToUse && categoryToUse !== "All") {
       filtered = filtered.filter(tool => 
-        tool.category.some(cat => cat === decodedCategory)
+        tool.category.some(cat => cat === categoryToUse)
       );
     }
     
@@ -40,11 +60,52 @@ const Categories = () => {
       );
     }
     
+    // Filter by pricing
+    if (filters.pricing !== "All") {
+      filtered = filtered.filter(tool => tool.pricing === filters.pricing);
+    }
+    
+    // Filter by rating
+    if (filters.rating !== null) {
+      filtered = filtered.filter(tool => tool.rating >= filters.rating!);
+    }
+    
+    // Filter by features
+    if (filters.features.length > 0) {
+      filtered = filtered.filter(tool => 
+        filters.features.every(feature => 
+          tool.features?.includes(feature)
+        )
+      );
+    }
+    
+    // Sort by selected criteria
+    if (filters.sortBy === "newest") {
+      filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    } else {
+      filtered.sort((a, b) => b[filters.sortBy] - a[filters.sortBy]);
+    }
+    
     setFilteredTools(filtered);
-  }, [category, searchTerm]);
+  }, [searchTerm, filters, currentCategory]);
 
   const handleClearSearch = () => {
     setSearchTerm("");
+  };
+
+  const handleFilterChange = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+  };
+
+  const resetAllFilters = () => {
+    setSearchTerm("");
+    setFilters({
+      category: currentCategory || "All",
+      pricing: "All",
+      rating: null,
+      features: [],
+      sortBy: "rating"
+    });
   };
 
   // Get the proper SEO title based on selected category
@@ -95,27 +156,8 @@ const Categories = () => {
             </p>
           </div>
 
-          {/* Category Pills */}
-          <div className="mb-8 overflow-x-auto pb-2">
-            <div className="flex space-x-2">
-              {categories.map((cat) => (
-                <Link
-                  key={cat}
-                  to={cat === "All" ? "/categories" : `/categories/${encodeURIComponent(cat)}`}
-                  className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
-                    currentCategory === cat
-                      ? "bg-primary text-white"
-                      : "bg-white hover:bg-secondary border border-input text-foreground"
-                  }`}
-                >
-                  {cat}
-                </Link>
-              ))}
-            </div>
-          </div>
-
           {/* Search Bar */}
-          <div className="max-w-xl mx-auto mb-10">
+          <div className="max-w-xl mx-auto mb-6">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-muted-foreground" />
@@ -139,32 +181,39 @@ const Categories = () => {
             </div>
           </div>
 
+          {/* Advanced Filters */}
+          <AdvancedFilters 
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            showExpandedByDefault={true}
+          />
+
           {/* Tools Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTools.length > 0 ? (
               filteredTools.map((tool) => (
-                <div 
+                <Link 
                   key={tool.id} 
-                  onClick={() => window.location.href = `/tool/${tool.id}/${encodeURIComponent(tool.name.toLowerCase().replace(/\s+/g, '-'))}`}
-                  className="cursor-pointer"
+                  to={`/tool/${tool.id}/${encodeURIComponent(tool.name.toLowerCase().replace(/\s+/g, '-'))}`}
+                  className="block group"
                 >
                   <ToolCard 
                     tool={tool} 
                     showSelection={false}
                   />
-                </div>
+                </Link>
               ))
             ) : (
               <div className="col-span-3 py-16 text-center">
                 <h3 className="text-xl font-medium mb-2">No tools found</h3>
                 <p className="text-muted-foreground mb-4">
-                  Try adjusting your search or category to find what you're looking for.
+                  Try adjusting your search or filters to find what you're looking for.
                 </p>
                 <button
-                  onClick={handleClearSearch}
+                  onClick={resetAllFilters}
                   className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
-                  Clear Search
+                  Reset Filters
                 </button>
               </div>
             )}
