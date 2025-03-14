@@ -1,8 +1,9 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X, User, PenSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface NavItem {
   label: string;
@@ -24,6 +25,7 @@ const navItems: NavItem[] = [
     ] 
   },
   { label: "Pricing", href: "/pricing" },
+  { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
 ];
 
@@ -128,10 +130,19 @@ const Navbar = () => {
             ))}
           </nav>
 
-          <div className="hidden md:block">
-            <button className="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors duration-200">
-              Sign Up
-            </button>
+          <div className="hidden md:flex items-center space-x-4">
+            <Link to="/submit-tool">
+              <Button variant="outline" size="sm" className="flex items-center">
+                <PenSquare className="mr-1 h-4 w-4" />
+                Submit Tool
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button variant="ghost" size="sm">Sign In</Button>
+            </Link>
+            <Link to="/signup">
+              <Button size="sm">Sign Up</Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -201,10 +212,22 @@ const Navbar = () => {
               )}
             </div>
           ))}
-          <div className="pt-2">
-            <button className="w-full py-2.5 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors">
-              Sign Up
-            </button>
+          <div className="flex flex-col space-y-3 pt-2">
+            <Link to="/submit-tool" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button variant="outline" className="w-full justify-start">
+                <PenSquare className="mr-2 h-4 w-4" />
+                Submit Tool
+              </Button>
+            </Link>
+            <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">
+                <User className="mr-2 h-4 w-4" />
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button className="w-full">Sign Up</Button>
+            </Link>
           </div>
         </nav>
       </div>

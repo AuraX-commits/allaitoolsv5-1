@@ -65,12 +65,12 @@ const Footer = () => {
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Resources</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/blog" className="text-foreground/70 hover:text-primary transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/news" className="text-foreground/70 hover:text-primary transition-colors">
                   AI News
                 </Link>
               </li>
@@ -80,12 +80,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/api-docs" className="text-foreground/70 hover:text-primary transition-colors">
                   API Documentation
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/community" className="text-foreground/70 hover:text-primary transition-colors">
                   Community
                 </Link>
               </li>
@@ -101,22 +101,22 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/careers" className="text-foreground/70 hover:text-primary transition-colors">
                   Careers
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/privacy" className="text-foreground/70 hover:text-primary transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/terms" className="text-foreground/70 hover:text-primary transition-colors">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/contact" className="text-foreground/70 hover:text-primary transition-colors">
                   Contact
                 </Link>
               </li>
