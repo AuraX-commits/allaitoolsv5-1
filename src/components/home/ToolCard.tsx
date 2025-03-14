@@ -108,15 +108,15 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               </Badge>
             )}
           </div>
-          <a 
-            href={tool.url} 
-            target="_blank" 
-            rel="noopener noreferrer"
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(tool.url, '_blank', 'noopener,noreferrer');
+            }}
             className="text-xs flex items-center text-primary hover:text-primary/80 transition-colors"
-            onClick={(e) => e.stopPropagation()}
           >
             Visit <ExternalLink className="w-3 h-3 ml-1" />
-          </a>
+          </button>
         </div>
       </div>
     </div>

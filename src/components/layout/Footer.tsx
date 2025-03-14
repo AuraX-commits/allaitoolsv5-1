@@ -15,16 +15,16 @@ const Footer = () => {
               Discover, compare, and test AI-powered software with our modern and intuitive directory.
             </p>
             <div className="mt-6 flex space-x-4">
-              <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-foreground/60 hover:text-primary transition-colors">
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-foreground/60 hover:text-primary transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-foreground/60 hover:text-primary transition-colors">
                 <Linkedin size={20} />
               </a>
-              <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-foreground/60 hover:text-primary transition-colors">
                 <Github size={20} />
               </a>
             </div>
@@ -34,27 +34,27 @@ const Footer = () => {
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/categories/Text Generation" className="text-foreground/70 hover:text-primary transition-colors">
                   Text Generation
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/categories/Image Generation" className="text-foreground/70 hover:text-primary transition-colors">
                   Image Generation
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/categories/Voice Assistants" className="text-foreground/70 hover:text-primary transition-colors">
                   Voice Assistants
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/categories/Code Assistants" className="text-foreground/70 hover:text-primary transition-colors">
                   Code Assistants
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/categories/Video Generation" className="text-foreground/70 hover:text-primary transition-colors">
                   Video Generation
                 </Link>
               </li>
@@ -65,27 +65,27 @@ const Footer = () => {
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Resources</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   AI News
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/compare" className="text-foreground/70 hover:text-primary transition-colors">
                   Tool Comparisons
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   API Documentation
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   Community
                 </Link>
               </li>
@@ -96,27 +96,27 @@ const Footer = () => {
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Company</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   Careers
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="#" className="text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-foreground/70 hover:text-primary transition-colors">
                   Contact
                 </Link>
               </li>

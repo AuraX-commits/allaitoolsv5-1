@@ -189,7 +189,7 @@ const ToolsDirectory = () => {
           {filteredTools.length > 0 ? (
             filteredTools.map((tool) => (
               <div key={tool.id} className="group">
-                <Link to={`/tool/${tool.id}`} className="block h-full">
+                <div onClick={() => window.location.href = `/tool/${tool.id}`} className="cursor-pointer">
                   <ToolCard 
                     key={tool.id} 
                     tool={tool} 
@@ -201,7 +201,7 @@ const ToolsDirectory = () => {
                       handleToolSelect(tool.id);
                     }}
                   />
-                </Link>
+                </div>
               </div>
             ))
           ) : (

@@ -45,8 +45,8 @@ const Categories = () => {
 
   // Get the proper SEO title based on selected category
   const getPageTitle = () => {
-    if (!currentCategory) return "All AI Tools Categories | AI Directory";
-    return `${currentCategory} AI Tools | AI Directory`;
+    if (!currentCategory) return "All AI Tools Categories | All AI Tools";
+    return `${currentCategory} AI Tools | All AI Tools`;
   };
 
   // Get the proper SEO description based on selected category
@@ -64,10 +64,12 @@ const Categories = () => {
         <meta property="og:title" content={getPageTitle()} />
         <meta property="og:description" content={getPageDescription()} />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.allaitools.tech/categories${currentCategory ? `/${encodeURIComponent(currentCategory)}` : ''}`} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={getPageTitle()} />
         <meta name="twitter:description" content={getPageDescription()} />
         <meta name="keywords" content={`AI tools, ${currentCategory || 'artificial intelligence'}, AI directory, AI software, AI solutions`} />
+        <link rel="canonical" href={`https://www.allaitools.tech/categories${currentCategory ? `/${encodeURIComponent(currentCategory)}` : ''}`} />
       </Helmet>
       
       <Navbar />
@@ -128,12 +130,16 @@ const Categories = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTools.length > 0 ? (
               filteredTools.map((tool) => (
-                <Link key={tool.id} to={`/tool/${tool.id}`}>
+                <div 
+                  key={tool.id} 
+                  onClick={() => window.location.href = `/tool/${tool.id}`}
+                  className="cursor-pointer"
+                >
                   <ToolCard 
                     tool={tool} 
                     showSelection={false}
                   />
-                </Link>
+                </div>
               ))
             ) : (
               <div className="col-span-3 py-16 text-center">

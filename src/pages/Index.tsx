@@ -28,6 +28,7 @@ const Index = () => {
         />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/og-image.png" />
+        <meta property="og:url" content="https://www.allaitools.tech" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="AI Directory - Discover & Compare the Best AI Tools" />
         <meta 
@@ -36,7 +37,7 @@ const Index = () => {
         />
         <meta name="twitter:image" content="/og-image.png" />
         <meta name="keywords" content="AI tools, artificial intelligence, chatbots, text generation, image generation, AI directory, AI software" />
-        <link rel="canonical" href="https://aidirectory.com" />
+        <link rel="canonical" href="https://www.allaitools.tech" />
       </Helmet>
       
       <Navbar />

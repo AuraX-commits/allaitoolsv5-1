@@ -4,7 +4,6 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { pricingOptions, aiTools } from "@/utils/toolsData";
 import ToolCard from "../components/home/ToolCard";
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 const Pricing = () => {
@@ -24,24 +23,26 @@ const Pricing = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>AI Tools by Pricing | AI Directory</title>
+        <title>AI Tools by Pricing | All AI Tools</title>
         <meta 
           name="description" 
           content="Browse AI tools by pricing models - free, freemium, subscription, and more. Find the AI solution that fits your budget." 
         />
-        <meta property="og:title" content="AI Tools by Pricing | AI Directory" />
+        <meta property="og:title" content="AI Tools by Pricing | All AI Tools" />
         <meta 
           property="og:description" 
           content="Browse AI tools by pricing models - free, freemium, subscription, and more. Find the AI solution that fits your budget."
         />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.allaitools.tech/pricing" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Tools by Pricing | AI Directory" />
+        <meta name="twitter:title" content="AI Tools by Pricing | All AI Tools" />
         <meta 
           name="twitter:description" 
           content="Browse AI tools by pricing models - free, freemium, subscription, and more. Find the AI solution that fits your budget."
         />
         <meta name="keywords" content="AI tools pricing, free AI tools, freemium AI tools, subscription AI tools, AI tools cost, AI pricing models" />
+        <link rel="canonical" href="https://www.allaitools.tech/pricing" />
       </Helmet>
       
       <Navbar />
@@ -85,12 +86,16 @@ const Pricing = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTools.length > 0 ? (
                 filteredTools.map((tool) => (
-                  <Link key={tool.id} to={`/tool/${tool.id}`}>
+                  <div 
+                    key={tool.id} 
+                    onClick={() => window.location.href = `/tool/${tool.id}`}
+                    className="cursor-pointer"
+                  >
                     <ToolCard 
                       tool={tool} 
                       showSelection={false}
                     />
-                  </Link>
+                  </div>
                 ))
               ) : (
                 <div className="col-span-3 py-16 text-center">
