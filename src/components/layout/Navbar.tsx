@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,19 +15,20 @@ const navItems: NavItem[] = [
   { label: "Compare", href: "/compare" },
   { 
     label: "Categories", 
-    href: "#", 
+    href: "/categories", 
     subItems: [
-      { label: "Text Generation", href: "#text-generation" },
-      { label: "Image Generation", href: "#image-generation" },
-      { label: "Voice Assistants", href: "#voice-assistants" },
-      { label: "Code Assistants", href: "#code-assistants" },
+      { label: "Text Generation", href: "/categories/Text Generation" },
+      { label: "Image Generation", href: "/categories/Image Generation" },
+      { label: "Conversational AI", href: "/categories/Conversational AI" },
+      { label: "Code Generation", href: "/categories/Code Generation" },
     ] 
   },
-  { label: "Pricing", href: "#" },
-  { label: "About", href: "#" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "About", href: "/about" },
 ];
 
 const Navbar = () => {
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -46,6 +47,12 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Close mobile menu when changing routes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setOpenDropdown(null);
+  }, [location.pathname]);
 
   const toggleDropdown = (label: string) => {
     if (openDropdown === label) {
@@ -88,7 +95,12 @@ const Navbar = () => {
                 ) : (
                   <Link
                     to={item.href}
-                    className="text-sm text-foreground/80 hover:text-foreground transition-colors duration-200"
+                    className={cn(
+                      "text-sm transition-colors duration-200",
+                      location.pathname === item.href
+                        ? "text-primary font-medium"
+                        : "text-foreground/80 hover:text-foreground"
+                    )}
                   >
                     {item.label}
                   </Link>
@@ -176,7 +188,12 @@ const Navbar = () => {
               ) : (
                 <Link
                   to={item.href}
-                  className="block text-base font-medium text-foreground hover:text-primary transition-colors"
+                  className={cn(
+                    "block text-base font-medium transition-colors",
+                    location.pathname === item.href
+                      ? "text-primary"
+                      : "text-foreground hover:text-primary"
+                  )}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}

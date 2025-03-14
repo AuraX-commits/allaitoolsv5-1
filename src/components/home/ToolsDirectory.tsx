@@ -188,13 +188,21 @@ const ToolsDirectory = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTools.length > 0 ? (
             filteredTools.map((tool) => (
-              <ToolCard 
-                key={tool.id} 
-                tool={tool} 
-                showSelection={true}
-                selected={compareList.includes(tool.id)}
-                onClick={() => handleToolSelect(tool.id)}
-              />
+              <div key={tool.id} className="group">
+                <Link to={`/tool/${tool.id}`} className="block h-full">
+                  <ToolCard 
+                    key={tool.id} 
+                    tool={tool} 
+                    showSelection={true}
+                    selected={compareList.includes(tool.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleToolSelect(tool.id);
+                    }}
+                  />
+                </Link>
+              </div>
             ))
           ) : (
             <div className="col-span-3 py-16 text-center">
@@ -214,6 +222,16 @@ const ToolsDirectory = () => {
               </button>
             </div>
           )}
+        </div>
+
+        {/* View More Link */}
+        <div className="text-center mt-12">
+          <Link 
+            to="/categories" 
+            className="inline-flex items-center px-6 py-3 text-primary hover:bg-primary hover:text-white border border-primary rounded-lg transition-colors duration-200"
+          >
+            View All Categories
+          </Link>
         </div>
       </div>
     </section>

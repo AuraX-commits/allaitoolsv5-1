@@ -38,13 +38,18 @@ const ComparisonSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {displayTools.map(tool => (
-            <ToolCard
-              key={tool.id}
-              tool={tool}
-              showSelection={true}
-              selected={selectedTools.includes(tool.id)}
-              onClick={() => handleToolSelect(tool.id)}
-            />
+            <div key={tool.id} className="group">
+              <ToolCard
+                key={tool.id}
+                tool={tool}
+                showSelection={true}
+                selected={selectedTools.includes(tool.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleToolSelect(tool.id);
+                }}
+              />
+            </div>
           ))}
         </div>
 

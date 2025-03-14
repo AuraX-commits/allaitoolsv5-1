@@ -6,6 +6,7 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { aiTools, AITool } from "@/utils/toolsData";
 import Badge from "../components/common/Badge";
+import { Helmet } from "react-helmet-async";
 
 const Compare = () => {
   const location = useLocation();
@@ -35,8 +36,36 @@ const Compare = () => {
   // Combined set of all categories across compared tools
   const allCategories = [...new Set(tools.flatMap(tool => tool.category))];
 
+  // Generate SEO title based on compared tools
+  const getPageTitle = () => {
+    if (tools.length >= 2) {
+      return `Compare ${tools.map(t => t.name).join(' vs ')} | AI Directory`;
+    }
+    return 'AI Tools Comparison | AI Directory';
+  };
+
+  // Generate SEO description based on compared tools
+  const getPageDescription = () => {
+    if (tools.length >= 2) {
+      return `Side-by-side comparison of ${tools.map(t => t.name).join(' vs ')}. Compare features, pricing, pros and cons to find the best AI tool for your needs.`;
+    }
+    return 'Compare different AI tools side-by-side. View features, pricing, pros and cons to find the best AI solution for your needs.';
+  };
+
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>{getPageTitle()}</title>
+        <meta name="description" content={getPageDescription()} />
+        <meta property="og:title" content={getPageTitle()} />
+        <meta property="og:description" content={getPageDescription()} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={getPageTitle()} />
+        <meta name="twitter:description" content={getPageDescription()} />
+        <meta name="keywords" content={`AI tools comparison, ${tools.map(t => t.name).join(', ')}, AI tools features, compare AI tools`} />
+      </Helmet>
+      
       <Navbar />
       
       <main className="pt-24 pb-20">
@@ -75,7 +104,11 @@ const Compare = () => {
                           />
                         </div>
                         <div>
-                          <h3 className="font-semibold">{tool.name}</h3>
+                          <h3 className="font-semibold">
+                            <Link to={`/tool/${tool.id}`} className="hover:text-primary transition-colors">
+                              {tool.name}
+                            </Link>
+                          </h3>
                           <div className="flex items-center mt-1">
                             <span className="text-amber-500 font-medium text-sm">{tool.rating}</span>
                             <span className="mx-1 text-muted-foreground text-xs">•</span>
@@ -146,7 +179,11 @@ const Compare = () => {
                     <div key={`${tool.id}-categories`} className="p-4 border-l border-border">
                       <div className="flex flex-wrap gap-2">
                         {tool.category.map(cat => (
-                          <Badge key={cat} variant="muted">{cat}</Badge>
+                          <Link key={cat} to={`/categories/${encodeURIComponent(cat)}`}>
+                            <Badge variant="muted" className="hover:bg-primary/10 transition-colors">
+                              {cat}
+                            </Badge>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -215,14 +252,22 @@ const Compare = () => {
                   </div>
                   {tools.map(tool => (
                     <div key={`${tool.id}-visit`} className="p-4 border-l border-border">
-                      <a 
-                        href={tool.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm"
-                      >
-                        Visit {tool.name}
-                      </a>
+                      <div className="flex space-x-2">
+                        <a 
+                          href={tool.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm"
+                        >
+                          Visit Website
+                        </a>
+                        <Link 
+                          to={`/tool/${tool.id}`}
+                          className="inline-block px-4 py-2 bg-white border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors text-sm"
+                        >
+                          View Details
+                        </Link>
+                      </div>
                     </div>
                   ))}
                 </div>

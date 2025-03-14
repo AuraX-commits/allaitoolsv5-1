@@ -9,7 +9,7 @@ import { AITool } from "@/utils/toolsData";
 interface ToolCardProps {
   tool: AITool;
   selected?: boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
   showSelection?: boolean;
 }
 
@@ -22,7 +22,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
   return (
     <div 
       className={cn(
-        "group rounded-xl overflow-hidden bg-white border border-border/60 transition-all duration-300",
+        "group rounded-xl overflow-hidden bg-white border border-border/60 transition-all duration-300 h-full",
         showSelection && selected ? "ring-2 ring-primary" : "",
         isHovered ? "shadow-lg translate-y-[-4px]" : "shadow-subtle"
       )}
@@ -30,7 +30,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
-      <div className="p-6 relative">
+      <div className="p-6 relative h-full flex flex-col">
         {/* Tool Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-4">
@@ -84,7 +84,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         </div>
 
         {/* Tool Features */}
-        <div className="space-y-2 mb-5">
+        <div className="space-y-2 mb-5 flex-grow">
           {tool.features.slice(0, 3).map((feature) => (
             <div key={feature} className="flex items-start">
               <div className="mt-0.5 mr-2 text-primary">
@@ -96,7 +96,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         </div>
 
         {/* Pricing & API Info */}
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between items-center mt-auto">
           <div className="flex items-center space-x-2">
             <Badge variant={tool.pricing === "Free" || tool.pricing === "Freemium" ? "default" : "outline"}>
               {tool.pricing}
@@ -108,15 +108,15 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               </Badge>
             )}
           </div>
-          <Link 
-            to={tool.url} 
+          <a 
+            href={tool.url} 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-xs flex items-center text-primary hover:text-primary/80 transition-colors"
             onClick={(e) => e.stopPropagation()}
           >
             Visit <ExternalLink className="w-3 h-3 ml-1" />
-          </Link>
+          </a>
         </div>
       </div>
     </div>
