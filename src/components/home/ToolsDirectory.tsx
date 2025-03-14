@@ -12,7 +12,6 @@ const ToolsDirectory = () => {
   const [selectedPricing, setSelectedPricing] = useState("All");
   const [sortBy, setSortBy] = useState<"rating" | "reviewCount">("rating");
   const [showFilters, setShowFilters] = useState(false);
-  const [compareList, setCompareList] = useState<string[]>([]);
   const [filteredTools, setFilteredTools] = useState<AITool[]>(aiTools);
 
   // Filter and sort tools whenever filters change
@@ -47,19 +46,6 @@ const ToolsDirectory = () => {
     
     setFilteredTools(result);
   }, [searchTerm, selectedCategory, selectedPricing, sortBy]);
-
-  const handleToolSelect = (id: string) => {
-    setCompareList(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(toolId => toolId !== id);
-      } else {
-        if (prev.length >= 3) {
-          return [...prev.slice(1), id];
-        }
-        return [...prev, id];
-      }
-    });
-  };
 
   const resetFilters = () => {
     setSearchTerm("");
@@ -163,61 +149,19 @@ const ToolsDirectory = () => {
               </div>
             </div>
           </div>
-
-          {/* Compare Tools Bar */}
-          {compareList.length > 0 && (
-            <div className="flex items-center justify-between p-4 bg-primary/10 rounded-lg mb-6 animate-fade-in">
-              <div className="flex items-center">
-                <span className="text-sm font-medium mr-3">
-                  {compareList.length} {compareList.length === 1 ? "tool" : "tools"} selected
-                </span>
-                <div className="flex -space-x-2">
-                  {compareList.map(id => {
-                    const tool = aiTools.find(t => t.id === id);
-                    return tool ? (
-                      <div key={id} className="w-8 h-8 rounded-full bg-white p-0.5 border border-white">
-                        <img 
-                          src={tool.logo} 
-                          alt={tool.name} 
-                          className="w-full h-full object-contain rounded-full"
-                        />
-                      </div>
-                    ) : null;
-                  })}
-                </div>
-              </div>
-              <Link
-                to={`/compare?tools=${compareList.join(',')}`}
-                className={cn(
-                  "px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors text-sm",
-                  compareList.length < 2 ? "opacity-50 pointer-events-none" : ""
-                )}
-              >
-                Compare Tools
-              </Link>
-            </div>
-          )}
         </div>
 
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTools.length > 0 ? (
             filteredTools.map((tool) => (
-              <div key={tool.id} className="group">
-                <div onClick={() => window.location.href = `/tool/${tool.id}`} className="cursor-pointer">
-                  <ToolCard 
-                    key={tool.id} 
-                    tool={tool} 
-                    showSelection={true}
-                    selected={compareList.includes(tool.id)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleToolSelect(tool.id);
-                    }}
-                  />
-                </div>
-              </div>
+              <Link 
+                key={tool.id} 
+                to={`/tool/${tool.id}`}
+                className="block group"
+              >
+                <ToolCard tool={tool} showSelection={false} />
+              </Link>
             ))
           ) : (
             <div className="col-span-3 py-16 text-center">
