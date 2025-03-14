@@ -6,7 +6,6 @@ import Hero from "../components/home/Hero";
 import ToolsDirectory from "../components/home/ToolsDirectory";
 import ComparisonSection from "../components/home/ComparisonSection";
 import CategoryGrid from "../components/home/CategoryGrid";
-import Newsletter from "../components/common/Newsletter";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -15,20 +14,8 @@ const Index = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    // Check for dark mode preference
-    const isDarkMode = localStorage.getItem("theme") === "dark" || 
-      (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
   return (
-    <div className="min-h-screen overflow-hidden dark:bg-gray-900">
+    <div className="min-h-screen overflow-hidden">
       <Helmet>
         <title>AI Directory - Discover & Compare the Best AI Tools</title>
         <meta 
@@ -55,20 +42,11 @@ const Index = () => {
       </Helmet>
       
       <Navbar />
-      <main className="dark:text-white">
+      <main>
         <Hero />
-        <ToolsDirectory disableComparison={true} />
+        <ToolsDirectory />
         <CategoryGrid />
         <ComparisonSection />
-        
-        {/* Newsletter Section */}
-        <section className="py-16 bg-white dark:bg-gray-900">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto">
-              <Newsletter />
-            </div>
-          </div>
-        </section>
       </main>
       <Footer />
     </div>

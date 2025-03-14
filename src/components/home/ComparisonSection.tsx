@@ -3,27 +3,23 @@ import { useState, useEffect } from "react";
 import { ArrowRight, Search, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { aiTools } from "@/utils/toolsData";
-import { additionalTools } from "@/utils/additionalTools";
 import ToolCard from "./ToolCard";
 
-// Combine original tools with additional tools
-const allTools = [...aiTools, ...additionalTools];
-
 const ComparisonSection = () => {
-  const [selectedTools, setSelectedTools] = useState(allTools.slice(0, 3).map(tool => tool.id));
+  const [selectedTools, setSelectedTools] = useState(aiTools.slice(0, 3).map(tool => tool.id));
   const [searchTerm, setSearchTerm] = useState("");
-  const [displayTools, setDisplayTools] = useState(allTools.slice(0, 6));
+  const [displayTools, setDisplayTools] = useState(aiTools.slice(0, 6));
 
   useEffect(() => {
     if (searchTerm) {
-      const filtered = allTools.filter(tool => 
+      const filtered = aiTools.filter(tool => 
         tool.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
         tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         tool.category.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()))
       ).slice(0, 6);
       setDisplayTools(filtered);
     } else {
-      setDisplayTools(allTools.slice(0, 6));
+      setDisplayTools(aiTools.slice(0, 6));
     }
   }, [searchTerm]);
 
@@ -47,11 +43,11 @@ const ComparisonSection = () => {
   };
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 dark:text-white">Compare AI Tools</h2>
-          <p className="text-foreground/80 dark:text-gray-300">
+          <h2 className="text-3xl font-bold mb-4">Compare AI Tools</h2>
+          <p className="text-foreground/80">
             Not sure which tool is right for you? Select tools to see a side-by-side comparison of features, pricing, and user reviews.
           </p>
         </div>
@@ -60,18 +56,18 @@ const ComparisonSection = () => {
         <div className="max-w-xl mx-auto mb-8">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-muted-foreground dark:text-gray-400" />
+              <Search className="h-5 w-5 text-muted-foreground" />
             </div>
             <input
               type="text"
               placeholder="Search for tools to compare..."
-              className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
               <button
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-white"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
                 onClick={handleClearSearch}
                 aria-label="Clear search"
               >
@@ -99,8 +95,8 @@ const ComparisonSection = () => {
             ))
           ) : (
             <div className="col-span-3 text-center py-12">
-              <h3 className="text-xl font-medium mb-2 dark:text-white">No tools found</h3>
-              <p className="text-muted-foreground dark:text-gray-400 mb-4">
+              <h3 className="text-xl font-medium mb-2">No tools found</h3>
+              <p className="text-muted-foreground mb-4">
                 Try adjusting your search to find what you're looking for.
               </p>
               <button
@@ -118,7 +114,7 @@ const ComparisonSection = () => {
             to={`/compare?tools=${selectedTools.join(',')}`}
             className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl hover:shadow-primary/20 transform hover:-translate-y-1 duration-200"
           >
-            Compare Selected Tools <ArrowRight className="ml-2 w-5 w-5" />
+            Compare Selected Tools <ArrowRight className="ml-2 w-5 h-5" />
           </Link>
         </div>
       </div>

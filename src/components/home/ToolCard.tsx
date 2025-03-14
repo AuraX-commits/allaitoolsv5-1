@@ -22,7 +22,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
   return (
     <div 
       className={cn(
-        "group rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-border/60 dark:border-gray-700 transition-all duration-300 h-full",
+        "group rounded-xl overflow-hidden bg-white border border-border/60 transition-all duration-300 h-full",
         showSelection && selected ? "ring-2 ring-primary" : "",
         isHovered ? "shadow-lg translate-y-[-4px]" : "shadow-subtle"
       )}
@@ -34,7 +34,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         {/* Tool Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-lg overflow-hidden bg-secondary/30 dark:bg-gray-700 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg overflow-hidden bg-secondary/30 flex items-center justify-center">
               <img 
                 src={tool.logo} 
                 alt={`${tool.name} logo`} 
@@ -43,14 +43,14 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               />
             </div>
             <div>
-              <h3 className="font-semibold text-lg dark:text-white">{tool.name}</h3>
+              <h3 className="font-semibold text-lg">{tool.name}</h3>
               <div className="flex items-center mt-1">
                 <div className="flex items-center">
                   <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                  <span className="ml-1 text-sm font-medium dark:text-gray-300">{tool.rating}</span>
+                  <span className="ml-1 text-sm font-medium">{tool.rating}</span>
                 </div>
-                <span className="mx-2 text-muted-foreground dark:text-gray-500 text-sm">•</span>
-                <span className="text-sm text-muted-foreground dark:text-gray-400">{tool.reviewCount} reviews</span>
+                <span className="mx-2 text-muted-foreground text-sm">•</span>
+                <span className="text-sm text-muted-foreground">{tool.reviewCount} reviews</span>
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors",
               selected 
                 ? "bg-primary border-primary text-white" 
-                : "border-muted-foreground/30 group-hover:border-primary/50 dark:border-gray-500 dark:group-hover:border-primary/80"
+                : "border-muted-foreground/30 group-hover:border-primary/50"
             )}>
               {selected && <Check className="w-3.5 h-3.5" />}
             </div>
@@ -67,7 +67,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         </div>
 
         {/* Tool Description */}
-        <p className="text-sm text-foreground/80 dark:text-gray-300 mb-4 line-clamp-2">
+        <p className="text-sm text-foreground/80 mb-4 line-clamp-2">
           {tool.shortDescription}
         </p>
 
@@ -87,10 +87,10 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         <div className="space-y-2 mb-5 flex-grow">
           {tool.features.slice(0, 3).map((feature) => (
             <div key={feature} className="flex items-start">
-              <div className="mt-0.5 mr-2 text-primary dark:text-blue-400">
+              <div className="mt-0.5 mr-2 text-primary">
                 <Check className="w-4 h-4" />
               </div>
-              <span className="text-sm text-foreground/80 dark:text-gray-300">{feature}</span>
+              <span className="text-sm text-foreground/80">{feature}</span>
             </div>
           ))}
         </div>
@@ -113,7 +113,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               e.stopPropagation();
               window.open(tool.url, '_blank', 'noopener,noreferrer');
             }}
-            className="text-xs flex items-center text-primary dark:text-blue-400 hover:text-primary/80 dark:hover:text-blue-300 transition-colors"
+            className="text-xs flex items-center text-primary hover:text-primary/80 transition-colors"
           >
             Visit <ExternalLink className="w-3 h-3 ml-1" />
           </button>

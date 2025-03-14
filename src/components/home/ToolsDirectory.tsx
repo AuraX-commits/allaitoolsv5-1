@@ -2,32 +2,22 @@
 import { useState, useEffect } from "react";
 import { Search, Filter, ArrowUpDown, X } from "lucide-react";
 import { aiTools, categories, pricingOptions, AITool } from "@/utils/toolsData";
-import { additionalTools } from "@/utils/additionalTools";
 import ToolCard from "./ToolCard";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import InteractiveFilters from "../tools/InteractiveFilters";
 
-// Combine original tools with additional tools
-const allTools = [...aiTools, ...additionalTools];
-
-interface ToolsDirectoryProps {
-  disableComparison?: boolean;
-}
-
-const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
+const ToolsDirectory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPricing, setSelectedPricing] = useState("All");
   const [sortBy, setSortBy] = useState<"rating" | "reviewCount">("rating");
   const [showFilters, setShowFilters] = useState(false);
   const [compareList, setCompareList] = useState<string[]>([]);
-  const [filteredTools, setFilteredTools] = useState<AITool[]>(allTools);
-  const [advancedFilteredTools, setAdvancedFilteredTools] = useState<AITool[]>(allTools);
+  const [filteredTools, setFilteredTools] = useState<AITool[]>(aiTools);
 
   // Filter and sort tools whenever filters change
   useEffect(() => {
-    let result = [...allTools];
+    let result = [...aiTools];
     
     // Filter by search term
     if (searchTerm) {
@@ -56,17 +46,9 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
     result.sort((a, b) => b[sortBy] - a[sortBy]);
     
     setFilteredTools(result);
-    setAdvancedFilteredTools(result);
   }, [searchTerm, selectedCategory, selectedPricing, sortBy]);
 
-  // Handle advanced filter results
-  const handleAdvancedFilters = (filteredResults: AITool[]) => {
-    setAdvancedFilteredTools(filteredResults);
-  };
-
   const handleToolSelect = (id: string) => {
-    if (disableComparison) return;
-    
     setCompareList(prev => {
       if (prev.includes(id)) {
         return prev.filter(toolId => toolId !== id);
@@ -85,14 +67,12 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
     setSelectedPricing("All");
   };
 
-  const finalFilteredTools = advancedFilteredTools;
-
   return (
-    <section className="py-16 bg-secondary/30 dark:bg-gray-800" id="tools-directory">
+    <section className="py-16 bg-secondary/30" id="tools-directory">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 dark:text-white">Discover AI Tools</h2>
-          <p className="text-foreground/80 dark:text-gray-300">
+          <h2 className="text-3xl font-bold mb-4">Discover AI Tools</h2>
+          <p className="text-foreground/80">
             Browse our curated collection of AI-powered tools and find the perfect solution for your needs.
           </p>
         </div>
@@ -102,18 +82,18 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-grow">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-muted-foreground dark:text-gray-400" />
+                <Search className="h-5 w-5 text-muted-foreground" />
               </div>
               <input
                 type="text"
                 placeholder="Search AI tools..."
-                className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               {searchTerm && (
                 <button
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-white"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
                   onClick={() => setSearchTerm("")}
                   aria-label="Clear search"
                 >
@@ -123,22 +103,19 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="md:w-auto w-full inline-flex items-center justify-center py-3 px-6 border border-input rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 hover:bg-secondary dark:hover:bg-gray-600 transition-colors text-foreground"
+              className="md:w-auto w-full inline-flex items-center justify-center py-3 px-6 border border-input rounded-lg bg-white hover:bg-secondary transition-colors text-foreground"
             >
               <Filter className="h-5 w-5 mr-2" />
               Filters
             </button>
             <button
               onClick={() => setSortBy(sortBy === "rating" ? "reviewCount" : "rating")}
-              className="md:w-auto w-full inline-flex items-center justify-center py-3 px-6 border border-input rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 hover:bg-secondary dark:hover:bg-gray-600 transition-colors text-foreground"
+              className="md:w-auto w-full inline-flex items-center justify-center py-3 px-6 border border-input rounded-lg bg-white hover:bg-secondary transition-colors text-foreground"
             >
               <ArrowUpDown className="h-5 w-5 mr-2" />
               {sortBy === "rating" ? "Sort by Popularity" : "Sort by Rating"}
             </button>
           </div>
-
-          {/* Interactive Filters Component */}
-          <InteractiveFilters tools={filteredTools} onFiltersChange={handleAdvancedFilters} />
 
           {/* Expanded Filters */}
           <div
@@ -148,7 +125,7 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
             )}
           >
             <div>
-              <label className="block text-sm font-medium mb-2 dark:text-gray-200">Categories</label>
+              <label className="block text-sm font-medium mb-2">Categories</label>
               <div className="flex flex-wrap gap-2">
                 {categories.map((category) => (
                   <button
@@ -158,7 +135,7 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
                       "px-3 py-1.5 rounded-full text-sm transition-colors",
                       selectedCategory === category
                         ? "bg-primary text-white"
-                        : "bg-white hover:bg-secondary border border-input dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 text-foreground"
+                        : "bg-white hover:bg-secondary border border-input text-foreground"
                     )}
                   >
                     {category}
@@ -167,7 +144,7 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 dark:text-gray-200">Pricing Options</label>
+              <label className="block text-sm font-medium mb-2">Pricing Options</label>
               <div className="flex flex-wrap gap-2">
                 {pricingOptions.map((option) => (
                   <button
@@ -177,7 +154,7 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
                       "px-3 py-1.5 rounded-full text-sm transition-colors",
                       selectedPricing === option
                         ? "bg-primary text-white"
-                        : "bg-white hover:bg-secondary border border-input dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 text-foreground"
+                        : "bg-white hover:bg-secondary border border-input text-foreground"
                     )}
                   >
                     {option}
@@ -188,17 +165,17 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
           </div>
 
           {/* Compare Tools Bar */}
-          {!disableComparison && compareList.length > 0 && (
-            <div className="flex items-center justify-between p-4 bg-primary/10 dark:bg-primary/20 rounded-lg mb-6 animate-fade-in">
+          {compareList.length > 0 && (
+            <div className="flex items-center justify-between p-4 bg-primary/10 rounded-lg mb-6 animate-fade-in">
               <div className="flex items-center">
-                <span className="text-sm font-medium mr-3 dark:text-white">
+                <span className="text-sm font-medium mr-3">
                   {compareList.length} {compareList.length === 1 ? "tool" : "tools"} selected
                 </span>
                 <div className="flex -space-x-2">
                   {compareList.map(id => {
-                    const tool = allTools.find(t => t.id === id);
+                    const tool = aiTools.find(t => t.id === id);
                     return tool ? (
-                      <div key={id} className="w-8 h-8 rounded-full bg-white dark:bg-gray-700 p-0.5 border border-white dark:border-gray-600">
+                      <div key={id} className="w-8 h-8 rounded-full bg-white p-0.5 border border-white">
                         <img 
                           src={tool.logo} 
                           alt={tool.name} 
@@ -224,30 +201,28 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
 
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {finalFilteredTools.length > 0 ? (
-            finalFilteredTools.map((tool) => (
+          {filteredTools.length > 0 ? (
+            filteredTools.map((tool) => (
               <div key={tool.id} className="group">
-                <Link to={`/tool/${tool.id}/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                <div onClick={() => window.location.href = `/tool/${tool.id}`} className="cursor-pointer">
                   <ToolCard 
                     key={tool.id} 
                     tool={tool} 
-                    showSelection={!disableComparison}
+                    showSelection={true}
                     selected={compareList.includes(tool.id)}
                     onClick={(e) => {
-                      if (!disableComparison) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleToolSelect(tool.id);
-                      }
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleToolSelect(tool.id);
                     }}
                   />
-                </Link>
+                </div>
               </div>
             ))
           ) : (
             <div className="col-span-3 py-16 text-center">
-              <h3 className="text-xl font-medium mb-2 dark:text-white">No tools found</h3>
-              <p className="text-muted-foreground dark:text-gray-400 mb-4">
+              <h3 className="text-xl font-medium mb-2">No tools found</h3>
+              <p className="text-muted-foreground mb-4">
                 Try adjusting your search or filters to find what you're looking for.
               </p>
               <button
@@ -264,7 +239,7 @@ const ToolsDirectory = ({ disableComparison = false }: ToolsDirectoryProps) => {
         <div className="text-center mt-12">
           <Link 
             to="/categories" 
-            className="inline-flex items-center px-6 py-3 text-primary hover:bg-primary hover:text-white border border-primary rounded-lg transition-colors duration-200 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-blue-900 dark:hover:text-white"
+            className="inline-flex items-center px-6 py-3 text-primary hover:bg-primary hover:text-white border border-primary rounded-lg transition-colors duration-200"
           >
             View All Categories
           </Link>
