@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768
@@ -16,4 +17,21 @@ export function useIsMobile() {
   }, [])
 
   return !!isMobile
+}
+
+export function useScroll(threshold = 300) {
+  const [isScrolled, setIsScrolled] = React.useState(false)
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > threshold)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    handleScroll() // Check initial position
+    
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [threshold])
+
+  return isScrolled
 }

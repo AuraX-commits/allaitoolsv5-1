@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, ExternalLink, MessageSquare, Share2, Bookmark, ChevronRight, Check, Link as LinkIcon, Copy, Twitter, Facebook, Linkedin } from "lucide-react";
@@ -9,6 +10,7 @@ import { Helmet } from "react-helmet-async";
 import ToolCard from "../components/home/ToolCard";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { ScrollToTop } from "@/components/common/ScrollToTop";
 import {
   Popover,
   PopoverContent,
@@ -528,6 +530,7 @@ const ToolDetail = () => {
         </div>
       </main>
       
+      <ScrollToTop threshold={400} />
       <Footer />
     </div>
   );
