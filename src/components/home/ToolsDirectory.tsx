@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Search, Filter, ArrowUpDown } from "lucide-react";
+import { Search, Filter, ArrowUpDown, X } from "lucide-react";
 import { aiTools, categories, pricingOptions, AITool } from "@/utils/toolsData";
 import ToolCard from "./ToolCard";
 import { Link } from "react-router-dom";
@@ -61,6 +61,12 @@ const ToolsDirectory = () => {
     });
   };
 
+  const resetFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("All");
+    setSelectedPricing("All");
+  };
+
   return (
     <section className="py-16 bg-secondary/30" id="tools-directory">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,10 +87,19 @@ const ToolsDirectory = () => {
               <input
                 type="text"
                 placeholder="Search AI tools..."
-                className="block w-full pl-10 pr-4 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {searchTerm && (
+                <button
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
+                  onClick={() => setSearchTerm("")}
+                  aria-label="Clear search"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -211,11 +226,7 @@ const ToolsDirectory = () => {
                 Try adjusting your search or filters to find what you're looking for.
               </p>
               <button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedCategory("All");
-                  setSelectedPricing("All");
-                }}
+                onClick={resetFilters}
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 Reset Filters

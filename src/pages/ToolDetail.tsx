@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Star, ExternalLink, MessageSquare, Share2, Bookmark, ChevronRight } from "lucide-react";
+import { ArrowLeft, Star, ExternalLink, MessageSquare, Share2, Bookmark, ChevronRight, Check, Link as LinkIcon, Copy, Twitter, Facebook, Linkedin } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { AITool, aiTools } from "@/utils/toolsData";
@@ -9,12 +9,19 @@ import Badge from "../components/common/Badge";
 import { Helmet } from "react-helmet-async";
 import ToolCard from "../components/home/ToolCard";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const ToolDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [tool, setTool] = useState<AITool | null>(null);
   const [relatedTools, setRelatedTools] = useState<AITool[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -38,6 +45,34 @@ const ToolDetail = () => {
     
     setIsLoading(false);
   }, [id]);
+
+  const handleCopyLink = () => {
+    const currentUrl = window.location.href;
+    navigator.clipboard.writeText(currentUrl);
+    toast({
+      title: "Link copied!",
+      description: "Tool URL has been copied to your clipboard.",
+    });
+  };
+
+  const shareOnTwitter = () => {
+    if (!tool) return;
+    const text = `Check out ${tool.name} - ${tool.shortDescription}`;
+    const url = window.location.href;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+  };
+
+  const shareOnFacebook = () => {
+    const url = window.location.href;
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+  };
+
+  const shareOnLinkedIn = () => {
+    if (!tool) return;
+    const url = window.location.href;
+    const title = `${tool.name} | AIDirectory`;
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`, '_blank');
+  };
 
   if (isLoading) {
     return (
@@ -161,9 +196,62 @@ const ToolDetail = () => {
                       Visit Website
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </a>
-                    <button className="inline-flex items-center px-4 py-2 bg-secondary hover:bg-secondary/70 text-foreground rounded-lg transition-colors text-sm">
-                      <Share2 className="w-4 h-4 mr-2" /> Share
-                    </button>
+                    
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="inline-flex items-center px-4 py-2 bg-secondary hover:bg-secondary/70 text-foreground rounded-lg transition-colors text-sm">
+                          <Share2 className="w-4 h-4 mr-2" /> Share
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-3">
+                        <h3 className="font-medium mb-2">Share this tool</h3>
+                        <div className="flex gap-2 mb-3">
+                          <button 
+                            onClick={shareOnTwitter}
+                            className="flex-1 p-2 rounded-md hover:bg-secondary text-foreground/80 hover:text-foreground transition-colors flex flex-col items-center gap-1 text-xs"
+                          >
+                            <Twitter className="h-5 w-5" />
+                            Twitter
+                          </button>
+                          <button 
+                            onClick={shareOnFacebook}
+                            className="flex-1 p-2 rounded-md hover:bg-secondary text-foreground/80 hover:text-foreground transition-colors flex flex-col items-center gap-1 text-xs"
+                          >
+                            <Facebook className="h-5 w-5" />
+                            Facebook
+                          </button>
+                          <button 
+                            onClick={shareOnLinkedIn}
+                            className="flex-1 p-2 rounded-md hover:bg-secondary text-foreground/80 hover:text-foreground transition-colors flex flex-col items-center gap-1 text-xs"
+                          >
+                            <Linkedin className="h-5 w-5" />
+                            LinkedIn
+                          </button>
+                        </div>
+                        <div className="relative">
+                          <div className="flex items-center mt-1 border rounded-md overflow-hidden">
+                            <div className="bg-secondary/30 px-2 py-1">
+                              <LinkIcon className="h-4 w-4 text-foreground/60" />
+                            </div>
+                            <input 
+                              className="flex-1 px-2 py-1 text-sm bg-transparent border-0 focus:outline-none focus:ring-0" 
+                              type="text" 
+                              value={window.location.href}
+                              readOnly
+                              onClick={(e) => (e.target as HTMLInputElement).select()}
+                            />
+                          </div>
+                          <button 
+                            onClick={handleCopyLink}
+                            className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-secondary text-foreground/60 hover:text-foreground transition-colors"
+                            aria-label="Copy link"
+                          >
+                            <Copy className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    
                     <button className="inline-flex items-center px-4 py-2 bg-secondary hover:bg-secondary/70 text-foreground rounded-lg transition-colors text-sm">
                       <Bookmark className="w-4 h-4 mr-2" /> Save
                     </button>
@@ -206,6 +294,25 @@ const ToolDetail = () => {
                     ))}
                   </ul>
                 </div>
+
+                {/* Potential Use Cases */}
+                {tool.useCases && tool.useCases.length > 0 && (
+                  <div className="mb-8">
+                    <h2 className="text-xl font-semibold mb-4">Potential Use Cases</h2>
+                    <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
+                      <ul className="space-y-3">
+                        {tool.useCases.map((useCase) => (
+                          <li key={useCase} className="flex items-start">
+                            <div className="mt-1 mr-3 text-blue-600">
+                              <Check className="w-5 h-5" />
+                            </div>
+                            <span className="text-blue-900">{useCase}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
 
                 {/* Pros and Cons */}
                 <div className="mb-8">

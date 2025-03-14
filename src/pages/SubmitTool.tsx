@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Send, Upload } from "lucide-react";
+import { Send, Upload, Link } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ const formSchema = z.object({
   name: z.string().min(2, "Tool name must be at least 2 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   website: z.string().url("Please enter a valid URL"),
+  logoUrl: z.string().url("Please enter a valid URL for the logo").optional(),
   category: z.string().min(1, "Please select a category"),
   pricing: z.string().min(1, "Please select a pricing tier"),
   email: z.string().email("Please enter a valid email address"),
@@ -50,6 +51,7 @@ const SubmitTool = () => {
       name: "",
       description: "",
       website: "",
+      logoUrl: "",
       category: "",
       pricing: "",
       email: "",
@@ -136,6 +138,32 @@ const SubmitTool = () => {
                       <FormControl>
                         <Input placeholder="https://www.yourtool.com" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="logoUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Logo URL</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Link className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <Input 
+                            placeholder="https://www.example.com/your-logo.png" 
+                            className="pl-10"
+                            {...field} 
+                          />
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        Enter a direct URL to your tool's logo image (PNG or JPG recommended)
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
