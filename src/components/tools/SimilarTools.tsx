@@ -28,16 +28,16 @@ const SimilarTools = ({
   if (similarTools.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-xl shadow-subtle border border-border/60 p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-subtle border border-border/60 p-6">
       <h2 className="text-lg font-semibold mb-4">Alternative Tools</h2>
       <div className="space-y-4">
         {similarTools.map(tool => (
           <Link 
             key={tool.id} 
             to={`/tool/${tool.id}/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/20 dark:hover:bg-gray-700 transition-colors"
           >
-            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg overflow-hidden bg-secondary/30 dark:bg-gray-700 flex items-center justify-center">
               <img 
                 src={tool.logo} 
                 alt={`${tool.name} logo`} 
@@ -54,7 +54,7 @@ const SimilarTools = ({
           </Link>
         ))}
       </div>
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="mt-4 pt-4 border-t border-border/60 dark:border-gray-700">
         <Link 
           to="/#tools-directory"
           className="text-primary hover:text-primary/80 text-sm font-medium flex items-center justify-center"
