@@ -81,7 +81,7 @@ const Categories = () => {
     
     // Sort by selected criteria
     if (filters.sortBy === "newest") {
-      filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      filtered.sort((a, b) => ((b.createdAt || 0) - (a.createdAt || 0)));
     } else {
       filtered.sort((a, b) => b[filters.sortBy] - a[filters.sortBy]);
     }

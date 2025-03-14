@@ -12,6 +12,7 @@ export interface AITool {
   features: string[];
   url: string;
   apiAccess: boolean;
+  createdAt?: number; // Adding the optional createdAt property
   pros?: string[];
   cons?: string[];
   useCases?: string[];

@@ -60,7 +60,7 @@ const ToolsDirectory = () => {
     
     // Sort by selected criteria
     if (filters.sortBy === "newest") {
-      result.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      result.sort((a, b) => ((b.createdAt || 0) - (a.createdAt || 0)));
     } else {
       result.sort((a, b) => b[filters.sortBy] - a[filters.sortBy]);
     }
