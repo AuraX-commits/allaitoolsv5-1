@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, ExternalLink, MessageSquare, Share2, Bookmark, ChevronRight, Check, Link as LinkIcon, Copy, Twitter, Facebook, Linkedin } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -17,11 +17,12 @@ import {
 } from "@/components/ui/popover";
 
 const ToolDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, name } = useParams<{ id: string; name?: string }>();
   const [tool, setTool] = useState<AITool | null>(null);
   const [relatedTools, setRelatedTools] = useState<AITool[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,6 +31,12 @@ const ToolDetail = () => {
       const foundTool = aiTools.find(t => t.id === id);
       if (foundTool) {
         setTool(foundTool);
+        
+        // If the URL doesn't have the slug, add it
+        if (!name) {
+          const slug = foundTool.name.toLowerCase().replace(/\s+/g, '-');
+          navigate(`/tool/${id}/${slug}`, { replace: true });
+        }
         
         // Find related tools in the same category
         const related = aiTools
@@ -44,7 +51,7 @@ const ToolDetail = () => {
     }
     
     setIsLoading(false);
-  }, [id]);
+  }, [id, name, navigate]);
 
   const handleCopyLink = () => {
     const currentUrl = window.location.href;

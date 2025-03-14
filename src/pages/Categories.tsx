@@ -145,7 +145,7 @@ const Categories = () => {
               filteredTools.map((tool) => (
                 <div 
                   key={tool.id} 
-                  onClick={() => window.location.href = `/tool/${tool.id}`}
+                  onClick={() => window.location.href = `/tool/${tool.id}/${encodeURIComponent(tool.name.toLowerCase().replace(/\s+/g, '-'))}`}
                   className="cursor-pointer"
                 >
                   <ToolCard 

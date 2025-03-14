@@ -1,15 +1,27 @@
 
-import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowRight, Search, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { aiTools } from "@/utils/toolsData";
 import ToolCard from "./ToolCard";
 
 const ComparisonSection = () => {
   const [selectedTools, setSelectedTools] = useState(aiTools.slice(0, 3).map(tool => tool.id));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [displayTools, setDisplayTools] = useState(aiTools.slice(0, 6));
 
-  // Display only the first 6 tools for selection
-  const displayTools = aiTools.slice(0, 6);
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = aiTools.filter(tool => 
+        tool.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tool.category.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()))
+      ).slice(0, 6);
+      setDisplayTools(filtered);
+    } else {
+      setDisplayTools(aiTools.slice(0, 6));
+    }
+  }, [searchTerm]);
 
   const handleToolSelect = (id: string) => {
     setSelectedTools(prev => {
@@ -26,6 +38,10 @@ const ComparisonSection = () => {
     });
   };
 
+  const handleClearSearch = () => {
+    setSearchTerm("");
+  };
+
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,21 +52,61 @@ const ComparisonSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {displayTools.map(tool => (
-            <div key={tool.id} className="group">
-              <ToolCard
-                key={tool.id}
-                tool={tool}
-                showSelection={true}
-                selected={selectedTools.includes(tool.id)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleToolSelect(tool.id);
-                }}
-              />
+        {/* Search Bar */}
+        <div className="max-w-xl mx-auto mb-8">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-muted-foreground" />
             </div>
-          ))}
+            <input
+              type="text"
+              placeholder="Search for tools to compare..."
+              className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
+                onClick={handleClearSearch}
+                aria-label="Clear search"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {displayTools.length > 0 ? (
+            displayTools.map(tool => (
+              <div key={tool.id} className="group">
+                <ToolCard
+                  key={tool.id}
+                  tool={tool}
+                  showSelection={true}
+                  selected={selectedTools.includes(tool.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleToolSelect(tool.id);
+                  }}
+                />
+              </div>
+            ))
+          ) : (
+            <div className="col-span-3 text-center py-12">
+              <h3 className="text-xl font-medium mb-2">No tools found</h3>
+              <p className="text-muted-foreground mb-4">
+                Try adjusting your search to find what you're looking for.
+              </p>
+              <button
+                onClick={handleClearSearch}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="text-center">

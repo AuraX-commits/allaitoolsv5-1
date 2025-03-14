@@ -214,6 +214,19 @@ export const categories = [
   "Marketing",
   "Design",
   "Developer Tools",
+  "Video Editing",
+  "Transcription", 
+  "Translation",
+  "Automation",
+  "Collaboration",
+  "Presentation",
+  "Voice Generation",
+  "Customer Service",
+  "Data Analysis",
+  "Research",
+  "Education",
+  "Productivity",
+  "Content Creation",
   "Open Source"
 ];
 

@@ -5,6 +5,7 @@ import Footer from "../components/layout/Footer";
 import Hero from "../components/home/Hero";
 import ToolsDirectory from "../components/home/ToolsDirectory";
 import ComparisonSection from "../components/home/ComparisonSection";
+import CategoryGrid from "../components/home/CategoryGrid";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -44,6 +45,7 @@ const Index = () => {
       <main>
         <Hero />
         <ToolsDirectory />
+        <CategoryGrid />
         <ComparisonSection />
       </main>
       <Footer />
