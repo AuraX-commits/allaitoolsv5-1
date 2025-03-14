@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, ExternalLink, MessageSquare, Share2, Bookmark, ChevronRight, Check, Link as LinkIcon, Copy, Twitter, Facebook, Linkedin } from "lucide-react";
@@ -81,6 +80,41 @@ const ToolDetail = () => {
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`, '_blank');
   };
 
+  // Generate structured data for the tool
+  const generateStructuredData = () => {
+    if (!tool) return null;
+    
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": tool.name,
+      "description": tool.description,
+      "applicationCategory": "AIApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": tool.pricing === "Free" ? "0" : undefined,
+        "priceCurrency": tool.pricing === "Free" ? "USD" : undefined,
+        "availability": "https://schema.org/OnlineOnly"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": tool.rating,
+        "ratingCount": tool.reviewCount,
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": tool.name + " Team"
+      },
+      "image": tool.logo,
+      "url": tool.url
+    };
+    
+    return JSON.stringify(structuredData);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen">
@@ -118,20 +152,41 @@ const ToolDetail = () => {
     );
   }
 
+  // Generate meta description from tool data
+  const generateMetaDescription = () => {
+    if (!tool) return "";
+    return `${tool.name} is ${tool.shortDescription} Learn about features, pricing, pros and cons, and how it compares to alternatives.`;
+  };
+
+  // Generate meta keywords from tool data
+  const generateMetaKeywords = () => {
+    if (!tool) return "";
+    const baseKeywords = `${tool.name}, AI tool, ${tool.category.join(', ')}`;
+    const featureKeywords = tool.features.slice(0, 3).join(', ');
+    return `${baseKeywords}, ${featureKeywords}, AI directory, ${tool.pricing}`;
+  };
+
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>{tool.name} | AI Directory - The Ultimate AI Tools Database</title>
-        <meta name="description" content={tool.shortDescription} />
-        <meta property="og:title" content={`${tool.name} | AI Directory`} />
-        <meta property="og:description" content={tool.shortDescription} />
-        <meta property="og:image" content={tool.logo} />
+        <title>{tool?.name} | AI Directory - The Ultimate AI Tools Database</title>
+        <meta name="description" content={generateMetaDescription()} />
+        <meta property="og:title" content={`${tool?.name} | AI Directory`} />
+        <meta property="og:description" content={tool?.shortDescription} />
+        <meta property="og:image" content={tool?.logo} />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={window.location.href} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${tool.name} | AI Directory`} />
-        <meta name="twitter:description" content={tool.shortDescription} />
-        <meta name="twitter:image" content={tool.logo} />
-        <meta name="keywords" content={`${tool.name}, AI tool, ${tool.category.join(', ')}, AI directory`} />
+        <meta name="twitter:title" content={`${tool?.name} | AI Directory`} />
+        <meta name="twitter:description" content={tool?.shortDescription} />
+        <meta name="twitter:image" content={tool?.logo} />
+        <meta name="keywords" content={generateMetaKeywords()} />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="AI Directory" />
+        <link rel="canonical" href={window.location.href} />
+        <script type="application/ld+json">
+          {generateStructuredData()}
+        </script>
       </Helmet>
       
       <Navbar />
@@ -159,7 +214,7 @@ const ToolDetail = () => {
                   <div className="flex items-center">
                     <ChevronRight className="w-4 h-4 text-foreground/50" />
                     <span className="ml-1 text-sm font-medium text-foreground md:ml-2">
-                      {tool.name}
+                      {tool?.name}
                     </span>
                   </div>
                 </li>
