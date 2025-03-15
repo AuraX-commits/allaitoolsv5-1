@@ -1,7 +1,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import type { User, Session } from "@supabase/supabase-js";
+import type { User, Session, Provider, OAuthResponse } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 
 type AuthContextType = {
@@ -12,11 +12,13 @@ type AuthContextType = {
     error: Error | null;
     data: Session | null;
   }>;
+  signInWithProvider: (provider: Provider) => Promise<void>;
   signUp: (email: string, password: string) => Promise<{
     error: Error | null;
     data: { user: User | null; session: Session | null };
   }>;
   signOut: () => Promise<void>;
+  isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,6 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -38,6 +41,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
           setSession(data.session);
           setUser(data.session?.user || null);
+          
+          // Check if user is admin
+          if (data.session?.user) {
+            checkIfAdmin(data.session.user.id);
+          }
         }
       } catch (error) {
         console.error("Unexpected error during getSession:", error);
@@ -54,6 +62,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user || null);
+      
+      // Check if user is admin
+      if (session?.user) {
+        checkIfAdmin(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
+      
       setIsLoading(false);
     });
 
@@ -61,6 +77,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
     };
   }, []);
+
+  const checkIfAdmin = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('email')
+        .eq('email', user?.email)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error("Error checking admin status:", error);
+      }
+
+      setIsAdmin(!!data);
+    } catch (error) {
+      console.error("Unexpected error checking admin status:", error);
+      setIsAdmin(false);
+    }
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -92,6 +127,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         variant: "destructive",
       });
       return { error: error as Error, data: null };
+    }
+  };
+
+  const signInWithProvider = async (provider: Provider) => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin + "/login",
+        },
+      });
+
+      if (error) {
+        toast({
+          title: "Sign in failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Unexpected error during provider sign in:", error);
+      toast({
+        title: "Sign in failed",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
     }
   };
 
@@ -157,8 +218,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     session,
     isLoading,
     signIn,
+    signInWithProvider,
     signUp,
     signOut,
+    isAdmin,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
