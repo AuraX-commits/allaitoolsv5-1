@@ -1,10 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
-import { aiTools, AITool } from "@/utils/toolsData";
+import { AITool } from "@/utils/toolsData";
 import ToolCard from "./ToolCard";
 import { Link } from "react-router-dom";
 import AdvancedFilters, { FilterOptions } from "../common/AdvancedFilters";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabaseClient";
+import { Skeleton } from "../ui/skeleton";
+import { ScrollToTop } from "@/components/common/ScrollToTop";
 
 const ToolsDirectory = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,10 +19,29 @@ const ToolsDirectory = () => {
     features: [],
     sortBy: "rating"
   });
-  const [filteredTools, setFilteredTools] = useState<AITool[]>(aiTools);
+  const [filteredTools, setFilteredTools] = useState<AITool[]>([]);
+  
+  // Fetch tools from Supabase
+  const { data: aiTools = [], isLoading, error } = useQuery({
+    queryKey: ['aiTools'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ai_tools')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching tools:', error);
+        throw new Error(error.message);
+      }
+      
+      return data as AITool[];
+    }
+  });
 
   // Filter and sort tools whenever filters change
   useEffect(() => {
+    if (!aiTools.length) return;
+    
     let result = [...aiTools];
     
     // Filter by search term
@@ -66,7 +89,7 @@ const ToolsDirectory = () => {
     }
     
     setFilteredTools(result);
-  }, [searchTerm, filters]);
+  }, [searchTerm, filters, aiTools]);
 
   const resetFilters = () => {
     setSearchTerm("");
@@ -78,6 +101,51 @@ const ToolsDirectory = () => {
       sortBy: "rating"
     });
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <section className="py-16 bg-secondary/30" id="tools-directory">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Discover AI Tools</h2>
+            <p className="text-foreground/80">
+              Browse our curated collection of AI-powered tools and find the perfect solution for your needs.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-card rounded-lg shadow-sm overflow-hidden border border-border">
+                <Skeleton className="h-48 w-full" />
+                <div className="p-5">
+                  <Skeleton className="h-6 w-2/3 mb-2" />
+                  <Skeleton className="h-4 w-full mb-4" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section className="py-16 bg-secondary/30" id="tools-directory">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Oops! Something went wrong</h2>
+            <p className="text-foreground/80">
+              We're having trouble loading the tools. Please try again later.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 bg-secondary/30" id="tools-directory">
@@ -157,6 +225,7 @@ const ToolsDirectory = () => {
           </Link>
         </div>
       </div>
+      <ScrollToTop />
     </section>
   );
 };

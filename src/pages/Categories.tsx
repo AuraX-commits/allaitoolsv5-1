@@ -3,16 +3,20 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
-import { aiTools } from "@/utils/toolsData";
 import ToolCard from "../components/home/ToolCard";
 import { ArrowLeft, Search, X } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import AdvancedFilters, { FilterOptions } from "@/components/common/AdvancedFilters";
+import { supabase } from "@/lib/supabaseClient";
+import { useQuery } from "@tanstack/react-query";
+import { AITool } from "@/utils/toolsData";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollToTop } from "@/components/common/ScrollToTop";
 
 const Categories = () => {
   const { category } = useParams<{ category: string }>();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredTools, setFilteredTools] = useState(aiTools);
+  const [filteredTools, setFilteredTools] = useState<AITool[]>([]);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   const [filters, setFilters] = useState<FilterOptions>({
     category: "All",
@@ -20,6 +24,23 @@ const Categories = () => {
     rating: null,
     features: [],
     sortBy: "rating"
+  });
+
+  // Fetch tools from Supabase
+  const { data: aiTools = [], isLoading, error } = useQuery({
+    queryKey: ['aiTools'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ai_tools')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching tools:', error);
+        throw new Error(error.message);
+      }
+      
+      return data as AITool[];
+    }
   });
 
   useEffect(() => {
@@ -39,6 +60,8 @@ const Categories = () => {
 
   // Apply filters whenever they change
   useEffect(() => {
+    if (!aiTools.length) return;
+    
     let filtered = [...aiTools];
     
     // Filter by category (from URL or filter selection)
@@ -87,7 +110,7 @@ const Categories = () => {
     }
     
     setFilteredTools(filtered);
-  }, [searchTerm, filters, currentCategory]);
+  }, [searchTerm, filters, currentCategory, aiTools]);
 
   const handleClearSearch = () => {
     setSearchTerm("");
@@ -120,6 +143,61 @@ const Categories = () => {
       return "Explore our comprehensive directory of AI tools across all categories. Find the perfect solution for your needs.";
     return `Discover the best ${currentCategory} AI tools in our directory. Compare features, pricing, and user reviews.`;
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="pt-24 pb-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8">
+              <div className="h-6 w-32 bg-gray-200 rounded animate-pulse mb-2"></div>
+              <div className="h-8 w-64 bg-gray-300 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-96 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-card rounded-lg shadow-sm overflow-hidden border border-border">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-5">
+                    <Skeleton className="h-6 w-2/3 mb-2" />
+                    <Skeleton className="h-4 w-full mb-4" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="pt-24 pb-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center py-16">
+              <h1 className="text-2xl font-bold text-red-600 mb-2">Error Loading Data</h1>
+              <p className="text-foreground/70 mb-4">
+                We encountered a problem loading the AI tools data. Please try again later.
+              </p>
+              <p className="text-sm text-foreground/50">
+                Error details: {error instanceof Error ? error.message : 'Unknown error'}
+              </p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -221,6 +299,7 @@ const Categories = () => {
         </div>
       </main>
       
+      <ScrollToTop />
       <Footer />
     </div>
   );
