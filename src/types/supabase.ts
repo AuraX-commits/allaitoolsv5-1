@@ -16,54 +16,54 @@ export interface Database {
           name: string
           logo: string
           description: string
-          shortDescription: string
+          shortdescription: string
           category: string[]
           pricing: string
           rating: number
-          reviewCount: number
+          reviewcount: number
           features: string[]
           url: string
-          apiAccess: boolean
-          createdAt?: string | null
+          apiaccess: boolean
+          createdat?: string | null
           pros?: string[] | null
           cons?: string[] | null
-          useCases?: string[] | null
+          usecases?: string[] | null
         }
         Insert: {
           id?: string
           name: string
           logo: string
           description: string
-          shortDescription: string
+          shortdescription: string
           category: string[]
           pricing: string
           rating: number
-          reviewCount: number
+          reviewcount: number
           features: string[]
           url: string
-          apiAccess: boolean
-          createdAt?: string | null
+          apiaccess: boolean
+          createdat?: string | null
           pros?: string[] | null
           cons?: string[] | null
-          useCases?: string[] | null
+          usecases?: string[] | null
         }
         Update: {
           id?: string
           name?: string
           logo?: string
           description?: string
-          shortDescription?: string
+          shortdescription?: string
           category?: string[]
           pricing?: string
           rating?: number
-          reviewCount?: number
+          reviewcount?: number
           features?: string[]
           url?: string
-          apiAccess?: boolean
-          createdAt?: string | null
+          apiaccess?: boolean
+          createdat?: string | null
           pros?: string[] | null
           cons?: string[] | null
-          useCases?: string[] | null
+          usecases?: string[] | null
         }
       }
       categories: {

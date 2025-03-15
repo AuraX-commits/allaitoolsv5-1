@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
-import { AITool } from "@/utils/toolsData";
+import { AITool, mapRowToAITool } from "@/utils/toolsData";
 import ToolCard from "./ToolCard";
 import { Link } from "react-router-dom";
 import AdvancedFilters, { FilterOptions } from "../common/AdvancedFilters";
@@ -34,7 +34,8 @@ const ToolsDirectory = () => {
         throw new Error(error.message);
       }
       
-      return data as AITool[];
+      // Map database rows to AITool objects
+      return data.map(mapRowToAITool);
     }
   });
 

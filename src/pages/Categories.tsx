@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet-async";
 import AdvancedFilters, { FilterOptions } from "@/components/common/AdvancedFilters";
 import { supabase } from "@/lib/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
-import { AITool } from "@/utils/toolsData";
+import { AITool, mapRowToAITool } from "@/utils/toolsData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 
@@ -39,7 +39,8 @@ const Categories = () => {
         throw new Error(error.message);
       }
       
-      return data as AITool[];
+      // Map database rows to AITool objects
+      return data.map(mapRowToAITool);
     }
   });
 

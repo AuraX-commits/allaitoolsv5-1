@@ -1,6 +1,5 @@
-
-import { aiTools } from './toolsData';
-import { supabase } from '@/integrations/supabase/client';
+import { aiTools, mapAIToolToRow } from './toolsData';
+import { supabase } from '@/lib/supabaseClient';
 
 /**
  * This utility function can be used to migrate the static data from toolsData.ts
@@ -16,15 +15,8 @@ export async function migrateToolsToSupabase() {
     console.log('Starting migration of tools data to Supabase...');
     console.log(`Total tools to migrate: ${aiTools.length}`);
 
-    // Prepare the data by transforming any fields if needed
-    const toolsToMigrate = aiTools.map(tool => {
-      // Convert createdAt from number to ISO string if it exists
-      const transformed = {
-        ...tool,
-        createdAt: tool.createdAt ? new Date(tool.createdAt).toISOString() : null
-      };
-      return transformed;
-    });
+    // Map tools to the database schema format
+    const toolsToMigrate = aiTools.map(tool => mapAIToolToRow(tool));
 
     const { data, error } = await supabase
       .from('ai_tools')

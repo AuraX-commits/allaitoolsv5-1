@@ -12,7 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { fetchCategories, fetchPricingOptions } from "@/utils/migrateToolsToSupabase";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabaseClient";
+import { mapAIToolToRow } from "@/utils/toolsData";
 import {
   Form,
   FormControl,
@@ -110,9 +111,9 @@ const SubmitTool = () => {
         apiAccess: false, // Default apiAccess for new submissions
       };
       
-      // Submit to Supabase (this will be public-facing later)
-      // For now, store in a separate table or handle differently
-      const { error } = await supabase.from('ai_tools').insert(toolData);
+      // Map to database format and submit to Supabase
+      const dbData = mapAIToolToRow(toolData);
+      const { error } = await supabase.from('ai_tools').insert(dbData);
       
       if (error) {
         throw error;
