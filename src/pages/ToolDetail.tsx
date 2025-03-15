@@ -4,13 +4,13 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, ExternalLink, MessageSquare, Share2, Bookmark, ChevronRight, Check, Link as LinkIcon, Copy, Twitter, Facebook, Linkedin } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
-import { AITool, aiTools } from "@/utils/toolsData";
+import { AITool, aiTools, mapRowToAITool } from "@/utils/toolsData";
 import Badge from "../components/common/Badge";
 import { Helmet } from "react-helmet-async";
-import ToolCard from "../components/home/ToolCard";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
+import { supabase } from "@/lib/supabaseClient";
 import {
   Popover,
   PopoverContent,
@@ -28,30 +28,85 @@ const ToolDetail = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    if (id) {
-      const foundTool = aiTools.find(t => t.id === id);
-      if (foundTool) {
-        setTool(foundTool);
-        
-        // If the URL doesn't have the slug, add it
-        if (!name) {
-          const slug = foundTool.name.toLowerCase().replace(/\s+/g, '-');
-          navigate(`/tool/${id}/${slug}`, { replace: true });
+    const fetchToolData = async () => {
+      setIsLoading(true);
+      
+      try {
+        if (!id) {
+          setIsLoading(false);
+          return;
         }
         
-        // Find related tools in the same category
-        const related = aiTools
-          .filter(t => 
-            t.id !== id && 
-            t.category.some(cat => foundTool.category.includes(cat))
-          )
-          .slice(0, 3);
+        // First, check if the tool exists in our database
+        const { data: dbTool, error } = await supabase
+          .from('ai_tools')
+          .select('*')
+          .eq('id', id)
+          .single();
           
-        setRelatedTools(related);
+        if (error) {
+          console.error("Error fetching from database:", error);
+          // If not found in database, check local data
+          const localTool = aiTools.find(t => t.id === id);
+          if (localTool) {
+            setTool(localTool);
+            
+            // If the URL doesn't have the slug, add it
+            if (!name) {
+              const slug = localTool.name.toLowerCase().replace(/\s+/g, '-');
+              navigate(`/tool/${id}/${slug}`, { replace: true });
+            }
+            
+            // Find related tools in the same category
+            const related = aiTools
+              .filter(t => 
+                t.id !== id && 
+                t.category.some(cat => localTool.category.includes(cat))
+              )
+              .slice(0, 3);
+              
+            setRelatedTools(related);
+          }
+        } else {
+          // Tool found in database
+          const toolData = mapRowToAITool(dbTool);
+          setTool(toolData);
+          
+          // If the URL doesn't have the slug, add it
+          if (!name) {
+            const slug = toolData.name.toLowerCase().replace(/\s+/g, '-');
+            navigate(`/tool/${id}/${slug}`, { replace: true });
+          }
+          
+          // Find related tools in the database with similar categories
+          const { data: relatedDbTools, error: relatedError } = await supabase
+            .from('ai_tools')
+            .select('*')
+            .neq('id', id)
+            .limit(3);
+            
+          if (!relatedError && relatedDbTools) {
+            setRelatedTools(relatedDbTools.map(tool => mapRowToAITool(tool)));
+          } else {
+            // Fallback to local data for related tools
+            const related = aiTools
+              .filter(t => 
+                t.id !== id && 
+                toolData.category && t.category.some(cat => toolData.category.includes(cat))
+              )
+              .slice(0, 3);
+              
+            setRelatedTools(related);
+          }
+        }
+      } catch (error) {
+        console.error("Error in tool detail fetch:", error);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
     
-    setIsLoading(false);
+    fetchToolData();
   }, [id, name, navigate]);
 
   const handleCopyLink = () => {

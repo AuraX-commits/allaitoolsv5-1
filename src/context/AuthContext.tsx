@@ -100,6 +100,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: window.location.origin + "/login",
+        }
       });
 
       if (error) {
@@ -113,7 +116,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       toast({
         title: "Sign up successful",
-        description: "Welcome to AIDirectory!",
+        description: "Please check your email for a confirmation link to complete your registration.",
+        duration: 6000,
       });
 
       return { error: null, data };

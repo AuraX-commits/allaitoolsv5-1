@@ -85,14 +85,16 @@ export const aiTools: AITool[] = [
     features: ["Natural language processing", "Context retention", "Various knowledge domains", "Content creation", "Code generation"],
     url: "https://chat.openai.com",
     apiAccess: true,
-    pros: ["Versatile across many topics", "Easy to use interface", "Constantly improving", "Free tier available"],
-    cons: ["May occasionally generate incorrect information", "Knowledge cutoff date", "Limited context window"],
+    pros: ["Versatile across many topics", "Easy to use interface", "Constantly improving", "Free tier available", "Detailed responses to complex questions"],
+    cons: ["May occasionally generate incorrect information", "Knowledge cutoff date", "Limited context window", "Can be slow during peak times", "Occasional repetitive responses"],
     useCases: [
       "Content creation for blogs and social media",
       "Drafting emails and professional communications",
       "Explaining complex concepts in simple terms",
       "Helping with programming and debugging code",
-      "Brainstorming ideas and creative writing"
+      "Brainstorming ideas and creative writing",
+      "Research assistance and summarization",
+      "Language translation and learning"
     ]
   },
   {
@@ -108,14 +110,16 @@ export const aiTools: AITool[] = [
     features: ["Text-to-image generation", "Style customization", "High-resolution outputs", "Community features", "Iteration and refinement"],
     url: "https://www.midjourney.com",
     apiAccess: false,
-    pros: ["Exceptional aesthetic quality", "Active community", "Regular updates", "Intuitive iteration system"],
-    cons: ["No free tier", "Discord-only interface", "Queue times during peak usage"],
+    pros: ["Exceptional aesthetic quality", "Active community", "Regular updates", "Intuitive iteration system", "Artistic style that's recognizably unique"],
+    cons: ["No free tier", "Discord-only interface", "Queue times during peak usage", "Limited control over specific details", "Learning curve for effective prompting"],
     useCases: [
       "Creating concept art for games and films",
       "Generating illustrations for books and articles",
       "Designing unique marketing and advertising visuals",
       "Visualizing architectural and interior design concepts",
-      "Producing custom artwork for personal or commercial use"
+      "Producing custom artwork for personal or commercial use",
+      "Creating unique NFT collections",
+      "Fashion and product design visualization"
     ]
   },
   {
@@ -131,14 +135,16 @@ export const aiTools: AITool[] = [
     features: ["50+ writing templates", "Multi-language support", "SEO integration", "Team collaboration", "Brand voice customization"],
     url: "https://www.jasper.ai",
     apiAccess: true,
-    pros: ["Purpose-built for marketing", "Extensive template library", "Good team features", "Plagiarism checker"],
-    cons: ["Higher price point", "Learning curve for best results", "Output quality varies by topic"],
+    pros: ["Purpose-built for marketing", "Extensive template library", "Good team features", "Plagiarism checker", "SEO-optimized content production"],
+    cons: ["Higher price point", "Learning curve for best results", "Output quality varies by topic", "Sometimes generates generic content", "Can require significant editing"],
     useCases: [
       "Writing SEO-optimized blog posts and articles",
       "Creating social media content and campaign copy",
       "Generating product descriptions for e-commerce",
       "Drafting email newsletters and marketing campaigns",
-      "Producing consistent content across multiple platforms"
+      "Producing consistent content across multiple platforms",
+      "Creating ad copy for PPC campaigns",
+      "Scaling content production for marketing teams"
     ]
   },
   {
@@ -154,14 +160,16 @@ export const aiTools: AITool[] = [
     features: ["Text-to-image generation", "Edit existing images", "Variations of uploaded images", "Outpainting and inpainting", "Commercial usage rights"],
     url: "https://openai.com/dall-e-2",
     apiAccess: true,
-    pros: ["User-friendly interface", "Accurate prompt interpretation", "Commercial rights to images", "API available"],
-    cons: ["Credit-based system", "Less artistic style than some alternatives", "No unlimited plan"],
+    pros: ["User-friendly interface", "Accurate prompt interpretation", "Commercial rights to images", "API available", "Realistic image generation"],
+    cons: ["Credit-based system", "Less artistic style than some alternatives", "No unlimited plan", "Limited control over specific details", "Sometimes produces generic results"],
     useCases: [
       "Creating custom illustrations for websites and apps",
       "Generating product mockups and prototypes",
       "Designing logos and brand visuals",
       "Producing editorial images for articles",
-      "Creating custom social media graphics"
+      "Creating custom social media graphics",
+      "Visual brainstorming for design projects",
+      "Education and visualization of concepts"
     ]
   },
   {
@@ -177,14 +185,16 @@ export const aiTools: AITool[] = [
     features: ["Code completions", "IDE integration", "Multiple programming languages", "Function suggestions", "Comment-to-code conversion"],
     url: "https://github.com/features/copilot",
     apiAccess: false,
-    pros: ["Seamless IDE integration", "Handles complex suggestions", "Learns from your coding style", "Supports many languages"],
-    cons: ["Subscription required", "Occasional irrelevant suggestions", "May suggest deprecated approaches"],
+    pros: ["Seamless IDE integration", "Handles complex suggestions", "Learns from your coding style", "Supports many languages", "Increases development speed"],
+    cons: ["Subscription required", "Occasional irrelevant suggestions", "May suggest deprecated approaches", "Security and licensing concerns", "Sometimes produces non-optimal code"],
     useCases: [
       "Accelerating coding with real-time completions",
       "Learning new programming languages or frameworks",
       "Converting comments to functional code",
       "Automating repetitive coding tasks",
-      "Suggesting solutions to complex programming problems"
+      "Suggesting solutions to complex programming problems",
+      "Documentation generation",
+      "Quick prototyping and experimentation"
     ]
   },
   {
@@ -200,14 +210,16 @@ export const aiTools: AITool[] = [
     features: ["Natural conversation", "Long context windows", "Reduced hallucinations", "Constitutional AI approach", "Document analysis"],
     url: "https://claude.ai",
     apiAccess: true,
-    pros: ["Very long context window", "Thoughtful, nuanced responses", "Good at following instructions", "Less prone to hallucinations"],
-    cons: ["Limited availability in some regions", "Fewer features than some competitors", "Sometimes overly cautious"],
+    pros: ["Very long context window", "Thoughtful, nuanced responses", "Good at following instructions", "Less prone to hallucinations", "Strong reasoning abilities"],
+    cons: ["Limited availability in some regions", "Fewer features than some competitors", "Sometimes overly cautious", "Can be slower than alternatives", "Knowledge limitations"],
     useCases: [
       "Analyzing and summarizing long documents",
       "Conducting nuanced research on complex topics",
       "Creating detailed, factually accurate content",
       "Customer support and conversational assistance",
-      "Ethical AI applications requiring careful reasoning"
+      "Ethical AI applications requiring careful reasoning",
+      "Educational content development",
+      "Business analysis and decision support"
     ]
   },
   {
@@ -223,14 +235,16 @@ export const aiTools: AITool[] = [
     features: ["Text-to-image generation", "Image-to-image transformation", "Open-source codebase", "Local installation option", "Active community"],
     url: "https://stability.ai/stable-diffusion",
     apiAccess: true,
-    pros: ["Free and open-source", "Can run locally", "Highly customizable", "Large ecosystem of tools"],
-    cons: ["Technical setup for local use", "Higher hardware requirements", "Less beginner-friendly"],
+    pros: ["Free and open-source", "Can run locally", "Highly customizable", "Large ecosystem of tools", "Privacy-focused option"],
+    cons: ["Technical setup for local use", "Higher hardware requirements", "Less beginner-friendly", "Quality can vary by model version", "Requires prompt engineering skills"],
     useCases: [
       "Self-hosted image generation for privacy-conscious users",
       "Custom integration in existing applications and websites",
       "Research and experimentation with AI image models",
       "Creating art with full control over the generation process",
-      "Building custom UI interfaces for specific workflows"
+      "Building custom UI interfaces for specific workflows",
+      "Educational purposes for understanding AI image generation",
+      "Custom model training for specialized use cases"
     ]
   },
   {
@@ -246,14 +260,16 @@ export const aiTools: AITool[] = [
     features: ["Direct answers to questions", "Source citations", "Real-time information", "Conversation memory", "Pro search capabilities"],
     url: "https://www.perplexity.ai",
     apiAccess: false,
-    pros: ["Combines search and AI capabilities", "Provides sources for verification", "Up-to-date information", "Conversational interface"],
-    cons: ["Limited customization", "Occasional citation errors", "Premium tier needed for some features"],
+    pros: ["Combines search and AI capabilities", "Provides sources for verification", "Up-to-date information", "Conversational interface", "Faster than traditional research"],
+    cons: ["Limited customization", "Occasional citation errors", "Premium tier needed for some features", "May lack depth on specialized topics", "Source quality can vary"],
     useCases: [
       "Academic research with citation tracking",
       "Quickly finding comprehensive answers to complex questions",
       "Market research and competitive analysis",
       "Learning about new topics with reliable sources",
-      "Real-time information gathering for professionals"
+      "Real-time information gathering for professionals",
+      "Fact-checking and verifying information",
+      "Exploratory research across multiple topics"
     ]
   }
 ];
