@@ -1,9 +1,11 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { AuthProvider } from "./context/AuthContext";
 import Index from "./pages/Index";
 import Compare from "./pages/Compare";
 import ToolDetail from "./pages/ToolDetail";
@@ -22,43 +24,55 @@ import SubmitTool from "./pages/SubmitTool";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Admin from './pages/Admin';
+import Dashboard from './pages/Dashboard';
+import PrivateRoute from './components/auth/PrivateRoute';
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/compare" element={<Compare />} />
-            <Route path="/tool/:id" element={<ToolDetail />} />
-            <Route path="/tool/:id/:name" element={<ToolDetail />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/categories/:category" element={<Categories />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/news" element={<ComingSoon title="AI News" />} />
-            <Route path="/api-docs" element={<ComingSoon title="API Documentation" />} />
-            <Route path="/community" element={<ComingSoon title="Community" />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/submit-tool" element={<SubmitTool />} />
-            <Route path="/login" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/admin" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/compare" element={<Compare />} />
+              <Route path="/tool/:id" element={<ToolDetail />} />
+              <Route path="/tool/:id/:name" element={<ToolDetail />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/categories/:category" element={<Categories />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/news" element={<ComingSoon title="AI News" />} />
+              <Route path="/api-docs" element={<ComingSoon title="API Documentation" />} />
+              <Route path="/community" element={<ComingSoon title="Community" />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/submit-tool" element={<SubmitTool />} />
+              <Route path="/login" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route 
+                path="/dashboard/*" 
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                } 
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </HelmetProvider>
   </QueryClientProvider>
 );

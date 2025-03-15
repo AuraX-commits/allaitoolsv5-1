@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 import {
   Form,
   FormControl,
@@ -46,10 +47,17 @@ const formSchema = z.object({
 const SignUp = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { signUp, user } = useAuth();
+  const navigate = useNavigate();
   
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    
+    // If user is already logged in, redirect to dashboard
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,21 +70,24 @@ const SignUp = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log(values);
+    try {
+      const { error } = await signUp(values.email, values.password);
+      
+      if (error) {
+        throw error;
+      }
+      
+      // If we're here, signup was successful - toasts are handled in auth context
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Error signing up:", error);
+      // Toast is shown by the auth context
+    } finally {
       setIsLoading(false);
-      
-      toast({
-        title: "Account created successfully!",
-        description: "Welcome to AIDirectory.",
-      });
-      
-      // Here you would typically redirect to dashboard or login
-    }, 1500);
+    }
   };
 
   return (

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -11,6 +11,7 @@ import Footer from "../components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 import {
   Form,
   FormControl,
@@ -38,10 +39,17 @@ const formSchema = z.object({
 const SignIn = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { signIn, user } = useAuth();
+  const navigate = useNavigate();
   
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    
+    // If user is already logged in, redirect to dashboard
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,21 +60,24 @@ const SignIn = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log(values);
+    try {
+      const { error } = await signIn(values.email, values.password);
+      
+      if (error) {
+        throw error;
+      }
+      
+      // The toast and redirect will be handled by the auth context
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Error signing in:", error);
+      // Toast is shown by the auth context
+    } finally {
       setIsLoading(false);
-      
-      toast({
-        title: "Sign in successful!",
-        description: "Welcome back to AIDirectory.",
-      });
-      
-      // Here you would typically redirect to dashboard or home
-    }, 1500);
+    }
   };
 
   return (

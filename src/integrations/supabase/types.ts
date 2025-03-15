@@ -84,6 +84,51 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_submissions: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          message: string
+          name: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          message: string
+          name: string
+          subject: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          subject?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
       pricing_options: {
         Row: {
           created_at: string | null
@@ -99,6 +144,101 @@ export type Database = {
           created_at?: string | null
           id?: string
           name?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      saved_tools: {
+        Row: {
+          created_at: string | null
+          id: string
+          tool_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          tool_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          tool_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_tools_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "ai_tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tool_submissions: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          email: string
+          id: string
+          logo_url: string | null
+          name: string
+          pricing: string
+          short_description: string
+          status: string
+          website: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description: string
+          email: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          pricing: string
+          short_description: string
+          status?: string
+          website: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          email?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          pricing?: string
+          short_description?: string
+          status?: string
+          website?: string
         }
         Relationships: []
       }

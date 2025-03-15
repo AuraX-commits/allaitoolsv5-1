@@ -1,237 +1,261 @@
 
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { ChevronDown, Menu, X, User, PenSquare } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, Search, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-interface NavItem {
-  label: string;
-  href: string;
-  subItems?: { label: string; href: string }[];
-}
-
-const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Compare", href: "/compare" },
-  { 
-    label: "Categories", 
-    href: "/categories", 
-    subItems: [
-      { label: "Text Generation", href: "/categories/Text Generation" },
-      { label: "Image Generation", href: "/categories/Image Generation" },
-      { label: "Conversational AI", href: "/categories/Conversational AI" },
-      { label: "Code Generation", href: "/categories/Code Generation" },
-    ] 
-  },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Blog", href: "/blog" },
-  { label: "About", href: "/about" },
-];
+import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "./ThemeToggle";
+import { cn } from "@/lib/utils";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
-  const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 10);
     };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Close mobile menu when changing routes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setOpenDropdown(null);
-  }, [location.pathname]);
-
-  const toggleDropdown = (label: string) => {
-    if (openDropdown === label) {
-      setOpenDropdown(null);
-    } else {
-      setOpenDropdown(label);
+  
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    // Prevent body scroll when menu is open
+    document.body.style.overflow = isMenuOpen ? 'auto' : 'hidden';
+  };
+  
+  // Close mobile menu on navigation
+  const handleNavigation = () => {
+    if (isMenuOpen) {
+      toggleMenu();
     }
   };
-
+  
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+  
   return (
-    <header
+    <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300",
-        isScrolled 
-          ? "bg-white/80 backdrop-blur-lg shadow-subtle py-3" 
-          : "bg-transparent py-5"
+        "sticky top-0 z-50 w-full border-b bg-background transition-shadow duration-200",
+        {
+          "shadow-md": isScrolled,
+        }
       )}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <Link 
-            to="/" 
-            className="text-2xl font-bold text-primary transition-transform hover:scale-105"
-          >
-            AIDirectory
+      <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4">
+        <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center" onClick={handleNavigation}>
+            <span className="text-xl font-bold tracking-tight">AIDirectory</span>
           </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <div key={item.label} className="relative group">
-                {item.subItems ? (
-                  <button
-                    onClick={() => toggleDropdown(item.label)}
-                    className="flex items-center space-x-1 text-sm text-foreground/80 hover:text-foreground transition-colors duration-200"
-                  >
-                    <span>{item.label}</span>
-                    <ChevronDown size={14} className={`transition-transform duration-200 ${openDropdown === item.label ? 'rotate-180' : ''}`} />
-                  </button>
-                ) : (
-                  <Link
-                    to={item.href}
-                    className={cn(
-                      "text-sm transition-colors duration-200",
-                      location.pathname === item.href
-                        ? "text-primary font-medium"
-                        : "text-foreground/80 hover:text-foreground"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                )}
-
-                {item.subItems && (
-                  <div
-                    className={cn(
-                      "absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 glass transition-all duration-200 ease-in-out origin-top-left",
-                      openDropdown === item.label ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
-                    )}
-                  >
-                    {item.subItems.map((subItem) => (
-                      <Link
-                        key={subItem.label}
-                        to={subItem.href}
-                        className="block px-4 py-2 text-sm text-foreground/80 hover:text-foreground hover:bg-primary/5 transition-colors duration-150"
-                      >
-                        {subItem.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
-
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/submit-tool">
-              <Button variant="outline" size="sm" className="flex items-center">
-                <PenSquare className="mr-1 h-4 w-4" />
-                Submit Tool
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button variant="ghost" size="sm">Sign In</Button>
-            </Link>
-            <Link to="/signup">
-              <Button size="sm">Sign Up</Button>
-            </Link>
-          </div>
-
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden focus:outline-none"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        </div>
+        
+        <div className="hidden lg:flex lg:gap-x-4">
+          <Link
+            to="/categories"
+            className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
+            onClick={handleNavigation}
           >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-foreground" />
+            Categories
+          </Link>
+          <Link
+            to="/pricing"
+            className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Pricing
+          </Link>
+          <Link
+            to="/blog"
+            className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Blog
+          </Link>
+          <Link
+            to="/about"
+            className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            About
+          </Link>
+          <Link
+            to="/submit-tool"
+            className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Submit Tool
+          </Link>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {isSearchVisible ? (
+            <div className="relative w-full max-w-xs">
+              <Input
+                type="text"
+                placeholder="Search AI tools..."
+                className="pr-8"
+              />
+              <button
+                onClick={() => setIsSearchVisible(false)}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsSearchVisible(true)}
+              className="hidden sm:flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
+            >
+              <Search className="h-4 w-4 mr-1" />
+              Search
+            </button>
+          )}
+          
+          <ThemeToggle />
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                  Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/dashboard/profile')}>
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/dashboard/saved-tools')}>
+                  Saved Tools
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-500">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="hidden sm:flex items-center gap-2">
+              <Link to="/login">
+                <Button variant="outline" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button size="sm">Sign Up</Button>
+              </Link>
+            </div>
+          )}
+          
+          <button
+            onClick={toggleMenu}
+            className="lg:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-secondary"
+          >
+            <span className="sr-only">Open main menu</span>
+            {isMenuOpen ? (
+              <X className="h-6 w-6" aria-hidden="true" />
             ) : (
-              <Menu className="h-6 w-6 text-foreground" />
+              <Menu className="h-6 w-6" aria-hidden="true" />
             )}
           </button>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
+      
+      {/* Mobile menu */}
       <div
-        className={cn(
-          "absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-lg md:hidden transition-transform duration-300 ease-in-out transform",
-          isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
-        )}
+        className={`${
+          isMenuOpen ? "block" : "hidden"
+        } lg:hidden absolute top-16 inset-x-0 z-50 h-screen bg-background border-t`}
       >
-        <nav className="container mx-auto px-4 py-5 space-y-5">
-          {navItems.map((item) => (
-            <div key={item.label} className="py-1">
-              {item.subItems ? (
-                <>
-                  <button
-                    onClick={() => toggleDropdown(item.label)}
-                    className="flex items-center justify-between w-full text-base font-medium text-foreground"
-                  >
-                    <span>{item.label}</span>
-                    <ChevronDown size={16} className={`transition-transform duration-200 ${openDropdown === item.label ? 'rotate-180' : ''}`} />
-                  </button>
-                  <div
-                    className={cn(
-                      "mt-2 space-y-2 pl-4 border-l-2 border-primary/20 transition-all duration-300",
-                      openDropdown === item.label ? "max-h-60 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
-                    )}
-                  >
-                    {item.subItems.map((subItem) => (
-                      <Link
-                        key={subItem.label}
-                        to={subItem.href}
-                        className="block py-2 text-sm text-foreground/80 hover:text-foreground transition-colors"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {subItem.label}
-                      </Link>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <Link
-                  to={item.href}
-                  className={cn(
-                    "block text-base font-medium transition-colors",
-                    location.pathname === item.href
-                      ? "text-primary"
-                      : "text-foreground hover:text-primary"
-                  )}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              )}
-            </div>
-          ))}
-          <div className="flex flex-col space-y-3 pt-2">
-            <Link to="/submit-tool" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button variant="outline" className="w-full justify-start">
-                <PenSquare className="mr-2 h-4 w-4" />
-                Submit Tool
-              </Button>
-            </Link>
-            <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">
-                <User className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button className="w-full">Sign Up</Button>
-            </Link>
+        <div className="space-y-1 px-4 py-6">
+          <Link
+            to="/categories"
+            className="block rounded-md px-3 py-2 text-base font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Categories
+          </Link>
+          <Link
+            to="/pricing"
+            className="block rounded-md px-3 py-2 text-base font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Pricing
+          </Link>
+          <Link
+            to="/blog"
+            className="block rounded-md px-3 py-2 text-base font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Blog
+          </Link>
+          <Link
+            to="/about"
+            className="block rounded-md px-3 py-2 text-base font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            About
+          </Link>
+          <Link
+            to="/submit-tool"
+            className="block rounded-md px-3 py-2 text-base font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Submit Tool
+          </Link>
+          
+          <div className="relative mt-4">
+            <Input
+              type="text"
+              placeholder="Search AI tools..."
+              className="w-full"
+            />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
-        </nav>
+          
+          {!user ? (
+            <div className="mt-6 flex flex-col gap-2">
+              <Link to="/login" onClick={handleNavigation}>
+                <Button variant="outline" className="w-full">Sign In</Button>
+              </Link>
+              <Link to="/signup" onClick={handleNavigation}>
+                <Button className="w-full">Sign Up</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-6 flex flex-col gap-2">
+              <Link to="/dashboard" onClick={handleNavigation}>
+                <Button variant="outline" className="w-full">Dashboard</Button>
+              </Link>
+              <Button onClick={handleSignOut} variant="destructive" className="w-full">Sign Out</Button>
+            </div>
+          )}
+        </div>
       </div>
-    </header>
+    </nav>
   );
 };
 

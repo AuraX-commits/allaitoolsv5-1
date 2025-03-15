@@ -13,7 +13,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { fetchCategories, fetchPricingOptions } from "@/utils/migrateToolsToSupabase";
 import { supabase } from "@/lib/supabaseClient";
-import { mapAIToolToRow } from "@/utils/toolsData";
 import {
   Form,
   FormControl,
@@ -96,24 +95,19 @@ const SubmitTool = () => {
     setIsSubmitting(true);
     
     try {
-      // Prepare tool data for submission
-      const toolData = {
-        name: values.name,
-        description: values.description,
-        shortDescription: values.shortDescription,
-        logo: values.logoUrl || "https://placehold.co/100x100?text=AI",
-        url: values.website,
-        category: [values.category], // Convert to array as expected by the schema
-        pricing: values.pricing,
-        rating: 0, // Default rating for new submissions
-        reviewCount: 0, // Default review count for new submissions
-        features: [], // Empty features for new submissions
-        apiAccess: false, // Default apiAccess for new submissions
-      };
-      
-      // Map to database format and submit to Supabase
-      const dbData = mapAIToolToRow(toolData);
-      const { error } = await supabase.from('ai_tools').insert(dbData);
+      // Insert into tool_submissions table
+      const { error } = await supabase
+        .from('tool_submissions')
+        .insert({
+          name: values.name,
+          description: values.description,
+          short_description: values.shortDescription,
+          website: values.website,
+          logo_url: values.logoUrl || "https://placehold.co/100x100?text=AI",
+          category: values.category,
+          pricing: values.pricing,
+          email: values.email
+        });
       
       if (error) {
         throw error;

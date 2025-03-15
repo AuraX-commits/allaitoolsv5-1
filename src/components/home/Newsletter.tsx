@@ -1,101 +1,141 @@
 
 import { useState } from "react";
-import { Mail, ArrowRight, CheckCircle } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabaseClient";
+
+const formSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
 
 const Newsletter = () => {
-  const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    // Simple email validation
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSubmitted(true);
+    
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .insert({
+          email: values.email
+        });
       
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setEmail("");
-        setIsSubmitted(false);
-      }, 3000);
-    }, 1000);
+      if (error) {
+        // If the error is due to unique constraint violation
+        if (error.code === '23505') {
+          toast({
+            title: "You're already subscribed!",
+            description: "This email is already in our newsletter list.",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        setIsSuccess(true);
+        toast({
+          title: "Successfully subscribed!",
+          description: "Thank you for subscribing to our newsletter.",
+        });
+      }
+      
+      form.reset();
+    } catch (error: any) {
+      console.error('Error subscribing to newsletter:', error);
+      toast({
+        title: "Error subscribing",
+        description: error.message || "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <section className="py-16 bg-primary/5">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-block p-2 bg-primary/10 rounded-full mb-4">
-            <Mail className="h-6 w-6 text-primary" />
-          </div>
-          <h2 className="text-3xl font-bold mb-4">
-            Stay Updated with AI Trends
+    <section className="bg-muted py-16">
+      <div className="container px-4 mx-auto">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+            Stay up-to-date with the latest AI tools
           </h2>
-          <p className="text-foreground/80 mb-8">
-            Subscribe to our newsletter to receive the latest updates on AI tools, industry trends, 
-            and exclusive content straight to your inbox.
+          <p className="text-xl text-muted-foreground mb-8">
+            Get weekly updates on new AI tools, features, and trends delivered straight to your inbox.
           </p>
           
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-            <div className="relative">
-              <Input
-                type="email"
-                placeholder="Enter your email address"
-                className={cn(
-                  "pr-32 h-12 border-2 shadow-sm",
-                  error ? "border-destructive" : "border-input"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Input 
+                        placeholder="Enter your email" 
+                        type="email" 
+                        className="h-11" 
+                        disabled={isLoading || isSuccess}
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading || isSubmitted}
               />
-              <button
-                type="submit"
-                className={cn(
-                  "absolute right-1.5 top-1.5 inline-flex items-center h-9 px-4 py-2 rounded-md text-sm font-medium transition-colors",
-                  isSubmitted 
-                    ? "bg-green-500 text-white" 
-                    : "bg-primary text-white hover:bg-primary/90",
-                  (isLoading || isSubmitted) ? "opacity-90 cursor-not-allowed" : ""
-                )}
-                disabled={isLoading || isSubmitted}
+              
+              <Button 
+                type="submit" 
+                className="h-11 px-6"
+                disabled={isLoading || isSuccess}
               >
                 {isLoading ? (
-                  "Subscribing..."
-                ) : isSubmitted ? (
-                  <>
-                    <CheckCircle className="mr-1 h-4 w-4" />
-                    Subscribed
-                  </>
+                  <div className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Subscribing...
+                  </div>
+                ) : isSuccess ? (
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Subscribed!
+                  </div>
                 ) : (
-                  <>
-                    Subscribe
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </>
+                  "Subscribe"
                 )}
-              </button>
-            </div>
-            {error && (
-              <p className="mt-2 text-sm text-destructive">{error}</p>
-            )}
-            <p className="mt-3 text-xs text-muted-foreground">
-              By subscribing, you agree to our privacy policy. We'll never spam you.
-            </p>
-          </form>
+              </Button>
+            </form>
+          </Form>
+          
+          <p className="text-xs text-muted-foreground mt-4">
+            By subscribing, you agree to our{" "}
+            <a href="/terms" className="underline">
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="/privacy" className="underline">
+              Privacy Policy
+            </a>
+            .
+          </p>
         </div>
       </div>
     </section>

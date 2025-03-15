@@ -83,6 +83,49 @@ export interface Database {
           created_at?: string | null
         }
       }
+      contact_submissions: {
+        Row: {
+          id: string
+          name: string
+          email: string
+          subject: string
+          message: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          email: string
+          subject: string
+          message: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          email?: string
+          subject?: string
+          message?: string
+          created_at?: string
+        }
+      }
+      newsletter_subscribers: {
+        Row: {
+          id: string
+          email: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          created_at?: string
+        }
+      }
       pricing_options: {
         Row: {
           id: string
@@ -98,6 +141,90 @@ export interface Database {
           id?: string
           name?: string
           created_at?: string | null
+        }
+      }
+      profiles: {
+        Row: {
+          id: string
+          username: string | null
+          avatar_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          username?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          username?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      saved_tools: {
+        Row: {
+          id: string
+          user_id: string
+          tool_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          tool_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          tool_id?: string
+          created_at?: string
+        }
+      }
+      tool_submissions: {
+        Row: {
+          id: string
+          name: string
+          description: string
+          short_description: string
+          website: string
+          logo_url: string | null
+          category: string
+          pricing: string
+          email: string
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description: string
+          short_description: string
+          website: string
+          logo_url?: string | null
+          category: string
+          pricing: string
+          email: string
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string
+          short_description?: string
+          website?: string
+          logo_url?: string | null
+          category?: string
+          pricing?: string
+          email?: string
+          status?: string
+          created_at?: string
         }
       }
     }
