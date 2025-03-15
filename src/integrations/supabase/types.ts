@@ -9,7 +9,99 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      ai_tools: {
+        Row: {
+          apiaccess: boolean
+          category: string[]
+          cons: string[] | null
+          createdat: string | null
+          description: string
+          features: string[]
+          id: string
+          logo: string
+          name: string
+          pricing: string
+          pros: string[] | null
+          rating: number
+          reviewcount: number
+          shortdescription: string
+          url: string
+          usecases: string[] | null
+        }
+        Insert: {
+          apiaccess?: boolean
+          category: string[]
+          cons?: string[] | null
+          createdat?: string | null
+          description: string
+          features: string[]
+          id?: string
+          logo: string
+          name: string
+          pricing: string
+          pros?: string[] | null
+          rating: number
+          reviewcount: number
+          shortdescription: string
+          url: string
+          usecases?: string[] | null
+        }
+        Update: {
+          apiaccess?: boolean
+          category?: string[]
+          cons?: string[] | null
+          createdat?: string | null
+          description?: string
+          features?: string[]
+          id?: string
+          logo?: string
+          name?: string
+          pricing?: string
+          pros?: string[] | null
+          rating?: number
+          reviewcount?: number
+          shortdescription?: string
+          url?: string
+          usecases?: string[] | null
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      pricing_options: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

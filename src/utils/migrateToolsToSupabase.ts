@@ -1,6 +1,6 @@
 
 import { aiTools } from './toolsData';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 
 /**
  * This utility function can be used to migrate the static data from toolsData.ts
@@ -16,9 +16,19 @@ export async function migrateToolsToSupabase() {
     console.log('Starting migration of tools data to Supabase...');
     console.log(`Total tools to migrate: ${aiTools.length}`);
 
+    // Prepare the data by transforming any fields if needed
+    const toolsToMigrate = aiTools.map(tool => {
+      // Convert createdAt from number to ISO string if it exists
+      const transformed = {
+        ...tool,
+        createdAt: tool.createdAt ? new Date(tool.createdAt).toISOString() : null
+      };
+      return transformed;
+    });
+
     const { data, error } = await supabase
       .from('ai_tools')
-      .insert(aiTools)
+      .insert(toolsToMigrate)
       .select();
 
     if (error) {
@@ -52,5 +62,45 @@ export async function checkExistingTools() {
     count: count || 0,
     isEmpty: count === 0,
     data
+  };
+}
+
+/**
+ * Utility to fetch categories from the Supabase database
+ */
+export async function fetchCategories() {
+  const { data, error } = await supabase
+    .from('categories')
+    .select('name')
+    .order('name');
+
+  if (error) {
+    console.error('Error fetching categories:', error);
+    return { success: false, error };
+  }
+
+  return {
+    success: true,
+    categories: data?.map(category => category.name) || []
+  };
+}
+
+/**
+ * Utility to fetch pricing options from the Supabase database
+ */
+export async function fetchPricingOptions() {
+  const { data, error } = await supabase
+    .from('pricing_options')
+    .select('name')
+    .order('name');
+
+  if (error) {
+    console.error('Error fetching pricing options:', error);
+    return { success: false, error };
+  }
+
+  return {
+    success: true,
+    pricingOptions: data?.map(option => option.name) || []
   };
 }

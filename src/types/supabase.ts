@@ -24,13 +24,13 @@ export interface Database {
           features: string[]
           url: string
           apiAccess: boolean
-          createdAt?: number
-          pros?: string[]
-          cons?: string[]
-          useCases?: string[]
+          createdAt?: string | null
+          pros?: string[] | null
+          cons?: string[] | null
+          useCases?: string[] | null
         }
         Insert: {
-          id: string
+          id?: string
           name: string
           logo: string
           description: string
@@ -42,10 +42,10 @@ export interface Database {
           features: string[]
           url: string
           apiAccess: boolean
-          createdAt?: number
-          pros?: string[]
-          cons?: string[]
-          useCases?: string[]
+          createdAt?: string | null
+          pros?: string[] | null
+          cons?: string[] | null
+          useCases?: string[] | null
         }
         Update: {
           id?: string
@@ -60,10 +60,44 @@ export interface Database {
           features?: string[]
           url?: string
           apiAccess?: boolean
-          createdAt?: number
-          pros?: string[]
-          cons?: string[]
-          useCases?: string[]
+          createdAt?: string | null
+          pros?: string[] | null
+          cons?: string[] | null
+          useCases?: string[] | null
+        }
+      }
+      categories: {
+        Row: {
+          id: string
+          name: string
+          created_at?: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          created_at?: string | null
+        }
+      }
+      pricing_options: {
+        Row: {
+          id: string
+          name: string
+          created_at?: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          created_at?: string | null
         }
       }
     }
