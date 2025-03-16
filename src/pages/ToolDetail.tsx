@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -351,10 +350,8 @@ const ToolDetail = () => {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button variant="outline" asChild className="w-full">
-                      <a href={`/compare?tools=${tool.id}`}>
-                        Compare with other tools
-                      </a>
+                    <Button variant="outline" onClick={() => navigate(`/compare?tools=${tool.id}`)} className="w-full">
+                      Compare with other tools
                     </Button>
                   </CardFooter>
                 </Card>
