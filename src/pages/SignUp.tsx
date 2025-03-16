@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
@@ -77,7 +76,8 @@ const SignUp = () => {
     setIsLoading(true);
     
     try {
-      const { error } = await signUp(values.email, values.password);
+      console.log("Signing up with name:", values.name);
+      const { error } = await signUp(values.email, values.password, values.name);
       
       if (error) {
         throw error;

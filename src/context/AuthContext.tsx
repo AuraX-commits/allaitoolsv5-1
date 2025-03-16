@@ -13,7 +13,7 @@ type AuthContextType = {
     data: Session | null;
   }>;
   signInWithProvider: (provider: Provider) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<{
+  signUp: (email: string, password: string, name?: string) => Promise<{
     error: Error | null;
     data: { user: User | null; session: Session | null };
   }>;
@@ -60,6 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state change event:", _event);
       setSession(session);
       setUser(session?.user || null);
       
@@ -80,6 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkIfAdmin = async (userId: string) => {
     try {
+      // Check if the user's email exists in the admin_users table
       const { data, error } = await supabase
         .from('admin_users')
         .select('email')
@@ -135,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin + "/login",
+          redirectTo: `${window.location.origin}/login`,
         },
       });
 
@@ -156,14 +158,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, name?: string) => {
     try {
+      // Include name in user metadata if provided
+      const options = {
+        emailRedirectTo: `${window.location.origin}/login`,
+        data: name ? { name } : undefined
+      };
+
+      console.log("SignUp options:", options);
+      console.log("Redirect URL:", `${window.location.origin}/login`);
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: window.location.origin + "/login",
-        }
+        options
       });
 
       if (error) {
