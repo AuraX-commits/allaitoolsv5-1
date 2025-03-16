@@ -1,4 +1,3 @@
-
 import { Database } from '@/types/supabase';
 
 // Define the AITool interface to match our app's expected structure
@@ -271,6 +270,75 @@ export const aiTools: AITool[] = [
       "Fact-checking and verifying information",
       "Exploratory research across multiple topics"
     ]
+  },
+  {
+    id: "4b1305d2-2576-4af6-bb1e-c496d3f0bb76",
+    name: "Acedit",
+    logo: "https://media.licdn.com/dms/image/v2/D560BAQH1fUaPsDzCbA/company-logo_200_200/company-logo_200_200/0/1725004962480/acedit_ai_logo?e=2147483647&v=beta&t=_9qlhjyBKJhgmWzXzRnmpou1KgSjwtMyH2OFL14uhoc",
+    description: "Acedit is an AI-powered interview coaching tool designed to give job seekers, recent graduates, and career changers a competitive edge. By simulating real interview scenarios and providing tailored feedback, Acedit helps users refine their answers, boost confidence, and improve overall performance. The tool generates personalized Q&A, offers real-time coaching during practice sessions, and even assists with cover letter generation by analyzing your resume and LinkedIn profile. Acedit's comprehensive approach makes it a one-stop solution for interview preparation, ensuring that you are well-prepared to face any interview situation.",
+    shortDescription: "AI-powered interview coaching tool for job seekers, graduates, and career changers.",
+    category: ["Career", "Education", "Productivity"],
+    pricing: "Freemium",
+    rating: 4.7,
+    reviewCount: 350,
+    features: ["Interview simulations", "Real-time feedback", "Cover letter generation", "Resume analysis", "Personalized coaching"],
+    url: "https://acedit.ai",
+    apiAccess: false,
+    pros: ["Realistic interview simulations", "Personalized feedback", "Time-saving preparation", "Builds confidence", "Helps identify weaknesses"],
+    cons: ["Limited industry-specific questions", "Only available on web", "Some advanced features require premium subscription"],
+    useCases: [
+      "Preparing for technical interviews in tech industry",
+      "Practice for behavioral interviews for recent graduates",
+      "Refining answers for career changers",
+      "Generating tailored cover letters based on job descriptions",
+      "Improving communication skills for interviews"
+    ]
+  },
+  {
+    id: "cd601b48-d1c9-4083-bbf1-ffeada75b58e",
+    name: "Ada Support",
+    logo: "https://yt3.googleusercontent.com/0SPNOzt56miEVuE1of5gdCMSiSLiB5eHAGd-X_kWEGr6oO4-rArfnMllvUkNeNAVz0ZwYAhD=s160-c-k-c0x00ffffff-no-rj",
+    description: "Ada Support is an AI-powered customer service automation platform that helps businesses improve their customer experience while reducing operational costs. Using conversational AI, Ada can handle customer inquiries across multiple channels, including websites, mobile apps, and social media platforms. The platform offers seamless handoffs to human agents when needed, provides detailed analytics on customer interactions, and supports multiple languages for global operations. Ada's no-code builder makes it easy for non-technical teams to create, deploy, and optimize automated customer experiences.",
+    shortDescription: "AI-powered customer service automation platform.",
+    category: ["Customer Service", "Automation", "Business"],
+    pricing: "Paid",
+    rating: 4.7,
+    reviewCount: 425,
+    features: ["No-code conversation builder", "Multilingual support", "Omnichannel deployment", "Seamless agent handoff", "Advanced analytics"],
+    url: "https://ada.cx",
+    apiAccess: true,
+    pros: ["Reduces customer service costs", "Easy implementation without coding", "Handles high volume of inquiries", "Seamless integration with existing tools", "Detailed performance analytics"],
+    cons: ["Higher price point", "Complex setup for advanced use cases", "Some customizations require professional services"],
+    useCases: [
+      "Automating repetitive customer inquiries",
+      "Providing 24/7 customer support across time zones",
+      "Supporting customers across multiple languages",
+      "Reducing call center volume and wait times",
+      "Gathering customer insights through conversation data"
+    ]
+  },
+  {
+    id: "13bfab79-a671-4b94-a4dd-a03fcaef7740",
+    name: "Amazon CodeWhisperer",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2xQcwKitRgXfqdi34DYlocPSEXD2G2zZipg&s",
+    description: "Amazon CodeWhisperer is an AI-powered coding assistant that helps developers write code faster and with fewer errors. Deeply integrated with AWS services, it provides contextually relevant code suggestions based on comments and existing code in your IDE. Unlike other code generators, CodeWhisperer specializes in suggesting secure coding patterns and identifying potential security vulnerabilities. It supports multiple programming languages including Python, Java, JavaScript, TypeScript, and C#, and works across popular IDEs such as VS Code, IntelliJ, and AWS Cloud9. CodeWhisperer continuously learns from AWS's vast code repositories to provide increasingly relevant suggestions.",
+    shortDescription: "AI-powered code generator integrated with AWS services.",
+    category: ["Code Generation", "Developer Tools", "Productivity"],
+    pricing: "Freemium",
+    rating: 4.6,
+    reviewCount: 780,
+    features: ["Real-time code suggestions", "Security vulnerability scanning", "AWS service integration", "Multiple language support", "IDE plugins"],
+    url: "https://aws.amazon.com/codewhisperer",
+    apiAccess: true,
+    pros: ["Excellent AWS service integration", "Security-focused suggestions", "Works offline", "Free tier available", "Multi-IDE support"],
+    cons: ["Best performance with AWS-related code", "Still improving for some languages", "Enterprise features require paid tier", "Learning curve for optimal prompting"],
+    useCases: [
+      "Accelerating AWS cloud development",
+      "Improving code security and compliance",
+      "Learning new AWS services and APIs",
+      "Reducing boilerplate code in projects",
+      "Implementing best practices automatically"
+    ]
   }
 ];
 
@@ -297,7 +365,9 @@ export const categories = [
   "Education",
   "Productivity",
   "Content Creation",
-  "Open Source"
+  "Open Source",
+  "Career",
+  "Business"
 ];
 
-export const pricingOptions = ["All", "Free", "Freemium", "Subscription", "Credit-based", "Self-hosted"];
+export const pricingOptions = ["All", "Free", "Freemium", "Subscription", "Credit-based", "Self-hosted", "Paid"];
