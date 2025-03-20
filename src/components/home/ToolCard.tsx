@@ -19,6 +19,11 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 
+  // Create descriptive alt text for the tool
+  const getAltText = () => {
+    return `${tool.name} logo - AI tool for ${tool.category.join(', ')}`;
+  };
+
   return (
     <div 
       className={cn(
@@ -37,7 +42,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
             <div className="w-12 h-12 rounded-lg overflow-hidden bg-secondary/30 flex items-center justify-center">
               <img 
                 src={tool.logo} 
-                alt={`${tool.name} logo - AI tool for ${tool.category[0]}`} 
+                alt={getAltText()}
                 className="w-10 h-10 object-contain"
                 loading="lazy"
               />
@@ -46,7 +51,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               <h3 className="font-semibold text-lg">{tool.name}</h3>
               <div className="flex items-center mt-1">
                 <div className="flex items-center">
-                  <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                  <Star className="w-4 h-4 text-amber-500 fill-amber-500" aria-hidden="true" />
                   <span className="ml-1 text-sm font-medium">{tool.rating}</span>
                 </div>
                 <span className="mx-2 text-muted-foreground text-sm">•</span>
@@ -61,7 +66,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
                 ? "bg-primary border-primary text-white" 
                 : "border-muted-foreground/30 group-hover:border-primary/50"
             )}>
-              {selected && <Check className="w-3.5 h-3.5" />}
+              {selected && <Check className="w-3.5 h-3.5" aria-hidden="true" />}
             </div>
           )}
         </div>
@@ -88,7 +93,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
           {tool.features.slice(0, 3).map((feature) => (
             <div key={feature} className="flex items-start">
               <div className="mt-0.5 mr-2 text-primary">
-                <Check className="w-4 h-4" />
+                <Check className="w-4 h-4" aria-hidden="true" />
               </div>
               <span className="text-sm text-foreground/80">{feature}</span>
             </div>
@@ -103,7 +108,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
             </Badge>
             {tool.apiAccess && (
               <Badge variant="outline" className="flex items-center">
-                <Zap className="w-3 h-3 mr-1" />
+                <Zap className="w-3 h-3 mr-1" aria-hidden="true" />
                 API
               </Badge>
             )}
@@ -114,8 +119,9 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               window.open(tool.url, '_blank', 'noopener,noreferrer');
             }}
             className="text-xs flex items-center text-primary hover:text-primary/80 transition-colors"
+            aria-label={`Visit ${tool.name} website`}
           >
-            Visit <ExternalLink className="w-3 h-3 ml-1" />
+            Visit <ExternalLink className="w-3 h-3 ml-1" aria-hidden="true" />
           </button>
         </div>
       </div>

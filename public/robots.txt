@@ -3,5 +3,11 @@
 User-agent: *
 Allow: /
 
+# Disallow admin paths
+Disallow: /admin/
+Disallow: /dashboard/
+
 # Sitemaps
 Sitemap: https://www.allaitools.tech/sitemap.xml
+Sitemap: https://www.allaitools.tech/image-sitemap.xml
+
