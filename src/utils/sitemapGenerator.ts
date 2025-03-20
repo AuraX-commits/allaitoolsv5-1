@@ -154,11 +154,11 @@ export const generateImageSitemap = async (): Promise<string> => {
 
   // Add blog posts with featured images
   blogPosts.forEach(post => {
-    if (post.image) {
+    if (post.coverImage) {
       sitemap += `  <url>
     <loc>${baseUrl}/blog/${post.slug}</loc>
     <image:image>
-      <image:loc>${post.image}</image:loc>
+      <image:loc>${post.coverImage}</image:loc>
       <image:title>${post.title}</image:title>
       <image:caption>${post.excerpt}</image:caption>
     </image:image>
