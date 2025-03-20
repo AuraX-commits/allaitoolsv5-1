@@ -12,11 +12,12 @@ const ComparisonSection = () => {
 
   useEffect(() => {
     if (searchTerm) {
+      // Search through all tools instead of just the first 6
       const filtered = aiTools.filter(tool => 
         tool.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
         tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         tool.category.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()))
-      ).slice(0, 6);
+      ).slice(0, 6); // Still display only up to 6 results
       setDisplayTools(filtered);
     } else {
       setDisplayTools(aiTools.slice(0, 6));
