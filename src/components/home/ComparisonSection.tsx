@@ -2,26 +2,98 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, Search, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { aiTools } from "@/utils/toolsData";
+import { supabase } from "@/lib/supabaseClient";
+import { mapRowToAITool } from "@/utils/toolsData";
 import ToolCard from "./ToolCard";
+import { AITool } from "@/utils/toolsData";
 
 const ComparisonSection = () => {
-  const [selectedTools, setSelectedTools] = useState(aiTools.slice(0, 3).map(tool => tool.id));
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [displayTools, setDisplayTools] = useState(aiTools.slice(0, 6));
+  const [displayTools, setDisplayTools] = useState<AITool[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Load initial tools
   useEffect(() => {
-    if (searchTerm) {
-      // Search through all tools instead of just the first 6
-      const filtered = aiTools.filter(tool => 
-        tool.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tool.category.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()))
-      ).slice(0, 6); // Still display only up to 6 results
-      setDisplayTools(filtered);
-    } else {
-      setDisplayTools(aiTools.slice(0, 6));
-    }
+    const fetchInitialTools = async () => {
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('ai_tools')
+          .select('*')
+          .limit(6);
+        
+        if (error) {
+          console.error('Error fetching initial tools:', error);
+          return;
+        }
+        
+        // Map the data to AITool format
+        const tools = data.map(row => mapRowToAITool(row));
+        setDisplayTools(tools);
+        
+        // Set initial selected tools (first 3)
+        if (tools.length > 0 && selectedTools.length === 0) {
+          setSelectedTools(tools.slice(0, 3).map(tool => tool.id));
+        }
+      } catch (err) {
+        console.error('Error in fetchInitialTools:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchInitialTools();
+  }, []);
+
+  // Search functionality using Supabase
+  useEffect(() => {
+    const searchTools = async () => {
+      if (!searchTerm) {
+        // If search is cleared, fetch initial tools
+        const { data, error } = await supabase
+          .from('ai_tools')
+          .select('*')
+          .limit(6);
+          
+        if (error) {
+          console.error('Error fetching tools:', error);
+          return;
+        }
+        
+        setDisplayTools(data.map(row => mapRowToAITool(row)));
+        return;
+      }
+      
+      try {
+        setIsLoading(true);
+        
+        // Search in multiple columns
+        const { data, error } = await supabase
+          .from('ai_tools')
+          .select('*')
+          .or(`name.ilike.%${searchTerm}%,shortdescription.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+          .limit(6);
+        
+        if (error) {
+          console.error('Error searching tools:', error);
+          return;
+        }
+        
+        setDisplayTools(data.map(row => mapRowToAITool(row)));
+      } catch (err) {
+        console.error('Error in searchTools:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    // Add debounce to avoid too many requests
+    const debounce = setTimeout(() => {
+      searchTools();
+    }, 300);
+    
+    return () => clearTimeout(debounce);
   }, [searchTerm]);
 
   const handleToolSelect = (id: string) => {
@@ -79,7 +151,12 @@ const ComparisonSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {displayTools.length > 0 ? (
+          {isLoading ? (
+            // Loading placeholders
+            Array.from({ length: 3 }).map((_, index) => (
+              <div key={`loading-${index}`} className="rounded-xl bg-gray-100 animate-pulse h-72"></div>
+            ))
+          ) : displayTools.length > 0 ? (
             displayTools.map(tool => (
               <div key={tool.id} className="group">
                 <ToolCard

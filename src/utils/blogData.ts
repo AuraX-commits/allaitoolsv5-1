@@ -76,7 +76,7 @@ export const blogPosts: BlogPost[] = [
       title: "AI Research Analyst"
     },
     date: "October 15, 2023",
-    coverImage: "/placeholder.svg",
+    coverImage: "https://img.freepik.com/free-photo/ai-nuclear-energy-background-future-innovation-disruptive-technology_53876-129783.jpg",
     category: "AI Trends",
     readingTime: "8 min read",
     tags: ["AI", "Future Technology", "Machine Learning", "Industry Trends"]
@@ -204,7 +204,7 @@ export const blogPosts: BlogPost[] = [
       title: "Digital Artist & Tech Writer"
     },
     date: "September 28, 2023",
-    coverImage: "/placeholder.svg",
+    coverImage: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg",
     category: "AI Tools",
     readingTime: "10 min read",
     tags: ["AI", "Image Generation", "Design Tools", "Comparison"]
@@ -291,7 +291,7 @@ export const blogPosts: BlogPost[] = [
       title: "Content Strategy Director"
     },
     date: "August 10, 2023",
-    coverImage: "/lovable-uploads/0b1649a8-b70f-4dfd-8fb8-32e49632912f.png",
+    coverImage: "https://img.freepik.com/free-photo/ai-technology-microchip-background-digital-transformation-concept_53876-124669.jpg",
     category: "Content Creation",
     readingTime: "9 min read",
     tags: ["AI", "Content Marketing", "Creativity", "Productivity"]
@@ -426,7 +426,7 @@ export const blogPosts: BlogPost[] = [
       title: "AI Interaction Specialist"
     },
     date: "July 15, 2023",
-    coverImage: "/lovable-uploads/88f30453-c4e9-4085-9fca-cb6abfa32573.png",
+    coverImage: "https://img.freepik.com/free-photo/computer-security-with-login-password-padlock_107791-16191.jpg",
     category: "AI Techniques",
     readingTime: "11 min read",
     tags: ["AI", "Prompts", "Productivity", "ChatGPT", "DALL-E"]
@@ -549,7 +549,7 @@ export const blogPosts: BlogPost[] = [
       title: "AI Ethics Researcher"
     },
     date: "June 5, 2023",
-    coverImage: "/placeholder.svg",
+    coverImage: "https://img.freepik.com/free-photo/robot-human_1048-3865.jpg",
     category: "AI Ethics",
     readingTime: "12 min read",
     tags: ["AI Ethics", "Responsible AI", "Technology Policy", "Bias", "Privacy"]
