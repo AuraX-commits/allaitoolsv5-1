@@ -4,9 +4,11 @@ import { useLocation, Link } from "react-router-dom";
 import { ArrowLeft, Check, X, Info } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
-import { aiTools, AITool } from "@/utils/toolsData";
-import Badge from "../components/common/Badge";
 import { Helmet } from "react-helmet-async";
+import { supabase } from "@/lib/supabaseClient";
+import { AITool, mapRowToAITool } from "@/utils/toolsData";
+import Badge from "../components/common/Badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Compare = () => {
   const location = useLocation();
@@ -19,15 +21,51 @@ const Compare = () => {
     const params = new URLSearchParams(location.search);
     const toolIds = params.get("tools")?.split(",") || [];
     
-    if (toolIds.length >= 2) {
-      const selectedTools = aiTools.filter(tool => toolIds.includes(tool.id));
-      setTools(selectedTools);
-    } else {
-      // Default to first two tools if no valid selection
-      setTools(aiTools.slice(0, 2));
-    }
+    const fetchTools = async () => {
+      setIsLoading(true);
+      
+      try {
+        if (toolIds.length >= 2) {
+          // Fetch selected tools from Supabase
+          const { data, error } = await supabase
+            .from('ai_tools')
+            .select('*')
+            .in('id', toolIds);
+          
+          if (error) {
+            console.error('Error fetching tools:', error);
+            setIsLoading(false);
+            return;
+          }
+          
+          // Map the data to AITool format
+          const mappedTools = data.map(row => mapRowToAITool(row));
+          setTools(mappedTools);
+        } else {
+          // Default to first two tools if no valid selection
+          const { data, error } = await supabase
+            .from('ai_tools')
+            .select('*')
+            .limit(2);
+            
+          if (error) {
+            console.error('Error fetching default tools:', error);
+            setIsLoading(false);
+            return;
+          }
+          
+          // Map the data to AITool format
+          const mappedTools = data.map(row => mapRowToAITool(row));
+          setTools(mappedTools);
+        }
+      } catch (err) {
+        console.error('Error in fetchTools:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    setIsLoading(false);
+    fetchTools();
   }, [location.search]);
 
   // Combined set of all features across compared tools
@@ -51,6 +89,49 @@ const Compare = () => {
     }
     return 'Compare different AI tools side-by-side. View features, pricing, pros and cons to find the best AI solution for your needs.';
   };
+
+  const renderLoadingSkeleton = () => (
+    <div className="bg-white border border-border rounded-xl shadow-subtle overflow-hidden">
+      <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
+        <div className="p-6 font-medium text-muted-foreground">
+          Tool
+        </div>
+        {[1, 2, 3].map((i) => (
+          <div key={`skeleton-header-${i}`} className="p-4 border-l border-border">
+            <div className="flex items-center space-x-3">
+              <Skeleton className="w-10 h-10 rounded-lg" />
+              <div className="space-y-2">
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-20 h-3" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {['Description', 'Pricing', 'API Access', 'Categories', 'Features', 'Pros & Cons'].map((section, i) => (
+        <div key={`skeleton-${section}`} className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
+          <div className={`p-6 font-medium text-muted-foreground ${i % 2 === 1 ? 'bg-secondary/20' : ''}`}>
+            {section}
+          </div>
+          {[1, 2, 3].map((j) => (
+            <div key={`skeleton-${section}-${j}`} className="p-4 border-l border-border">
+              <div className="space-y-2">
+                <Skeleton className="w-full h-4" />
+                <Skeleton className="w-3/4 h-4" />
+                {section === 'Features' && (
+                  <>
+                    <Skeleton className="w-2/3 h-4" />
+                    <Skeleton className="w-1/2 h-4" />
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="min-h-screen">
@@ -83,10 +164,8 @@ const Compare = () => {
             </div>
 
             {isLoading ? (
-              <div className="flex justify-center items-center py-20">
-                <div className="animate-pulse text-xl">Loading comparison...</div>
-              </div>
-            ) : (
+              renderLoadingSkeleton()
+            ) : tools.length >= 2 ? (
               <div className="bg-white border border-border rounded-xl shadow-subtle overflow-hidden">
                 {/* Tool Headers */}
                 <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
@@ -271,6 +350,19 @@ const Compare = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+            ) : (
+              <div className="bg-white border border-border rounded-xl shadow-subtle p-8 text-center">
+                <h3 className="text-xl font-medium mb-2">No tools selected for comparison</h3>
+                <p className="text-muted-foreground mb-4">
+                  Please go back to the directory and select tools to compare.
+                </p>
+                <Link
+                  to="/"
+                  className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Back to Directory
+                </Link>
               </div>
             )}
           </div>
