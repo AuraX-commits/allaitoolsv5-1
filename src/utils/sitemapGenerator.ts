@@ -31,14 +31,15 @@ export const generateSitemap = (): string => {
     "/contact",
     "/submit-tool",
     "/login",
-    "/signup"
+    "/signup",
+    "/dashboard"
   ];
 
   staticPages.forEach(page => {
     sitemap += `  <url>
     <loc>${baseUrl}${page}</loc>
     <lastmod>${getCurrentDate()}</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>${page === "/" ? "daily" : "weekly"}</changefreq>
     <priority>${page === "/" ? "1.0" : "0.8"}</priority>
   </url>
 `;
@@ -60,6 +61,7 @@ export const generateSitemap = (): string => {
   // Extract unique categories
   const categories = [...new Set(aiTools.flatMap(tool => tool.category))];
   categories.forEach(category => {
+    const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
     sitemap += `  <url>
     <loc>${baseUrl}/categories/${encodeURIComponent(category)}</loc>
     <lastmod>${getCurrentDate()}</lastmod>

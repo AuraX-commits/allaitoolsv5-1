@@ -37,7 +37,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
             <div className="w-12 h-12 rounded-lg overflow-hidden bg-secondary/30 flex items-center justify-center">
               <img 
                 src={tool.logo} 
-                alt={`${tool.name} logo`} 
+                alt={`${tool.name} logo - AI tool for ${tool.category[0]}`} 
                 className="w-10 h-10 object-contain"
                 loading="lazy"
               />

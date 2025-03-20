@@ -58,7 +58,7 @@ const Blog = () => {
                 <div className="md:col-span-2">
                   <img 
                     src={blogPosts[0].coverImage} 
-                    alt={blogPosts[0].title} 
+                    alt={`Featured image for article: ${blogPosts[0].title}`} 
                     className="w-full h-60 md:h-full object-cover rounded-xl"
                   />
                 </div>
@@ -83,7 +83,7 @@ const Blog = () => {
                     <div className="flex items-center">
                       <img 
                         src={blogPosts[0].author.avatar} 
-                        alt={blogPosts[0].author.name} 
+                        alt={`Profile photo of ${blogPosts[0].author.name}, ${blogPosts[0].author.title}`} 
                         className="w-10 h-10 rounded-full mr-3"
                       />
                       <div>
@@ -101,16 +101,16 @@ const Blog = () => {
           </div>
 
           {/* Blog Post Grid */}
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.slice(1).map((post) => (
               <Link key={post.id} to={`/blog/${post.slug}`}>
-                <div className="bg-white rounded-xl overflow-hidden shadow-subtle hover:shadow-md transition-shadow">
+                <div className="bg-white rounded-xl overflow-hidden shadow-subtle hover:shadow-md transition-shadow h-full flex flex-col">
                   <img 
                     src={post.coverImage} 
-                    alt={post.title} 
+                    alt={`Cover image for article: ${post.title}`} 
                     className="w-full h-48 object-cover"
                   />
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col flex-grow">
                     <div className="flex items-center mb-3">
                       <span className="text-xs font-medium px-2.5 py-0.5 bg-primary/10 text-primary rounded-full">
                         {post.category}
@@ -122,14 +122,14 @@ const Blog = () => {
                     <h2 className="text-xl font-bold mb-2 hover:text-primary transition-colors">
                       {post.title}
                     </h2>
-                    <p className="text-foreground/80 text-sm mb-4 line-clamp-2">
+                    <p className="text-foreground/80 text-sm mb-4 line-clamp-2 flex-grow">
                       {post.excerpt}
                     </p>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mt-auto">
                       <div className="flex items-center">
                         <img 
                           src={post.author.avatar} 
-                          alt={post.author.name} 
+                          alt={`Profile photo of ${post.author.name}, ${post.author.title}`} 
                           className="w-8 h-8 rounded-full mr-2"
                         />
                         <div>

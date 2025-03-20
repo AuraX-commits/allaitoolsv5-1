@@ -1,5 +1,7 @@
 
+# robots.txt for AllAITools.tech
 User-agent: *
 Allow: /
 
+# Sitemaps
 Sitemap: https://www.allaitools.tech/sitemap.xml
