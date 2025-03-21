@@ -75,7 +75,7 @@ const AdvancedFilters = ({
   };
 
   const resetFilters = () => {
-    const defaultFilters = {
+    const defaultFilters: FilterOptions = {
       category: "All",
       pricing: "All",
       rating: null,
@@ -220,7 +220,7 @@ const AdvancedFilters = ({
               ].map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => handleSortChange(option.value as any)}
+                  onClick={() => handleSortChange(option.value as "rating" | "reviewCount" | "newest")}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
                     localFilters.sortBy === option.value
