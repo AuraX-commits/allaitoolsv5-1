@@ -2,21 +2,24 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { migrateToolsToSupabase, checkExistingTools, fetchCategories, fetchPricingOptions } from '@/utils/migrateToolsToSupabase';
-import { AlertCircle, CheckCircle2, Database, Download, Upload, RefreshCw, List } from 'lucide-react';
+import { migrateToolsToSupabase, migrateNewToolsToSupabase, checkExistingTools, fetchCategories, fetchPricingOptions } from '@/utils/migrateToolsToSupabase';
+import { AlertCircle, CheckCircle2, Database, Download, Upload, RefreshCw, List, Plus } from 'lucide-react';
 import { aiTools } from '@/utils/toolsData';
 import { supabase } from '@/integrations/supabase/client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from '../ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 
 export function DataMigration() {
   const [checking, setChecking] = useState(false);
   const [migrating, setMigrating] = useState(false);
+  const [migratingNew, setMigratingNew] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [pricingOptions, setPricingOptions] = useState<string[]>([]);
+  const { toast } = useToast();
   const [status, setStatus] = useState<{
     message: string;
     type: 'info' | 'success' | 'error';
@@ -95,6 +98,10 @@ export function DataMigration() {
           type: 'success',
           count: result.count
         });
+        toast({
+          title: "Migration Successful",
+          description: `${result.count} tools were migrated to Supabase.`
+        });
         // Refresh the check after migration
         await handleCheckData();
       } else {
@@ -102,14 +109,73 @@ export function DataMigration() {
           message: `Error migrating data: ${result.error}`, 
           type: 'error' 
         });
+        toast({
+          title: "Migration Failed",
+          description: `Error: ${result.error}`,
+          variant: "destructive"
+        });
       }
     } catch (error) {
       setStatus({ 
         message: `Exception: ${error instanceof Error ? error.message : String(error)}`, 
         type: 'error' 
       });
+      toast({
+        title: "Migration Failed",
+        description: `Exception: ${error instanceof Error ? error.message : String(error)}`,
+        variant: "destructive"
+      });
     } finally {
       setMigrating(false);
+    }
+  };
+
+  const handleMigrateNewTools = async () => {
+    setMigratingNew(true);
+    setStatus({ message: 'Migrating new tools to Supabase...', type: 'info' });
+    
+    try {
+      const result = await migrateNewToolsToSupabase();
+      
+      if (result.success) {
+        setStatus({ 
+          message: result.count > 0 
+            ? `Successfully migrated ${result.count} new tools to Supabase!` 
+            : 'No new tools to migrate. All tools already exist in the database.', 
+          type: 'success',
+          count: result.count
+        });
+        toast({
+          title: result.count > 0 ? "New Tools Added" : "No New Tools",
+          description: result.count > 0 
+            ? `${result.count} new tools were added to Supabase.` 
+            : 'All tools already exist in the database.'
+        });
+        // Refresh the check after migration
+        await handleCheckData();
+      } else {
+        setStatus({ 
+          message: `Error migrating new tools: ${result.error}`, 
+          type: 'error' 
+        });
+        toast({
+          title: "Migration Failed",
+          description: `Error: ${result.error}`,
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      setStatus({ 
+        message: `Exception: ${error instanceof Error ? error.message : String(error)}`, 
+        type: 'error' 
+      });
+      toast({
+        title: "Migration Failed",
+        description: `Exception: ${error instanceof Error ? error.message : String(error)}`,
+        variant: "destructive"
+      });
+    } finally {
+      setMigratingNew(false);
     }
   };
 
@@ -228,7 +294,16 @@ export function DataMigration() {
               className="flex-1 min-w-[120px]"
             >
               <Upload className="w-4 h-4 mr-2" />
-              {migrating ? 'Migrating...' : 'Migrate to Supabase'}
+              {migrating ? 'Migrating...' : 'Migrate All Tools'}
+            </Button>
+            <Button 
+              onClick={handleMigrateNewTools} 
+              disabled={migratingNew}
+              variant="secondary"
+              className="flex-1 min-w-[120px]"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {migratingNew ? 'Migrating...' : 'Migrate New Tools'}
             </Button>
             <Button 
               onClick={handleExportData} 

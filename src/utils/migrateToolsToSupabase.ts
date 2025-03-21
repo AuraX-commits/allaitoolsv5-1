@@ -1,3 +1,4 @@
+
 import { aiTools, mapAIToolToRow } from './toolsData';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -32,6 +33,58 @@ export async function migrateToolsToSupabase() {
     return { success: true, count: data?.length || 0 };
   } catch (error) {
     console.error('Exception during migration:', error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * This function adds new tools to the Supabase database without duplicating existing ones.
+ * It checks each tool by ID and only inserts those that don't already exist.
+ */
+export async function migrateNewToolsToSupabase(toolsToAdd = aiTools) {
+  try {
+    console.log('Starting migration of new tools to Supabase...');
+    
+    // Get existing tool IDs from Supabase
+    const { data: existingTools, error: fetchError } = await supabase
+      .from('ai_tools')
+      .select('id');
+      
+    if (fetchError) {
+      console.error('Error fetching existing tools:', fetchError);
+      return { success: false, error: fetchError };
+    }
+    
+    const existingIds = new Set(existingTools?.map(tool => tool.id) || []);
+    
+    // Filter out tools that already exist in the database
+    const newTools = toolsToAdd.filter(tool => !existingIds.has(tool.id));
+    
+    if (newTools.length === 0) {
+      console.log('No new tools to migrate. All tools already exist in the database.');
+      return { success: true, count: 0 };
+    }
+    
+    console.log(`Found ${newTools.length} new tools to migrate.`);
+    
+    // Map new tools to the database schema format
+    const newToolsToMigrate = newTools.map(tool => mapAIToolToRow(tool));
+    
+    // Insert new tools
+    const { data, error } = await supabase
+      .from('ai_tools')
+      .insert(newToolsToMigrate)
+      .select();
+      
+    if (error) {
+      console.error('Error migrating new tools to Supabase:', error);
+      return { success: false, error };
+    }
+    
+    console.log('New tools migration successful!', data);
+    return { success: true, count: data?.length || 0 };
+  } catch (error) {
+    console.error('Exception during new tools migration:', error);
     return { success: false, error };
   }
 }

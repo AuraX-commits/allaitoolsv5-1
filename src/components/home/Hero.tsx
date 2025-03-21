@@ -1,6 +1,6 @@
 
 import { useRef, useEffect } from "react";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
@@ -32,6 +32,13 @@ const Hero = () => {
     const toolsSection = document.getElementById('tools-directory');
     if (toolsSection) {
       toolsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const scrollToCompare = () => {
+    const compareSection = document.getElementById('compare-section');
+    if (compareSection) {
+      compareSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -77,7 +84,16 @@ const Hero = () => {
           >
             Explore Tools
           </button>
-          <Link to="/submit-tool" className="px-8 py-3 bg-white text-foreground rounded-full font-medium border border-input hover:bg-secondary transition-colors">
+          <button
+            onClick={scrollToCompare}
+            className="px-8 py-3 bg-white text-foreground rounded-full font-medium border border-input hover:bg-secondary transition-colors flex items-center justify-center gap-2"
+          >
+            Compare Tools <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="mt-4 flex justify-center items-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+          <Link to="/submit-tool" className="text-foreground/70 hover:text-primary transition-colors underline underline-offset-4">
             Submit Your Tool
           </Link>
         </div>
