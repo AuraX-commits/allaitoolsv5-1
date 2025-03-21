@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { ArrowLeft, Check, X, Info, ChevronRight, ChevronLeft } from "lucide-react";
@@ -29,7 +28,6 @@ const Compare = () => {
       
       try {
         if (toolIds.length >= 2) {
-          // Fetch selected tools from Supabase
           const { data, error } = await supabase
             .from('ai_tools')
             .select('*')
@@ -41,16 +39,13 @@ const Compare = () => {
             return;
           }
           
-          // Map the data to AITool format
           const mappedTools = data.map(row => mapRowToAITool(row));
           setTools(mappedTools);
           
-          // Initialize visible tools for mobile
           if (isMobile && mappedTools.length > 2) {
             setVisibleToolIndexes([0, 1]);
           }
         } else {
-          // Default to first two tools if no valid selection
           const { data, error } = await supabase
             .from('ai_tools')
             .select('*')
@@ -62,7 +57,6 @@ const Compare = () => {
             return;
           }
           
-          // Map the data to AITool format
           const mappedTools = data.map(row => mapRowToAITool(row));
           setTools(mappedTools);
         }
@@ -76,13 +70,10 @@ const Compare = () => {
     fetchTools();
   }, [location.search, isMobile]);
 
-  // Combined set of all features across compared tools
   const allFeatures = [...new Set(tools.flatMap(tool => tool.features))];
   
-  // Combined set of all categories across compared tools
   const allCategories = [...new Set(tools.flatMap(tool => tool.category))];
 
-  // Generate SEO title based on compared tools
   const getPageTitle = () => {
     if (tools.length >= 2) {
       return `Compare ${tools.map(t => t.name).join(' vs ')} | AI Directory`;
@@ -90,12 +81,10 @@ const Compare = () => {
     return 'AI Tools Comparison | AI Directory';
   };
 
-  // Generate SEO description based on compared tools
   const getPageDescription = () => {
     if (tools.length >= 2) {
       const baseDescription = `Side-by-side comparison of ${tools.map(t => t.name).join(' vs ')}. Compare features, pricing, pros and cons to find the best AI tool for your needs.`;
       
-      // Expand description with tool-specific details
       const additionalDetails = tools.map(tool => 
         `${tool.name} is ${tool.shortDescription.toLowerCase()} It offers features like ${tool.features.slice(0, 3).join(', ')}.`
       ).join(' ');
@@ -105,14 +94,20 @@ const Compare = () => {
       return `${baseDescription} ${additionalDetails} ${categoryInfo} Our comprehensive comparison helps you evaluate these solutions based on pricing models, API access, feature sets, and user feedback. Make an informed decision by analyzing the strengths and limitations of each tool to determine which solution best aligns with your specific requirements and use cases.`;
     }
     
-    return 'Compare different AI tools side-by-side on our comprehensive AI Directory. View features, pricing, pros and cons to find the best AI solution for your needs. Our detailed comparison tool enables you to evaluate multiple AI solutions across various categories including text generation, image creation, conversational AI, code generation, and more. Analyze pricing models, feature sets, API access capabilities, and user ratings to make informed decisions. Whether you're looking for productivity tools, creative assistants, or developer resources, our comparison platform helps you identify the perfect AI tool that aligns with your specific requirements and use cases.';
+    return 'Compare different AI tools side-by-side on our comprehensive AI Directory. ' +
+           'View features, pricing, pros and cons to find the best AI solution for your needs. ' +
+           'Our detailed comparison tool enables you to evaluate multiple AI solutions across ' +
+           'various categories including text generation, image creation, conversational AI, ' +
+           'code generation, and more. Analyze pricing models, feature sets, API access ' +
+           'capabilities, and user ratings to make informed decisions. Whether you\'re looking ' +
+           'for productivity tools, creative assistants, or developer resources, our comparison ' +
+           'platform helps you identify the perfect AI tool that aligns with your specific ' +
+           'requirements and use cases.';
   };
 
-  // Keywords for SEO
   const getKeywords = () => {
     const baseKeywords = ['AI tools comparison', 'compare AI tools', 'AI software comparison', 'AI directory'];
     
-    // Add tool-specific keywords
     const toolKeywords = tools.flatMap(tool => [
       `${tool.name} review`, 
       `${tool.name} features`, 
@@ -120,10 +115,8 @@ const Compare = () => {
       `${tool.name} alternatives`
     ]);
     
-    // Add category keywords
     const categoryKeywords = allCategories.map(cat => `best ${cat} tools`);
     
-    // Add comparison keywords
     const comparisonKeywords = [];
     if (tools.length >= 2) {
       for (let i = 0; i < tools.length; i++) {
@@ -134,10 +127,8 @@ const Compare = () => {
       }
     }
     
-    // Feature keywords
     const featureKeywords = ['AI tool features', 'AI pricing comparison', 'AI pros and cons'];
     
-    // Combine all keywords
     return [...baseKeywords, ...toolKeywords, ...categoryKeywords, ...comparisonKeywords, ...featureKeywords].slice(0, 30).join(', ');
   };
 
@@ -184,7 +175,6 @@ const Compare = () => {
     </div>
   );
 
-  // Mobile navigation for the comparison table
   const handlePreviousTool = () => {
     if (visibleToolIndexes[0] > 0) {
       setVisibleToolIndexes([
@@ -203,7 +193,6 @@ const Compare = () => {
     }
   };
 
-  // Get visible tools for mobile view
   const getVisibleTools = () => {
     if (!isMobile || tools.length <= 2) {
       return tools;
@@ -247,7 +236,6 @@ const Compare = () => {
               </p>
             </div>
 
-            {/* Mobile Navigation Controls */}
             {isMobile && tools.length > 2 && (
               <div className="flex justify-between items-center mb-4">
                 <button 
@@ -278,8 +266,7 @@ const Compare = () => {
               renderLoadingSkeleton()
             ) : tools.length >= 2 ? (
               <div className="bg-white border border-border rounded-xl shadow-subtle overflow-x-auto">
-                <div className="min-w-[768px]"> {/* Minimum width for horizontal scrolling on mobile */}
-                  {/* Tool Headers */}
+                <div className="min-w-[768px]">
                   <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
                     <div className="p-6 font-medium text-muted-foreground">
                       Tool
@@ -311,7 +298,6 @@ const Compare = () => {
                     ))}
                   </div>
 
-                  {/* Basic Info */}
                   <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
                     <div className="p-6 font-medium text-muted-foreground bg-secondary/20">
                       Description
@@ -323,7 +309,6 @@ const Compare = () => {
                     ))}
                   </div>
 
-                  {/* Pricing */}
                   <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
                     <div className="p-6 font-medium text-muted-foreground">
                       Pricing
@@ -339,7 +324,6 @@ const Compare = () => {
                     ))}
                   </div>
 
-                  {/* API Access */}
                   <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
                     <div className="p-6 font-medium text-muted-foreground bg-secondary/20">
                       API Access
@@ -361,7 +345,6 @@ const Compare = () => {
                     ))}
                   </div>
 
-                  {/* Categories */}
                   <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
                     <div className="p-6 font-medium text-muted-foreground">
                       Categories
@@ -381,7 +364,6 @@ const Compare = () => {
                     ))}
                   </div>
 
-                  {/* Features */}
                   <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
                     <div className="p-6 font-medium text-muted-foreground bg-secondary/20">
                       Features
@@ -402,7 +384,6 @@ const Compare = () => {
                     ))}
                   </div>
 
-                  {/* Pros and Cons */}
                   <div className="grid grid-cols-[200px_1fr_1fr_1fr] border-b border-border">
                     <div className="p-6 font-medium text-muted-foreground">
                       Pros & Cons
@@ -436,7 +417,6 @@ const Compare = () => {
                     ))}
                   </div>
 
-                  {/* Visit Links */}
                   <div className="grid grid-cols-[200px_1fr_1fr_1fr]">
                     <div className="p-6 font-medium text-muted-foreground bg-secondary/20">
                       Visit Tool
