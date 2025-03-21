@@ -15,18 +15,22 @@ const Index = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const seoDescription = "Welcome to the most comprehensive AI Directory - your ultimate resource for discovering, comparing, and choosing the perfect AI tools for your specific needs. Our platform features a curated collection of cutting-edge artificial intelligence solutions across numerous categories including text generation, image creation, code assistance, conversational AI, and many more. Whether you're a creative professional looking for AI-powered design tools, a developer seeking coding assistants, or a business owner aiming to streamline operations with automation, our directory provides detailed information on features, pricing models, user ratings, and direct comparisons between leading AI tools. From popular options like ChatGPT, Midjourney, and GitHub Copilot to specialized AI solutions for specific industries, we help you navigate the rapidly evolving AI landscape with confidence. Each tool listing includes thorough descriptions, key features, pricing information, user reviews, and pros and cons analysis to support your decision-making process. Save time and make informed choices by using our intuitive comparison tool to evaluate multiple AI solutions side-by-side. Stay ahead in the AI revolution with our regularly updated directory of the most innovative and effective artificial intelligence tools available today.";
+  
+  const seoKeywords = "AI tools, artificial intelligence, chatbots, text generation, image generation, AI directory, AI software, machine learning tools, language models, ChatGPT, Midjourney, DALL-E, GitHub Copilot, AI comparison, AI for business, AI for developers, AI for designers, conversational AI, code generation, productivity tools, AI assistants, creative AI tools, automation tools, free AI tools, AI writing assistants, AI image generators, best AI solutions, enterprise AI software, AI for marketing, natural language processing, computer vision, AI art creation, AI decision support, AI analytics";
+
   return (
     <div className="min-h-screen overflow-hidden">
       <Helmet>
         <title>AI Directory - Discover & Compare the Best AI Tools</title>
         <meta 
           name="description" 
-          content="Explore our comprehensive AI tools directory. Find, compare, and choose the best AI software for text generation, image creation, code assistance, and more." 
+          content={seoDescription} 
         />
         <meta property="og:title" content="AI Directory - Discover & Compare the Best AI Tools" />
         <meta 
           property="og:description" 
-          content="Explore our comprehensive AI tools directory. Find, compare, and choose the best AI software for text generation, image creation, code assistance, and more."
+          content={seoDescription}
         />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/og-image.png" />
@@ -35,10 +39,10 @@ const Index = () => {
         <meta name="twitter:title" content="AI Directory - Discover & Compare the Best AI Tools" />
         <meta 
           name="twitter:description" 
-          content="Explore our comprehensive AI tools directory. Find, compare, and choose the best AI software for text generation, image creation, code assistance, and more."
+          content={seoDescription}
         />
         <meta name="twitter:image" content="/og-image.png" />
-        <meta name="keywords" content="AI tools, artificial intelligence, chatbots, text generation, image generation, AI directory, AI software" />
+        <meta name="keywords" content={seoKeywords} />
         <link rel="canonical" href="https://www.allaitools.tech" />
       </Helmet>
       

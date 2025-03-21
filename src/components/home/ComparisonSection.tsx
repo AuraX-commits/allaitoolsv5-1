@@ -18,6 +18,7 @@ const ComparisonSection = () => {
     const fetchInitialTools = async () => {
       try {
         setIsLoading(true);
+        
         const { data, error } = await supabase
           .from('ai_tools')
           .select('*')

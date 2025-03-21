@@ -339,6 +339,98 @@ export const aiTools: AITool[] = [
       "Reducing boilerplate code in projects",
       "Implementing best practices automatically"
     ]
+  },
+  {
+    id: "2d914a77-7526-4562-890d-034e48a6bcfd",
+    name: "Tome",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjlzSz0cdnvnDG1sI4m6QOea4P95iqJddJAA&s",
+    description: "Tome is an AI-powered assistant designed for sales professionals, streamlining the process of identifying and targeting key accounts. It leverages your existing playbook and CRM data to pinpoint strategic initiatives and key decision-makers, enabling personalized outreach. Tome acts as a 'second brain' for sales teams, providing tailored insights and strategic account mapping that enhance sales efficiency and effectiveness.",
+    shortDescription: "AI-driven tool for sales targeting and personalized outreach.",
+    category: ["Sales", "Business", "Automation"],
+    pricing: "Freemium",
+    rating: 4.5,
+    reviewCount: 5,
+    features: ["CRM integration", "Account mapping", "Strategic insights", "Personalized outreach", "Decision maker identification"],
+    url: "https://tome.app",
+    apiAccess: true,
+    pros: ["Free tier available", "Integrates with existing CRM systems", "Saves time on account research", "Increases targeting accuracy", "Customizable for different sales processes"],
+    cons: ["Limited integrations on free tier", "Learning curve for complex sales cycles", "May require data cleanup in CRM", "Premium features can be costly", "Best for B2B rather than B2C"],
+    useCases: [
+      "Identifying decision makers in target accounts",
+      "Creating personalized outreach strategies",
+      "Prioritizing accounts based on strategic fit",
+      "Mapping account relationships and organizational structures",
+      "Enhancing sales team productivity"
+    ]
+  },
+  {
+    id: "57c81d30-03f3-4346-8604-54d8f6fd1a8b",
+    name: "Writer.com",
+    logo: "https://writer.com/wp-content/uploads/2023/08/writer.png",
+    description: "Writer.com provides enterprise-grade AI writing and content generation tools with brand voice customization.",
+    shortDescription: "Enterprise AI writing platform for teams.",
+    category: ["Text Generation", "Content Creation", "Marketing"],
+    pricing: "Paid",
+    rating: 4.7,
+    reviewCount: 1500,
+    features: ["Brand voice customization", "Content generation", "Grammar and style checking", "Team collaboration", "Enterprise security"],
+    url: "https://writer.com",
+    apiAccess: false,
+    pros: ["Enterprise-grade security", "Consistent brand voice across teams", "High-quality content generation", "Team collaboration features", "Integrated grammar and style checking"],
+    cons: ["$18/month starting price", "No free tier", "Limited customization on basic plans", "Complex setup for enterprise", "Overkill for individual users"],
+    useCases: [
+      "Creating consistent marketing content across teams",
+      "Maintaining brand voice across global organizations",
+      "Generating high-volume content for multiple channels",
+      "Enforcing style guidelines across enterprise content",
+      "Streamlining content approval processes"
+    ]
+  },
+  {
+    id: "5093e031-aa24-4ba0-90fa-f624984388e7",
+    name: "Zams (prev. Obviously AI)",
+    logo: "https://media.licdn.com/dms/image/v2/D560BAQHevF3vdNLBnw/company-logo_200_200/B56ZUsrK_gHEAI-/0/1740211269999/zamshq_logo?e=1749686400&v=beta&t=c6-PnLHCHhp6d3CNkF5uCZSHghpQqU0m14YKPoejYr0",
+    description: "Obviously AI enables anyone to build and deploy machine learning models without coding.",
+    shortDescription: "No-code AI platform for predictive analytics and machine learning.",
+    category: ["Data Analysis", "Machine Learning", "No-Code"],
+    pricing: "Paid",
+    rating: 4.8,
+    reviewCount: 1200,
+    features: ["No-code prediction models", "Automated machine learning", "Easy data integration", "Visual analytics", "Model deployment"],
+    url: "https://zams.com",
+    apiAccess: false,
+    pros: ["No coding required", "Fast model creation", "Intuitive user interface", "Works with various data sources", "Accurate predictions"],
+    cons: ["$75/month starting price", "Limited customization for advanced ML needs", "Requires structured data", "Limited to specific prediction types", "Data size limitations on basic plans"],
+    useCases: [
+      "Predicting customer churn without coding",
+      "Forecasting sales and inventory needs",
+      "Credit risk assessment and scoring",
+      "Demand forecasting for resource planning",
+      "Marketing campaign optimization"
+    ]
+  },
+  {
+    id: "aaf55289-a442-452f-94f6-fe96ecbce0ae",
+    name: "Zapier",
+    logo: "https://yt3.googleusercontent.com/ytc/AIdro_kmxr4Gm2zB3Fj45CMBgTKlmavwj7vAQaja9g5dBws_kQ=s160-c-k-c0x00ffffff-no-rj",
+    description: "Zapier helps automate repetitive tasks by connecting different apps and services with AI assistance.",
+    shortDescription: "AI-enhanced automation platform connecting apps and automating workflows.",
+    category: ["Automation", "Productivity", "Integration"],
+    pricing: "Freemium",
+    rating: 4.8,
+    reviewCount: 15000,
+    features: ["App integration", "Workflow automation", "AI-assisted zap creation", "Scheduled triggers", "Multi-step zaps"],
+    url: "https://zapier.com",
+    apiAccess: true,
+    pros: ["Connects 5000+ apps", "No coding required", "Time-saving automation", "Easy to use interface", "Free tier available"],
+    cons: ["$20/month for advanced features", "Complex zaps can be difficult to debug", "Limited error handling on free tier", "Some integrations have limitations", "Can be cost-prohibitive at scale"],
+    useCases: [
+      "Automating data transfer between applications",
+      "Creating automated marketing workflows",
+      "Syncing customer data across platforms",
+      "Automating social media posting schedules",
+      "Streamlining customer support processes"
+    ]
   }
 ];
 
@@ -367,7 +459,11 @@ export const categories = [
   "Content Creation",
   "Open Source",
   "Career",
-  "Business"
+  "Business",
+  "Sales",
+  "Machine Learning",
+  "No-Code",
+  "Integration"
 ];
 
 export const pricingOptions = ["All", "Free", "Freemium", "Subscription", "Credit-based", "Self-hosted", "Paid"];
