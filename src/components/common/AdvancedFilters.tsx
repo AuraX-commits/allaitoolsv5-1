@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Filter, X, CheckSquare, Square, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { categories, pricingOptions } from "@/utils/toolsData";
@@ -24,6 +24,12 @@ const AdvancedFilters = ({
   showExpandedByDefault = false
 }: AdvancedFiltersProps) => {
   const [showFilters, setShowFilters] = useState(showExpandedByDefault);
+  const [localFilters, setLocalFilters] = useState<FilterOptions>(filters);
+  
+  // Synchronize local state with props
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
   
   const features = [
     "API Access", 
@@ -35,37 +41,58 @@ const AdvancedFilters = ({
   ];
 
   const handleCategoryChange = (category: string) => {
-    onFilterChange({ ...filters, category });
+    const updatedFilters = { ...localFilters, category };
+    setLocalFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
 
   const handlePricingChange = (pricing: string) => {
-    onFilterChange({ ...filters, pricing });
+    const updatedFilters = { ...localFilters, pricing };
+    setLocalFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
 
   const handleRatingChange = (rating: number | null) => {
-    onFilterChange({ ...filters, rating });
+    const updatedFilters = { ...localFilters, rating };
+    setLocalFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
 
   const handleFeatureToggle = (feature: string) => {
-    const updatedFeatures = filters.features.includes(feature)
-      ? filters.features.filter(f => f !== feature)
-      : [...filters.features, feature];
+    const updatedFeatures = localFilters.features.includes(feature)
+      ? localFilters.features.filter(f => f !== feature)
+      : [...localFilters.features, feature];
     
-    onFilterChange({ ...filters, features: updatedFeatures });
+    const updatedFilters = { ...localFilters, features: updatedFeatures };
+    setLocalFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
 
   const handleSortChange = (sortBy: "rating" | "reviewCount" | "newest") => {
-    onFilterChange({ ...filters, sortBy });
+    const updatedFilters = { ...localFilters, sortBy };
+    setLocalFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
 
   const resetFilters = () => {
-    onFilterChange({
+    const defaultFilters = {
       category: "All",
       pricing: "All",
       rating: null,
       features: [],
       sortBy: "rating"
-    });
+    };
+    setLocalFilters(defaultFilters);
+    onFilterChange(defaultFilters);
+  };
+
+  // Check if there are any active filters
+  const hasActiveFilters = () => {
+    return localFilters.category !== "All" || 
+           localFilters.pricing !== "All" || 
+           localFilters.rating !== null || 
+           localFilters.features.length > 0 || 
+           localFilters.sortBy !== "rating";
   };
 
   return (
@@ -79,9 +106,7 @@ const AdvancedFilters = ({
           {showFilters ? "Hide Filters" : "Show Advanced Filters"}
         </button>
         
-        {Object.values(filters).some(value => 
-          Array.isArray(value) ? value.length > 0 : value !== "All" && value !== null
-        ) && (
+        {hasActiveFilters() && (
           <button
             onClick={resetFilters}
             className="text-sm text-primary hover:underline"
@@ -108,7 +133,7 @@ const AdvancedFilters = ({
                   onClick={() => handleCategoryChange(category)}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
-                    filters.category === category
+                    localFilters.category === category
                       ? "bg-primary text-white"
                       : "bg-white hover:bg-secondary border border-input text-foreground"
                   )}
@@ -128,7 +153,7 @@ const AdvancedFilters = ({
                   onClick={() => handlePricingChange(option)}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
-                    filters.pricing === option
+                    localFilters.pricing === option
                       ? "bg-primary text-white"
                       : "bg-white hover:bg-secondary border border-input text-foreground"
                   )}
@@ -148,7 +173,7 @@ const AdvancedFilters = ({
                   onClick={() => handleRatingChange(rating)}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
-                    filters.rating === rating
+                    localFilters.rating === rating
                       ? "bg-primary text-white"
                       : "bg-white hover:bg-secondary border border-input text-foreground"
                   )}
@@ -174,7 +199,7 @@ const AdvancedFilters = ({
                   onClick={() => handleFeatureToggle(feature)}
                   className="flex items-center text-left px-3 py-2 rounded-md text-sm hover:bg-secondary/50 transition-colors"
                 >
-                  {filters.features.includes(feature) ? (
+                  {localFilters.features.includes(feature) ? (
                     <CheckSquare className="h-4 w-4 mr-2 text-primary" />
                   ) : (
                     <Square className="h-4 w-4 mr-2 text-muted-foreground" />
@@ -198,7 +223,7 @@ const AdvancedFilters = ({
                   onClick={() => handleSortChange(option.value as any)}
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
-                    filters.sortBy === option.value
+                    localFilters.sortBy === option.value
                       ? "bg-primary text-white"
                       : "bg-white hover:bg-secondary border border-input text-foreground"
                   )}

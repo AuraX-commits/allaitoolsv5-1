@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AITool, mapRowToAITool } from "@/utils/toolsData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
+import { useToast } from "@/hooks/use-toast";
 
 const Categories = () => {
   const { category } = useParams<{ category: string }>();
@@ -25,20 +26,28 @@ const Categories = () => {
     features: [],
     sortBy: "rating"
   });
+  const { toast } = useToast();
 
   // Fetch tools from Supabase
-  const { data: aiTools = [], isLoading, error } = useQuery({
-    queryKey: ['aiTools'],
+  const { data: aiTools = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['aiTools', currentCategory],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('ai_tools')
-        .select('*');
+      console.log("Fetching tools with category:", currentCategory);
+      let query = supabase.from('ai_tools').select('*');
+      
+      // Only filter by category in the initial query if it's specified
+      if (currentCategory && currentCategory !== "All") {
+        query = query.filter('category', 'cs', `{${currentCategory}}`);
+      }
+      
+      const { data, error } = await query;
       
       if (error) {
         console.error('Error fetching tools:', error);
         throw new Error(error.message);
       }
       
+      console.log(`Fetched ${data.length} tools from database`);
       // Map database rows to AITool objects
       return data.map(mapRowToAITool);
     }
@@ -48,6 +57,8 @@ const Categories = () => {
     window.scrollTo(0, 0);
     
     let decodedCategory = category ? decodeURIComponent(category) : null;
+    console.log("URL category param changed to:", decodedCategory);
+    
     setCurrentCategory(decodedCategory);
     
     // Update filters if category changes from URL
@@ -61,21 +72,28 @@ const Categories = () => {
 
   // Apply filters whenever they change
   useEffect(() => {
-    if (!aiTools.length) return;
+    if (!aiTools.length) {
+      console.log("No tools to filter");
+      return;
+    }
+    
+    console.log("Applying filters:", filters);
+    console.log("Search term:", searchTerm);
     
     let filtered = [...aiTools];
     
     // Filter by category (from URL or filter selection)
-    const categoryToUse = currentCategory || filters.category;
-    if (categoryToUse && categoryToUse !== "All") {
+    if (filters.category && filters.category !== "All") {
+      console.log("Filtering by category:", filters.category);
       filtered = filtered.filter(tool => 
-        tool.category.some(cat => cat === categoryToUse)
+        tool.category.some(cat => cat === filters.category)
       );
     }
     
     // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
+      console.log("Filtering by search term:", term);
       filtered = filtered.filter(
         tool => 
           tool.name.toLowerCase().includes(term) || 
@@ -86,16 +104,19 @@ const Categories = () => {
     
     // Filter by pricing
     if (filters.pricing !== "All") {
+      console.log("Filtering by pricing:", filters.pricing);
       filtered = filtered.filter(tool => tool.pricing === filters.pricing);
     }
     
     // Filter by rating
     if (filters.rating !== null) {
+      console.log("Filtering by minimum rating:", filters.rating);
       filtered = filtered.filter(tool => tool.rating >= filters.rating!);
     }
     
     // Filter by features
     if (filters.features.length > 0) {
+      console.log("Filtering by features:", filters.features);
       filtered = filtered.filter(tool => 
         filters.features.every(feature => 
           tool.features?.includes(feature)
@@ -105,23 +126,28 @@ const Categories = () => {
     
     // Sort by selected criteria
     if (filters.sortBy === "newest") {
+      console.log("Sorting by newest");
       filtered.sort((a, b) => ((b.createdAt || 0) - (a.createdAt || 0)));
     } else {
+      console.log("Sorting by", filters.sortBy);
       filtered.sort((a, b) => b[filters.sortBy] - a[filters.sortBy]);
     }
     
+    console.log(`Filtered tools: ${filtered.length} of ${aiTools.length}`);
     setFilteredTools(filtered);
-  }, [searchTerm, filters, currentCategory, aiTools]);
+  }, [searchTerm, filters, aiTools]);
 
   const handleClearSearch = () => {
     setSearchTerm("");
   };
 
   const handleFilterChange = (newFilters: FilterOptions) => {
+    console.log("Filter changed:", newFilters);
     setFilters(newFilters);
   };
 
   const resetAllFilters = () => {
+    console.log("Resetting all filters");
     setSearchTerm("");
     setFilters({
       category: currentCategory || "All",
@@ -129,6 +155,11 @@ const Categories = () => {
       rating: null,
       features: [],
       sortBy: "rating"
+    });
+    
+    toast({
+      title: "Filters reset",
+      description: "All filters have been reset to default values."
     });
   };
 
@@ -269,7 +300,7 @@ const Categories = () => {
 
           {/* Tools Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTools.length > 0 ? (
+            {!isLoading && filteredTools.length > 0 ? (
               filteredTools.map((tool) => (
                 <Link 
                   key={tool.id} 
@@ -282,7 +313,7 @@ const Categories = () => {
                   />
                 </Link>
               ))
-            ) : (
+            ) : (!isLoading && (
               <div className="col-span-3 py-16 text-center">
                 <h3 className="text-xl font-medium mb-2">No tools found</h3>
                 <p className="text-muted-foreground mb-4">
@@ -295,7 +326,7 @@ const Categories = () => {
                   Reset Filters
                 </button>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </main>
