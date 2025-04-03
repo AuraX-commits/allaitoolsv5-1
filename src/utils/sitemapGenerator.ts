@@ -33,7 +33,8 @@ export const generateSitemap = async (): Promise<string> => {
     "/submit-tool",
     "/login",
     "/signup",
-    "/dashboard"
+    "/dashboard",
+    "/recommend"
   ];
 
   staticPages.forEach(page => {
@@ -47,7 +48,7 @@ export const generateSitemap = async (): Promise<string> => {
   });
 
   try {
-    // Fetch tools from Supabase
+    // Fetch ALL tools from Supabase - no limit
     const { data: aiTools, error } = await supabase
       .from('ai_tools')
       .select('*');
@@ -57,11 +58,13 @@ export const generateSitemap = async (): Promise<string> => {
       throw error;
     }
     
-    // Add tool detail pages
+    console.log(`Adding ${aiTools?.length || 0} tools to sitemap`);
+    
+    // Add tool detail pages - add ALL tools
     if (aiTools && aiTools.length > 0) {
       aiTools.forEach(toolRow => {
         const tool = mapRowToAITool(toolRow);
-        const slug = tool.name.toLowerCase().replace(/\s+/g, '-');
+        const slug = tool.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
         sitemap += `  <url>
     <loc>${baseUrl}/tool/${tool.id}/${slug}</loc>
     <lastmod>${getCurrentDate()}</lastmod>
@@ -72,8 +75,7 @@ export const generateSitemap = async (): Promise<string> => {
       });
     }
     
-    // Add category pages
-    // Extract unique categories from all tools
+    // Add category pages - extract unique categories from all tools
     const allCategories = new Set<string>();
     aiTools?.forEach(toolRow => {
       const tool = mapRowToAITool(toolRow);
@@ -81,6 +83,8 @@ export const generateSitemap = async (): Promise<string> => {
     });
     
     const categories = Array.from(allCategories);
+    console.log(`Adding ${categories.length} categories to sitemap`);
+    
     categories.forEach(category => {
       sitemap += `  <url>
     <loc>${baseUrl}/categories/${encodeURIComponent(category)}</loc>
@@ -121,7 +125,7 @@ export const generateImageSitemap = async (): Promise<string> => {
 `;
 
   try {
-    // Fetch tools from Supabase
+    // Fetch ALL tools from Supabase
     const { data: aiTools, error } = await supabase
       .from('ai_tools')
       .select('*');
@@ -131,17 +135,19 @@ export const generateImageSitemap = async (): Promise<string> => {
       throw error;
     }
     
-    // Add tool pages with logo images
+    console.log(`Adding ${aiTools?.length || 0} tool images to sitemap`);
+    
+    // Add tool pages with logo images - add ALL tools
     if (aiTools && aiTools.length > 0) {
       aiTools.forEach(toolRow => {
         const tool = mapRowToAITool(toolRow);
-        const slug = tool.name.toLowerCase().replace(/\s+/g, '-');
+        const slug = tool.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
         sitemap += `  <url>
     <loc>${baseUrl}/tool/${tool.id}/${slug}</loc>
     <image:image>
       <image:loc>${tool.logo}</image:loc>
       <image:title>${tool.name} logo - AI tool for ${tool.category[0]}</image:title>
-      <image:caption>Logo of ${tool.name}, a ${tool.shortDescription}</image:caption>
+      <image:caption>Logo of ${tool.name}, a ${tool.shortDescription || 'AI tool'}</image:caption>
     </image:image>
   </url>
 `;

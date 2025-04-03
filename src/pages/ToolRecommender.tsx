@@ -74,12 +74,23 @@ const ToolRecommender = () => {
   return (
     <>
       <Helmet>
-        <title>AI Tool Recommender | Find the Perfect AI Tools</title>
+        <title>AI Tool Recommender | Find the Perfect AI Tools for Your Needs | AllAITools.tech</title>
         <meta
           name="description"
-          content="Get personalized AI tool recommendations based on your specific requirements."
+          content="Get personalized AI tool recommendations based on your specific requirements. Our AI analyzes your needs and suggests the best tools from our curated database of top AI solutions."
         />
+        <meta name="keywords" content="AI tool recommender, personalized AI recommendations, best AI tools, AI solutions, AI software recommendations" />
+        <meta property="og:title" content="AI Tool Recommender | Find the Perfect AI Tools for Your Needs | AllAITools.tech" />
+        <meta property="og:description" content="Get personalized AI tool recommendations based on your specific requirements. Our AI analyzes your needs and suggests the best tools from our curated database." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.allaitools.tech/recommend" />
+        <meta property="og:site_name" content="AllAITools.tech" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Tool Recommender | Find the Perfect AI Tools for Your Needs | AllAITools.tech" />
+        <meta name="twitter:description" content="Get personalized AI tool recommendations based on your specific requirements. Our AI analyzes your needs and suggests the best tools from our curated database." />
+        <link rel="canonical" href="https://www.allaitools.tech/recommend" />
       </Helmet>
+      
       <Navbar />
       
       <main className="container mx-auto px-4 py-12 max-w-6xl">
