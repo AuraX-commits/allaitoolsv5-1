@@ -1,18 +1,39 @@
 
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useToast } from "@/hooks/use-toast";
-import { Lightbulb, Send, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Bot, Loader2 } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabaseClient";
-import { mapRowToAITool } from "@/utils/toolsData";
-import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-interface Recommendation {
+const formSchema = z.object({
+  requirements: z.string().min(10, "Requirements must be at least 10 characters long"),
+});
+
+type Recommendation = {
   id: string;
   name: string;
   description: string;
@@ -20,50 +41,47 @@ interface Recommendation {
   category: string[];
   url: string;
   reasoning: string;
-}
+};
 
 const ToolRecommender = () => {
-  const [requirements, setRequirements] = useState("");
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!requirements.trim()) {
-      toast({
-        title: "Missing information",
-        description: "Please describe your requirements first.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      requirements: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    
+    setRecommendations([]);
+
     try {
       const { data, error } = await supabase.functions.invoke("recommend-tools", {
-        body: { requirements },
+        body: { requirements: values.requirements },
       });
-      
+
       if (error) {
-        throw new Error(error.message);
+        console.error("Error getting recommendations:", error);
+        throw new Error(error.message || "Failed to get recommendations");
       }
-      
-      setRecommendations(data.recommendations || []);
-      
-      if ((data.recommendations || []).length === 0) {
-        toast({
-          title: "No matches found",
-          description: "Try providing more specific requirements or using different keywords.",
-        });
+
+      console.log("Recommendations response:", data);
+
+      if (data && data.recommendations && Array.isArray(data.recommendations)) {
+        setRecommendations(data.recommendations);
+      } else {
+        console.error("Invalid recommendations format:", data);
+        throw new Error("Received invalid recommendation data");
       }
     } catch (error) {
-      console.error("Error getting recommendations:", error);
+      console.error("Error in recommendation process:", error);
       toast({
         title: "Error",
-        description: "Failed to get tool recommendations. Please try again later.",
+        description: error instanceof Error ? error.message : "Failed to get recommendations",
         variant: "destructive",
       });
     } finally {
@@ -72,132 +90,160 @@ const ToolRecommender = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>AI Tool Recommender | Find the Perfect AI Tools for Your Needs | AllAITools.tech</title>
-        <meta
-          name="description"
-          content="Get personalized AI tool recommendations based on your specific requirements. Our AI analyzes your needs and suggests the best tools from our curated database of top AI solutions."
+        <title>AI Tool Recommender | AllAITools.tech</title>
+        <meta 
+          name="description" 
+          content="Get personalized AI tool recommendations based on your specific requirements. Our AI analyzes your needs and suggests the best tools for your use case." 
         />
-        <meta name="keywords" content="AI tool recommender, personalized AI recommendations, best AI tools, AI solutions, AI software recommendations" />
-        <meta property="og:title" content="AI Tool Recommender | Find the Perfect AI Tools for Your Needs | AllAITools.tech" />
-        <meta property="og:description" content="Get personalized AI tool recommendations based on your specific requirements. Our AI analyzes your needs and suggests the best tools from our curated database." />
+        <meta property="og:title" content="AI Tool Recommender | AllAITools.tech" />
+        <meta property="og:description" content="Get personalized AI tool recommendations based on your specific requirements." />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="/og-image.png" />
         <meta property="og:url" content="https://www.allaitools.tech/recommend" />
-        <meta property="og:site_name" content="AllAITools.tech" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Tool Recommender | Find the Perfect AI Tools for Your Needs | AllAITools.tech" />
-        <meta name="twitter:description" content="Get personalized AI tool recommendations based on your specific requirements. Our AI analyzes your needs and suggests the best tools from our curated database." />
         <link rel="canonical" href="https://www.allaitools.tech/recommend" />
+        
+        {/* Schema.org markup for AI Tool Recommender */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "AI Tool Recommender",
+            "url": "https://www.allaitools.tech/recommend",
+            "description": "Get personalized AI tool recommendations based on your specific requirements.",
+            "applicationCategory": "BusinessApplication",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "operatingSystem": "All",
+            "provider": {
+              "@type": "Organization",
+              "name": "AllAITools.tech",
+              "url": "https://www.allaitools.tech"
+            }
+          })}
+        </script>
       </Helmet>
-      
+
       <Navbar />
-      
-      <main className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">AI Tool Recommender</h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Tell us your specific needs and requirements, and our AI will recommend the best tools for you from our curated database.
-          </p>
-        </div>
-        
-        <Card className="mb-10">
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label htmlFor="requirements" className="block text-lg font-medium mb-2">
-                  What kind of AI tool are you looking for?
-                </label>
-                <Textarea
-                  id="requirements"
-                  value={requirements}
-                  onChange={(e) => setRequirements(e.target.value)}
-                  placeholder="Describe your requirements in detail. For example: 'I need an AI tool that can help me write marketing copy for social media posts and analyze their performance.'"
-                  className="min-h-[150px]"
-                />
-                <p className="text-sm text-muted-foreground mt-2">
-                  <Lightbulb className="inline w-4 h-4 mr-1" />
-                  The more details you provide, the better recommendations you'll get.
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <Button type="submit" size="lg" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Finding the perfect tools...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-5 w-5" />
-                      Get Recommendations
-                    </>
-                  )}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-        
-        {recommendations.length > 0 && (
-          <div className="space-y-8">
-            <h2 className="text-2xl font-bold">Recommended Tools for You</h2>
-            
-            {recommendations.map((tool) => (
-              <Card key={tool.id} className="overflow-hidden">
-                <div className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="h-16 w-16 rounded-md overflow-hidden flex-shrink-0 bg-secondary flex items-center justify-center">
-                      <img 
-                        src={tool.logo} 
-                        alt={`${tool.name} logo`} 
-                        className="h-full w-full object-contain" 
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "/placeholder.svg";
-                        }}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-1">{tool.name}</h3>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {tool.category.slice(0, 3).map((cat) => (
+
+      <main className="flex-grow container max-w-6xl px-4 py-8 md:py-12">
+        <h1 className="text-3xl md:text-4xl font-bold text-center mb-6">
+          AI Tool Recommender
+        </h1>
+        <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
+          Describe your needs, use cases, or problems you're trying to solve, and our AI will recommend the best tools tailored to your requirements.
+        </p>
+
+        <div className="grid grid-cols-1 gap-8 mb-12">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Bot className="mr-2 h-6 w-6" />
+                What are you looking for?
+              </CardTitle>
+              <CardDescription>
+                Be specific about your needs, budget constraints, and desired features.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="requirements"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Your Requirements</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Example: I need an AI tool that can help me generate marketing content for social media, with an affordable pricing plan for a small business. It should be easy to use and integrate with Canva."
+                            className="min-h-[150px] resize-y"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          The more detail you provide, the better recommendations you'll receive.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    size="lg"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Finding the best tools...
+                      </>
+                    ) : (
+                      "Get AI Tool Recommendations"
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+
+          {recommendations.length > 0 && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold">Recommended Tools</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {recommendations.map((tool) => (
+                  <Card key={tool.id} className="overflow-hidden flex flex-col h-full">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center gap-3 mb-2">
+                        {tool.logo && (
+                          <div className="w-10 h-10 rounded-md overflow-hidden flex-shrink-0">
+                            <img 
+                              src={tool.logo} 
+                              alt={`${tool.name} logo`} 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <CardTitle className="text-xl">{tool.name}</CardTitle>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {tool.category?.map((cat, i) => (
                           <span 
-                            key={cat} 
-                            className="inline-block px-2 py-1 bg-secondary text-xs rounded-full"
+                            key={i}
+                            className="px-2 py-1 bg-muted text-xs rounded-full"
                           >
                             {cat}
                           </span>
                         ))}
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {tool.description}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 bg-muted/40 rounded-lg p-4">
-                    <h4 className="font-medium mb-2">Why we recommend this:</h4>
-                    <p className="text-muted-foreground">{tool.reasoning}</p>
-                  </div>
-                  
-                  <div className="mt-4 flex justify-end">
-                    <Link 
-                      to={`/tool/${tool.id}`}
-                      className="text-primary hover:text-primary/80 font-medium"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
+                    </CardHeader>
+                    <CardContent className="pb-4 flex-grow">
+                      <p className="text-sm text-muted-foreground mb-4">{tool.description}</p>
+                      <div className="mt-2">
+                        <h4 className="text-sm font-semibold mb-1">Why this tool?</h4>
+                        <p className="text-sm">{tool.reasoning}</p>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="pt-0">
+                      <Button asChild className="w-full">
+                        <a href={tool.url} target="_blank" rel="noopener noreferrer">Visit Tool</a>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </main>
-      
+
       <Footer />
-    </>
+    </div>
   );
 };
 
