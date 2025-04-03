@@ -84,6 +84,36 @@ export type Database = {
         }
         Relationships: []
       }
+      career_applications: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          resume_url: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          resume_url?: string | null
+          role: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          resume_url?: string | null
+          role?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string | null
@@ -227,12 +257,16 @@ export type Database = {
           created_at: string | null
           description: string
           email: string
+          founder_email: string | null
+          founder_name: string | null
           id: string
           logo_url: string | null
           name: string
           pricing: string
           short_description: string
           status: string
+          submitter_name: string | null
+          submitter_role: string | null
           website: string
         }
         Insert: {
@@ -240,12 +274,16 @@ export type Database = {
           created_at?: string | null
           description: string
           email: string
+          founder_email?: string | null
+          founder_name?: string | null
           id?: string
           logo_url?: string | null
           name: string
           pricing: string
           short_description: string
           status?: string
+          submitter_name?: string | null
+          submitter_role?: string | null
           website: string
         }
         Update: {
@@ -253,12 +291,16 @@ export type Database = {
           created_at?: string | null
           description?: string
           email?: string
+          founder_email?: string | null
+          founder_name?: string | null
           id?: string
           logo_url?: string | null
           name?: string
           pricing?: string
           short_description?: string
           status?: string
+          submitter_name?: string | null
+          submitter_role?: string | null
           website?: string
         }
         Relationships: []

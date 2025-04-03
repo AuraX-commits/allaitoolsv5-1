@@ -1,22 +1,18 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Send, Upload, Link as LinkIcon, CheckCircle } from "lucide-react";
+
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { fetchCategories, fetchPricingOptions } from "@/utils/migrateToolsToSupabase";
-import { supabase } from "@/lib/supabaseClient";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,69 +25,64 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/lib/supabaseClient";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Tool name must be at least 2 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  shortDescription: z.string().min(10, "Short description must be at least 10 characters"),
-  website: z.string().url("Please enter a valid URL"),
-  logoUrl: z.string().url("Please enter a valid URL for the logo").optional(),
-  category: z.string().min(1, "Please select a category"),
-  pricing: z.string().min(1, "Please select a pricing tier"),
-  email: z.string().email("Please enter a valid email address"),
-  founderName: z.string().min(2, "Founder name must be at least 2 characters"),
-  founderEmail: z.string().email("Please enter a valid founder email address"),
-  submitterName: z.string().min(2, "Your name must be at least 2 characters"),
+  name: z.string().min(2, {
+    message: "Tool name must be at least 2 characters.",
+  }),
+  website: z.string().url({
+    message: "Please enter a valid URL.",
+  }),
+  category: z.string({
+    required_error: "Please select a category.",
+  }),
+  pricing: z.string({
+    required_error: "Please select a pricing option.",
+  }),
+  shortDescription: z.string().min(20, {
+    message: "Short description must be at least 20 characters.",
+  }).max(200, {
+    message: "Short description cannot exceed 200 characters.",
+  }),
+  description: z.string().min(100, {
+    message: "Description must be at least 100 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  logoUrl: z.string().url({
+    message: "Please enter a valid logo URL.",
+  }).optional().or(z.literal("")),
+  founderName: z.string().optional(),
+  founderEmail: z.string().email({
+    message: "Please enter a valid email address.",
+  }).optional().or(z.literal("")),
+  submitterName: z.string().optional(),
   submitterRole: z.string().optional(),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 const SubmitTool = () => {
-  const { toast } = useToast();
-  const [categories, setCategories] = useState<string[]>([]);
-  const [pricingOptions, setPricingOptions] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
   
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    loadFormOptions();
-  }, []);
-  
-  const loadFormOptions = async () => {
-    try {
-      const { categories: fetchedCategories } = await fetchCategories();
-      const { pricingOptions: fetchedPricing } = await fetchPricingOptions();
-      
-      if (fetchedCategories) {
-        // Filter out "All" category for form
-        setCategories(fetchedCategories.filter(cat => cat !== "All"));
-      }
-      
-      if (fetchedPricing) {
-        // Filter out "All" pricing for form
-        setPricingOptions(fetchedPricing.filter(pricing => pricing !== "All"));
-      }
-    } catch (error) {
-      console.error('Error loading form options:', error);
-      toast({
-        title: "Error loading form options",
-        description: "Please try again later.",
-        variant: "destructive"
-      });
-    }
-  };
-  
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: "",
-      shortDescription: "",
       website: "",
-      logoUrl: "",
       category: "",
       pricing: "",
+      shortDescription: "",
+      description: "",
       email: "",
+      logoUrl: "",
       founderName: "",
       founderEmail: "",
       submitterName: "",
@@ -99,46 +90,42 @@ const SubmitTool = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Insert into tool_submissions table
-      const { error } = await supabase
-        .from('tool_submissions')
-        .insert({
+      const { data, error } = await supabase.from("tool_submissions").insert([
+        {
           name: values.name,
-          description: values.description,
-          short_description: values.shortDescription,
           website: values.website,
-          logo_url: values.logoUrl || "https://placehold.co/100x100?text=AI",
           category: values.category,
           pricing: values.pricing,
+          short_description: values.shortDescription,
+          description: values.description,
           email: values.email,
-          founder_name: values.founderName,
-          founder_email: values.founderEmail,
-          submitter_name: values.submitterName,
-          submitter_role: values.submitterRole || "Not specified"
-        });
-      
-      if (error) {
-        throw error;
-      }
-      
-      // Show success message
+          logo_url: values.logoUrl || null,
+          founder_name: values.founderName || null,
+          founder_email: values.founderEmail || null,
+          submitter_name: values.submitterName || null,
+          submitter_role: values.submitterRole || null,
+        },
+      ]);
+
+      if (error) throw error;
+
       toast({
         title: "Tool submitted successfully!",
-        description: "We'll review your submission and get back to you soon.",
+        description:
+          "Thank you for your submission. We'll review it and get back to you soon.",
       });
-      
-      setIsSuccess(true);
-      form.reset();
-    } catch (error: any) {
-      console.error('Error submitting tool:', error);
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error submitting tool:", error);
       toast({
         title: "Error submitting tool",
-        description: error.message || "Please try again later.",
-        variant: "destructive"
+        description: "There was a problem submitting your tool. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -146,321 +133,293 @@ const SubmitTool = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Helmet>
-        <title>Submit an AI Tool | AIDirectory</title>
-        <meta 
-          name="description" 
-          content="Submit your AI tool to AIDirectory and reach thousands of potential users. Get featured in our comprehensive library of AI tools." 
+        <title>Submit an AI Tool | All AI Tools</title>
+        <meta
+          name="description"
+          content="Submit your AI tool to our directory for review and inclusion."
         />
       </Helmet>
-      
       <Navbar />
-      
-      <main className="flex-grow">
-        <div className="container px-4 py-12 max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">Submit Your AI Tool</h1>
-            <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
-              Get your AI tool featured in our comprehensive directory and reach thousands of potential users.
-            </p>
-          </div>
-          
-          {isSuccess ? (
-            <div className="bg-card rounded-lg border shadow-sm p-8 text-center">
-              <CheckCircle className="w-16 h-16 mx-auto text-green-500 mb-4" />
-              <h2 className="text-2xl font-semibold mb-2">Submission Received!</h2>
-              <p className="text-foreground/80 mb-6">
-                Thank you for submitting your AI tool. Our team will review it shortly.
+
+      <main className="container mx-auto px-4 py-12">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-3xl font-bold mb-2">Submit an AI Tool</h1>
+          <p className="text-muted-foreground mb-8">
+            Fill out the form below to submit your AI tool for review. Our team
+            will review your submission and get back to you if we need more
+            information.
+          </p>
+
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-8 bg-card border rounded-lg p-6"
+            >
+              <div className="space-y-6">
+                <h2 className="text-xl font-semibold">Tool Information</h2>
+                
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tool Name*</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., ChatGPT" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="website"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Website URL*</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., https://chat.openai.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category*</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Text Generation">Text Generation</SelectItem>
+                            <SelectItem value="Image Generation">Image Generation</SelectItem>
+                            <SelectItem value="Code Assistant">Code Assistant</SelectItem>
+                            <SelectItem value="Video Generation">Video Generation</SelectItem>
+                            <SelectItem value="Audio Generation">Audio Generation</SelectItem>
+                            <SelectItem value="Chatbot">Chatbot</SelectItem>
+                            <SelectItem value="Data Analysis">Data Analysis</SelectItem>
+                            <SelectItem value="Productivity">Productivity</SelectItem>
+                            <SelectItem value="Marketing">Marketing</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="pricing"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pricing Model*</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select pricing" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Free">Free</SelectItem>
+                            <SelectItem value="Freemium">Freemium</SelectItem>
+                            <SelectItem value="Paid">Paid</SelectItem>
+                            <SelectItem value="Free Trial">Free Trial</SelectItem>
+                            <SelectItem value="Contact for Pricing">Contact for Pricing</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="shortDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Short Description* (200 chars max)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="A brief description of what your tool does..."
+                          {...field}
+                          className="resize-none"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Description*</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="A detailed description of your tool, its features, use cases, etc."
+                          {...field}
+                          className="min-h-[200px]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="logoUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Logo URL (Optional)</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., https://yourtool.com/logo.png"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-6 pt-4 border-t">
+                <h2 className="text-xl font-semibold">Founder Information (Optional)</h2>
+                
+                <FormField
+                  control={form.control}
+                  name="founderName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Founder/Creator Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., John Smith" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="founderEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Founder/Creator Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., founder@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-6 pt-4 border-t">
+                <h2 className="text-xl font-semibold">Submitter Information (Optional)</h2>
+                
+                <FormField
+                  control={form.control}
+                  name="submitterName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Jane Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="submitterRole"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your Role</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Marketing Manager" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-6 pt-4 border-t">
+                <h2 className="text-xl font-semibold">Contact Information</h2>
+                
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Email*</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., contact@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...
+                  </>
+                ) : (
+                  "Submit Tool for Review"
+                )}
+              </Button>
+
+              <p className="text-center text-sm text-muted-foreground">
+                By submitting, you agree to our{" "}
+                <a href="/terms" className="underline">
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a href="/privacy" className="underline">
+                  Privacy Policy
+                </a>
               </p>
-              <Button onClick={() => setIsSuccess(false)}>Submit Another Tool</Button>
-            </div>
-          ) : (
-            <div className="bg-card rounded-lg border shadow-sm p-6 md:p-8">
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <h2 className="text-xl font-semibold border-b pb-2 mb-4">Tool Information</h2>
-                  
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tool Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter the name of your AI tool" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="grid grid-cols-1 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="shortDescription"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Short Description</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="A brief description (50-100 characters)"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            This will appear in cards and previews
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Description</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Describe what your tool does and its key features" 
-                            className="min-h-32"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="website"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Website URL</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://www.yourtool.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="logoUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Logo URL</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <LinkIcon className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                            <Input 
-                              placeholder="https://www.example.com/your-logo.png" 
-                              className="pl-10"
-                              {...field} 
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          Enter a direct URL to your tool's logo image (PNG or JPG recommended)
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="category"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Category</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a category" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {categories.length > 0 ? (
-                                categories.map(category => (
-                                  <SelectItem key={category} value={category}>
-                                    {category}
-                                  </SelectItem>
-                                ))
-                              ) : (
-                                <>
-                                  <SelectItem value="writing">Writing & Content</SelectItem>
-                                  <SelectItem value="image">Image & Design</SelectItem>
-                                  <SelectItem value="audio">Audio & Music</SelectItem>
-                                  <SelectItem value="video">Video & Animation</SelectItem>
-                                  <SelectItem value="chatbot">Chatbots & Assistants</SelectItem>
-                                  <SelectItem value="developer">Developer Tools</SelectItem>
-                                  <SelectItem value="other">Other</SelectItem>
-                                </>
-                              )}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="pricing"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Pricing Model</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select pricing model" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {pricingOptions.length > 0 ? (
-                                pricingOptions.map(option => (
-                                  <SelectItem key={option} value={option}>
-                                    {option}
-                                  </SelectItem>
-                                ))
-                              ) : (
-                                <>
-                                  <SelectItem value="Free">Free</SelectItem>
-                                  <SelectItem value="Freemium">Freemium</SelectItem>
-                                  <SelectItem value="Paid">Paid</SelectItem>
-                                  <SelectItem value="Subscription">Subscription</SelectItem>
-                                  <SelectItem value="Enterprise">Enterprise</SelectItem>
-                                </>
-                              )}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <h2 className="text-xl font-semibold border-b pb-2 mb-4 pt-4">Founder Information</h2>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="founderName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Founder's Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter the founder's name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="founderEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Founder's Email</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="email" 
-                              placeholder="founder@company.com" 
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <h2 className="text-xl font-semibold border-b pb-2 mb-4 pt-4">Your Information</h2>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="submitterName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Your Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="submitterRole"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Your Role</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Marketing Manager, CEO, etc. (Optional)" 
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Your Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="your@email.com" {...field} />
-                        </FormControl>
-                        <FormDescription>
-                          We'll use this to contact you about your submission.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="border border-dashed border-border rounded-lg p-4">
-                    <div className="flex flex-col items-center justify-center py-4">
-                      <Upload className="h-10 w-10 text-muted-foreground mb-2" />
-                      <p className="text-sm text-muted-foreground mb-1">Drag & drop your logo here</p>
-                      <p className="text-xs text-muted-foreground mb-3">PNG, JPG up to 2MB</p>
-                      <Button variant="outline" size="sm" type="button">
-                        Select File
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <Button type="submit" className="w-full" disabled={isSubmitting}>
-                    <Send className="mr-2 h-4 w-4" />
-                    {isSubmitting ? "Submitting..." : "Submit Tool"}
-                  </Button>
-                </form>
-              </Form>
-            </div>
-          )}
+            </form>
+          </Form>
         </div>
       </main>
-      
+
       <Footer />
-    </div>
+    </>
   );
 };
 

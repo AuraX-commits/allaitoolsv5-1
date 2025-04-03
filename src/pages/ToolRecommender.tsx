@@ -1,27 +1,18 @@
 
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Search, Lightbulb, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Lightbulb, Send, Loader2 } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabaseClient";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { mapRowToAITool } from "@/utils/toolsData";
+import { Link } from "react-router-dom";
 
-interface RecommendedTool {
+interface Recommendation {
   id: string;
   name: string;
   description: string;
@@ -31,47 +22,49 @@ interface RecommendedTool {
   reasoning: string;
 }
 
-const formSchema = z.object({
-  requirements: z.string().min(10, "Please describe your requirements in at least 10 characters"),
-});
-
 const ToolRecommender = () => {
-  const { toast } = useToast();
+  const [requirements, setRequirements] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [recommendedTools, setRecommendedTools] = useState<RecommendedTool[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      requirements: "",
-    },
-  });
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
-    setRecommendedTools([]);
-
-    try {
-      // Fetch AI recommendations
-      const response = await fetch('/api/recommend-tools', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ requirements: values.requirements }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to get recommendations');
-      }
-
-      const data = await response.json();
-      setRecommendedTools(data.recommendations);
-
-    } catch (error: any) {
-      console.error('Error getting tool recommendations:', error);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!requirements.trim()) {
       toast({
-        title: "Error getting recommendations",
-        description: error.message || "Please try again later.",
-        variant: "destructive"
+        title: "Missing information",
+        description: "Please describe your requirements first.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke("recommend-tools", {
+        body: { requirements },
+      });
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      setRecommendations(data.recommendations || []);
+      
+      if ((data.recommendations || []).length === 0) {
+        toast({
+          title: "No matches found",
+          description: "Try providing more specific requirements or using different keywords.",
+        });
+      }
+    } catch (error) {
+      console.error("Error getting recommendations:", error);
+      toast({
+        title: "Error",
+        description: "Failed to get tool recommendations. Please try again later.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -79,131 +72,121 @@ const ToolRecommender = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Helmet>
-        <title>AI Tool Recommender | AIDirectory</title>
-        <meta 
-          name="description" 
-          content="Get personalized AI tool recommendations based on your specific needs and requirements." 
+        <title>AI Tool Recommender | Find the Perfect AI Tools</title>
+        <meta
+          name="description"
+          content="Get personalized AI tool recommendations based on your specific requirements."
         />
       </Helmet>
-      
       <Navbar />
       
-      <main className="flex-grow">
-        <div className="container px-4 py-12 max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-              AI Tool Recommender
-            </h1>
-            <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
-              Describe what you're looking to accomplish, and our AI will recommend the best tools for your needs.
-            </p>
-          </div>
-          
-          <div className="bg-card rounded-lg border shadow-sm p-6 md:p-8 mb-10">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="requirements"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Describe what you need to accomplish. For example: 'I need a tool to create realistic images from text descriptions' or 'Looking for a chatbot to help with customer support on my website'" 
-                          className="min-h-32 text-base"
-                          disabled={isLoading}
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        The more details you provide, the better recommendations you'll receive
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+      <main className="container mx-auto px-4 py-12 max-w-6xl">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">AI Tool Recommender</h1>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            Tell us your specific needs and requirements, and our AI will recommend the best tools for you from our curated database.
+          </p>
+        </div>
+        
+        <Card className="mb-10">
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label htmlFor="requirements" className="block text-lg font-medium mb-2">
+                  What kind of AI tool are you looking for?
+                </label>
+                <Textarea
+                  id="requirements"
+                  value={requirements}
+                  onChange={(e) => setRequirements(e.target.value)}
+                  placeholder="Describe your requirements in detail. For example: 'I need an AI tool that can help me write marketing copy for social media posts and analyze their performance.'"
+                  className="min-h-[150px]"
                 />
-                
-                <Button 
-                  type="submit" 
-                  className="w-full" 
-                  size="lg"
-                  disabled={isLoading}
-                >
+                <p className="text-sm text-muted-foreground mt-2">
+                  <Lightbulb className="inline w-4 h-4 mr-1" />
+                  The more details you provide, the better recommendations you'll get.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <Button type="submit" size="lg" disabled={isLoading}>
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Finding the best tools...
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Finding the perfect tools...
                     </>
                   ) : (
                     <>
-                      <Search className="mr-2 h-4 w-4" />
+                      <Send className="mr-2 h-5 w-5" />
                       Get Recommendations
                     </>
                   )}
                 </Button>
-              </form>
-            </Form>
-          </div>
-          
-          {isLoading && (
-            <div className="text-center py-16">
-              <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary mb-4" />
-              <p className="text-lg">Analyzing your requirements and searching for the best AI tools...</p>
-            </div>
-          )}
-          
-          {!isLoading && recommendedTools.length > 0 && (
-            <div className="space-y-8">
-              <h2 className="text-2xl font-bold">Recommended Tools</h2>
-              <div className="grid gap-6 md:grid-cols-1">
-                {recommendedTools.map((tool) => (
-                  <Card key={tool.id} className="overflow-hidden">
-                    <CardHeader className="flex flex-row items-start gap-4">
-                      <div className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 bg-secondary/20">
-                        <img 
-                          src={tool.logo} 
-                          alt={`${tool.name} logo`}
-                          className="w-full h-full object-contain" 
-                        />
-                      </div>
-                      <div>
-                        <CardTitle>{tool.name}</CardTitle>
-                        <CardDescription className="mt-1 text-sm">
-                          {tool.category.join(", ")}
-                        </CardDescription>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-foreground/80">{tool.description}</p>
-                      <div className="mt-4 bg-muted/50 p-4 rounded-lg">
-                        <div className="flex items-start gap-3">
-                          <Lightbulb className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                          <div>
-                            <h4 className="font-medium text-sm mb-1">Why this tool matches your needs:</h4>
-                            <p className="text-foreground/70">{tool.reasoning}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                    <CardFooter>
-                      <Button asChild className="w-full">
-                        <a href={tool.url} target="_blank" rel="noopener noreferrer">
-                          Visit Website
-                        </a>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
               </div>
-            </div>
-          )}
-        </div>
+            </form>
+          </CardContent>
+        </Card>
+        
+        {recommendations.length > 0 && (
+          <div className="space-y-8">
+            <h2 className="text-2xl font-bold">Recommended Tools for You</h2>
+            
+            {recommendations.map((tool) => (
+              <Card key={tool.id} className="overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="h-16 w-16 rounded-md overflow-hidden flex-shrink-0 bg-secondary flex items-center justify-center">
+                      <img 
+                        src={tool.logo} 
+                        alt={`${tool.name} logo`} 
+                        className="h-full w-full object-contain" 
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "/placeholder.svg";
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-1">{tool.name}</h3>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {tool.category.slice(0, 3).map((cat) => (
+                          <span 
+                            key={cat} 
+                            className="inline-block px-2 py-1 bg-secondary text-xs rounded-full"
+                          >
+                            {cat}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {tool.description}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 bg-muted/40 rounded-lg p-4">
+                    <h4 className="font-medium mb-2">Why we recommend this:</h4>
+                    <p className="text-muted-foreground">{tool.reasoning}</p>
+                  </div>
+                  
+                  <div className="mt-4 flex justify-end">
+                    <Link 
+                      to={`/tool/${tool.id}`}
+                      className="text-primary hover:text-primary/80 font-medium"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </main>
       
       <Footer />
-    </div>
+    </>
   );
 };
 

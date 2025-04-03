@@ -1,66 +1,50 @@
 
 import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2, Sparkles, CheckCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabaseClient";
-import { Gift } from "lucide-react";
-
-const formSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-});
 
 const Newsletter = () => {
-  const { toast } = useToast();
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-    },
-  });
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { toast } = useToast();
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
     setIsLoading(true);
-    
     try {
       const { error } = await supabase
-        .from('newsletter_subscribers')
-        .insert({
-          email: values.email
-        });
-      
+        .from("newsletter_subscribers")
+        .insert([{ email }]);
+
       if (error) {
-        // If the error is due to unique constraint violation
-        if (error.code === '23505') {
+        if (error.code === "23505") {
+          // Unique violation - email already exists
           toast({
-            title: "You're already subscribed!",
-            description: "This email is already in our newsletter list.",
+            title: "Already subscribed",
+            description: "This email is already subscribed to our newsletter.",
           });
         } else {
           throw error;
         }
       } else {
-        setIsSuccess(true);
+        setIsSubscribed(true);
         toast({
-          title: "Successfully subscribed!",
-          description: "Thank you for subscribing to our newsletter.",
+          title: "Subscription successful",
+          description: "Thank you for subscribing to our newsletter!",
         });
       }
-      
-      form.reset();
-    } catch (error: any) {
-      console.error('Error subscribing to newsletter:', error);
+    } catch (error) {
+      console.error("Error subscribing to newsletter:", error);
       toast({
-        title: "Error subscribing",
-        description: error.message || "Please try again later.",
-        variant: "destructive"
+        title: "Subscription failed",
+        description: "There was a problem subscribing to our newsletter. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -68,81 +52,59 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="bg-muted py-16">
-      <div className="container px-4 mx-auto">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Stay up-to-date with the latest AI tools
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            Get weekly updates on new AI tools, features, and trends delivered straight to your inbox.
+    <section className="bg-secondary py-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">Stay Updated With AI Trends</h2>
+          <p className="text-foreground/80 mb-8">
+            Join our newsletter to receive weekly updates about the newest AI tools, exclusive guides, and industry insights.
           </p>
           
-          <div className="bg-primary/5 rounded-xl p-4 mb-8 flex items-start gap-3">
-            <Gift className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-left">
-              <span className="font-medium">Subscriber Exclusive:</span> Newsletter subscribers occasionally receive free credits and special offers from our partner AI tools companies.
+          <div className="flex items-center gap-2 justify-center mb-8">
+            <Sparkles className="text-primary h-5 w-5" />
+            <p className="text-sm font-medium">
+              Newsletter subscribers occasionally receive free credits for our partner AI tools!
             </p>
           </div>
           
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormControl>
-                      <Input 
-                        placeholder="Enter your email" 
-                        type="email" 
-                        className="h-11" 
-                        disabled={isLoading || isSuccess}
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <Button 
-                type="submit" 
-                className="h-11 px-6"
-                disabled={isLoading || isSuccess}
+          {isSubscribed ? (
+            <div className="flex flex-col items-center bg-background/50 rounded-lg p-6">
+              <CheckCircle className="h-12 w-12 text-green-500 mb-2" />
+              <h3 className="text-xl font-bold">Thank You for Subscribing!</h3>
+              <p className="text-foreground/80 mt-2">
+                You're now on the list! Check your inbox for a confirmation and stay tuned for AI updates and exclusive offers.
+              </p>
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubscribe}
+              className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
+            >
+              <div className="flex-grow">
+                <Input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="w-full h-12 bg-background"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <Button
+                type="submit"
+                className="h-12 px-8"
+                disabled={isLoading}
               >
                 {isLoading ? (
-                  <div className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Subscribing...
-                  </div>
-                ) : isSuccess ? (
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Subscribed!
-                  </div>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   "Subscribe"
                 )}
               </Button>
             </form>
-          </Form>
-          
-          <p className="text-xs text-muted-foreground mt-4">
-            By subscribing, you agree to our{" "}
-            <a href="/terms" className="underline">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="/privacy" className="underline">
-              Privacy Policy
-            </a>
-            .
+          )}
+          <p className="text-xs text-foreground/60 mt-4">
+            We respect your privacy. Unsubscribe at any time.
           </p>
         </div>
       </div>
