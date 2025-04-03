@@ -1,16 +1,121 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Briefcase, MapPin, Clock, Check, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Briefcase, MapPin, Clock, Check, ArrowRight, Upload, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { supabase } from "@/lib/supabaseClient";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+const resumeFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  role: z.string().min(2, "Role must be at least 2 characters"),
+  message: z.string().optional(),
+  resumeFile: z.any().optional(),
+});
 
 const Careers = () => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const form = useForm<z.infer<typeof resumeFormSchema>>({
+    resolver: zodResolver(resumeFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      role: "",
+      message: "",
+    },
+  });
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const onSubmit = async (values: z.infer<typeof resumeFormSchema>) => {
+    setIsSubmitting(true);
+
+    try {
+      // First, insert the application record
+      const { data: application, error: insertError } = await supabase
+        .from('career_applications')
+        .insert({
+          name: values.name,
+          email: values.email,
+          role: values.role,
+          message: values.message || null,
+        })
+        .select('id')
+        .single();
+
+      if (insertError) throw insertError;
+
+      // If there's a resume file, upload it
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${application.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `resumes/${fileName}`;
+
+        // Upload the file to Supabase Storage
+        const { error: uploadError } = await supabase.storage
+          .from('careers')
+          .upload(filePath, selectedFile);
+
+        if (uploadError) throw uploadError;
+
+        // Update the record with the resume URL
+        const { error: updateError } = await supabase
+          .from('career_applications')
+          .update({ resume_url: filePath })
+          .eq('id', application.id);
+
+        if (updateError) throw updateError;
+      }
+
+      setIsSuccess(true);
+      form.reset();
+      setSelectedFile(null);
+      toast({
+        title: "Application submitted!",
+        description: "We've received your application and will get back to you soon.",
+      });
+    } catch (error: any) {
+      console.error('Error submitting application:', error);
+      toast({
+        title: "Error submitting application",
+        description: error.message || "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const openPositions = [
     {
@@ -142,7 +247,9 @@ const Careers = () => {
                           </span>
                         </div>
                       </div>
-                      <Button>Apply Now</Button>
+                      <Button asChild>
+                        <a href="#apply">Apply Now</a>
+                      </Button>
                     </div>
                   </div>
                   <div className="p-6">
@@ -156,24 +263,135 @@ const Careers = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button variant="ghost" className="mt-4 text-primary">
-                      Learn More <ArrowRight className="ml-1 w-4 h-4" />
-                    </Button>
                   </div>
                 </div>
               ))}
             </div>
           </div>
           
-          {/* No Positions Right Now */}
-          <div className="bg-secondary/30 rounded-xl p-8 text-center max-w-2xl mx-auto">
-            <h3 className="text-xl font-bold mb-3">Don't see the right position?</h3>
-            <p className="text-foreground/80 mb-6">
-              We're always looking for talented individuals to join our team. Send us your resume and tell us how you can contribute.
+          {/* Application Form */}
+          <div id="apply" className="bg-white rounded-xl shadow-subtle p-8 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold mb-6">Apply Now</h2>
+            <p className="text-foreground/80 mb-8">
+              Upload your resume and our team will get back to you if your skills match our current openings.
             </p>
-            <Button>
-              Send Open Application
-            </Button>
+            
+            {isSuccess ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Check className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Application Received!</h3>
+                <p className="text-foreground/80 mb-6">
+                  Thank you for your interest in joining our team. We'll review your application and reach out if there's a good match.
+                </p>
+                <Button onClick={() => setIsSuccess(false)}>Submit Another Application</Button>
+              </div>
+            ) : (
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter your full name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="your@email.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role You're Applying For</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Job title or position" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Cover Letter (Optional)</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Tell us a bit about yourself and why you're interested in this position"
+                            className="min-h-32"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="space-y-2">
+                    <FormLabel>Resume</FormLabel>
+                    <div className="border border-dashed border-border rounded-lg p-4">
+                      <div className="flex flex-col items-center justify-center py-4">
+                        <Upload className="h-10 w-10 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground mb-1">
+                          {selectedFile ? selectedFile.name : "Upload your resume"}
+                        </p>
+                        <p className="text-xs text-muted-foreground mb-3">PDF or Word document up to 5MB</p>
+                        <div className="relative">
+                          <Input 
+                            id="resumeFile"
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            onChange={handleFileChange}
+                            className="absolute inset-0 opacity-0 z-10 cursor-pointer"
+                          />
+                          <Button variant="outline" size="sm" type="button">
+                            Browse Files
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit Application"
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            )}
           </div>
         </div>
       </main>

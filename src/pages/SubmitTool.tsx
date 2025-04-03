@@ -39,6 +39,10 @@ const formSchema = z.object({
   category: z.string().min(1, "Please select a category"),
   pricing: z.string().min(1, "Please select a pricing tier"),
   email: z.string().email("Please enter a valid email address"),
+  founderName: z.string().min(2, "Founder name must be at least 2 characters"),
+  founderEmail: z.string().email("Please enter a valid founder email address"),
+  submitterName: z.string().min(2, "Your name must be at least 2 characters"),
+  submitterRole: z.string().optional(),
 });
 
 const SubmitTool = () => {
@@ -88,6 +92,10 @@ const SubmitTool = () => {
       category: "",
       pricing: "",
       email: "",
+      founderName: "",
+      founderEmail: "",
+      submitterName: "",
+      submitterRole: "",
     },
   });
 
@@ -106,7 +114,11 @@ const SubmitTool = () => {
           logo_url: values.logoUrl || "https://placehold.co/100x100?text=AI",
           category: values.category,
           pricing: values.pricing,
-          email: values.email
+          email: values.email,
+          founder_name: values.founderName,
+          founder_email: values.founderEmail,
+          submitter_name: values.submitterName,
+          submitter_role: values.submitterRole || "Not specified"
         });
       
       if (error) {
@@ -167,6 +179,8 @@ const SubmitTool = () => {
             <div className="bg-card rounded-lg border shadow-sm p-6 md:p-8">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <h2 className="text-xl font-semibold border-b pb-2 mb-4">Tool Information</h2>
+                  
                   <FormField
                     control={form.control}
                     name="name"
@@ -334,13 +348,84 @@ const SubmitTool = () => {
                       )}
                     />
                   </div>
+
+                  <h2 className="text-xl font-semibold border-b pb-2 mb-4 pt-4">Founder Information</h2>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="founderName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Founder's Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter the founder's name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="founderEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Founder's Email</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="email" 
+                              placeholder="founder@company.com" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <h2 className="text-xl font-semibold border-b pb-2 mb-4 pt-4">Your Information</h2>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="submitterName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Your Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="submitterRole"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Your Role</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Marketing Manager, CEO, etc. (Optional)" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   
                   <FormField
                     control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Contact Email</FormLabel>
+                        <FormLabel>Your Email</FormLabel>
                         <FormControl>
                           <Input type="email" placeholder="your@email.com" {...field} />
                         </FormControl>

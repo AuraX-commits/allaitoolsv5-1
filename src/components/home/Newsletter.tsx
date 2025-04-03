@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabaseClient";
+import { Gift } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -76,6 +77,13 @@ const Newsletter = () => {
           <p className="text-xl text-muted-foreground mb-8">
             Get weekly updates on new AI tools, features, and trends delivered straight to your inbox.
           </p>
+          
+          <div className="bg-primary/5 rounded-xl p-4 mb-8 flex items-start gap-3">
+            <Gift className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-left">
+              <span className="font-medium">Subscriber Exclusive:</span> Newsletter subscribers occasionally receive free credits and special offers from our partner AI tools companies.
+            </p>
+          </div>
           
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
