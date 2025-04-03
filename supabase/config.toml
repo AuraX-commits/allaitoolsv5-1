@@ -27,6 +27,6 @@ enabled = true
 [realtime]
 enabled = true
 
-[edge_functions]
-[edge_functions.recommend-tools]
+[functions]
+[functions.recommend-tools]
 verify_jwt = false
