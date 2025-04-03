@@ -7,6 +7,7 @@ import ToolsDirectory from "../components/home/ToolsDirectory";
 import ComparisonSection from "../components/home/ComparisonSection";
 import CategoryGrid from "../components/home/CategoryGrid";
 import Newsletter from "../components/home/Newsletter";
+import RecommendationPromo from "../components/home/RecommendationPromo";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -51,6 +52,7 @@ const Index = () => {
         <Hero />
         <ToolsDirectory />
         <CategoryGrid />
+        <RecommendationPromo />
         <ComparisonSection />
         <Newsletter />
       </main>

@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { 
-  Card, 
+  Card,
   CardContent, 
   CardDescription, 
   CardHeader, 
@@ -43,35 +43,21 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  role: z.string({
-    required_error: "Please select a role.",
+  interest: z.string({
+    required_error: "Please select an area of interest.",
   }),
   message: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-const availableRoles = [
-  {
-    id: "frontend-engineer",
-    title: "Frontend Engineer",
-    description: "Build and maintain our React/TypeScript web applications with modern UX/UI patterns.",
-  },
-  {
-    id: "backend-engineer",
-    title: "Backend Engineer",
-    description: "Develop robust APIs, database schemas, and serverless functions.",
-  },
-  {
-    id: "fullstack-engineer",
-    title: "Full Stack Engineer",
-    description: "Work across the entire stack to deliver complete product features.",
-  },
-  {
-    id: "product-manager",
-    title: "Product Manager",
-    description: "Define product vision, strategy and roadmap for our AI tools directory.",
-  },
+const interestAreas = [
+  { id: "developer", title: "Developer" },
+  { id: "designer", title: "Designer" },
+  { id: "marketer", title: "Marketing" },
+  { id: "product", title: "Product" },
+  { id: "content", title: "Content Creation" },
+  { id: "other", title: "Other" },
 ];
 
 const Careers = () => {
@@ -85,7 +71,7 @@ const Careers = () => {
     defaultValues: {
       name: "",
       email: "",
-      role: "",
+      interest: "",
       message: "",
     },
   });
@@ -160,7 +146,7 @@ const Careers = () => {
         {
           name: values.name,
           email: values.email,
-          role: values.role,
+          interest: values.interest,
           message: values.message || null,
           resume_url: resumeUrl,
         },
@@ -205,27 +191,15 @@ const Careers = () => {
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">Join Our Team</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Help us build the world's most comprehensive and useful AI tools directory.
-              We're looking for passionate individuals to join our mission.
+              We're always looking for talented individuals to join our mission of building the world's most comprehensive AI tools directory.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            {availableRoles.map((role) => (
-              <Card key={role.id}>
-                <CardHeader>
-                  <CardTitle>{role.title}</CardTitle>
-                  <CardDescription>Remote • Full-time</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>{role.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
           <div className="bg-card border rounded-lg p-8">
-            <h2 className="text-2xl font-bold mb-6">Apply Now</h2>
+            <h2 className="text-2xl font-bold mb-6">Submit Your Resume</h2>
+            <p className="text-muted-foreground mb-6">
+              Even if we don't have any open positions right now, we're always interested in connecting with talented people. Send us your resume and we'll keep you in mind for future opportunities.
+            </p>
             
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -259,23 +233,23 @@ const Careers = () => {
 
                 <FormField
                   control={form.control}
-                  name="role"
+                  name="interest"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Position You're Applying For*</FormLabel>
+                      <FormLabel>Area of Interest*</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a position" />
+                            <SelectValue placeholder="Select your area of interest" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {availableRoles.map((role) => (
-                            <SelectItem key={role.id} value={role.id}>
-                              {role.title}
+                          {interestAreas.map((area) => (
+                            <SelectItem key={area.id} value={area.id}>
+                              {area.title}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -323,7 +297,7 @@ const Careers = () => {
                       <FormLabel>Cover Letter / Additional Information (Optional)</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Tell us why you're interested in this position and why you're a good fit..."
+                          placeholder="Tell us about your experience, skills, and why you're interested in joining our team..."
                           className="min-h-[150px]"
                           {...field}
                         />

@@ -1,10 +1,14 @@
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
   <style>
-    path { fill: #7c3aed; }
+    .primary-fill { fill: #7c3aed; }
+    .secondary-fill { fill: #a78bfa; opacity: 0.7; }
     @media (prefers-color-scheme: dark) {
-      path { fill: #a78bfa; }
+      .primary-fill { fill: #a78bfa; }
+      .secondary-fill { fill: #7c3aed; opacity: 0.7; }
     }
   </style>
-  <path d="M50 5C25.1 5 5 25.1 5 50s20.1 45 45 45 45-20.1 45-45S74.9 5 50 5zm-6.8 66.2h-10V28.8h10v42.4zm23.6 0h-10V28.8h10v42.4zm-11.8 0h-10V28.8h10v42.4z" />
+  <circle cx="50" cy="50" r="45" class="primary-fill" />
+  <path d="M35 30L65 30A5 5 0 0 1 70 35L70 65A5 5 0 0 1 65 70L35 70A5 5 0 0 1 30 65L30 35A5 5 0 0 1 35 30Z" class="secondary-fill" />
+  <path d="M50 25V75M25 50H75" stroke="white" stroke-width="8" stroke-linecap="round"/>
 </svg>

@@ -1,10 +1,11 @@
 
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Bot, Loader2 } from "lucide-react";
+import { Bot, Loader2, ExternalLink, Check, ArrowRight } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ type Recommendation = {
 
 const ToolRecommender = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
 
@@ -72,7 +74,8 @@ const ToolRecommender = () => {
       console.log("Recommendations response:", data);
 
       if (data && data.recommendations && Array.isArray(data.recommendations)) {
-        setRecommendations(data.recommendations);
+        // Limit to showing only 4 recommendations maximum
+        setRecommendations(data.recommendations.slice(0, 4));
       } else {
         console.error("Invalid recommendations format:", data);
         throw new Error("Received invalid recommendation data");
@@ -87,6 +90,11 @@ const ToolRecommender = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const navigateToToolPage = (toolId: string, toolName: string) => {
+    const slug = toolName.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/tool/${toolId}/${slug}`);
   };
 
   return (
@@ -195,7 +203,7 @@ const ToolRecommender = () => {
           {recommendations.length > 0 && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold">Recommended Tools</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {recommendations.map((tool) => (
                   <Card key={tool.id} className="overflow-hidden flex flex-col h-full">
                     <CardHeader className="pb-3">
@@ -229,9 +237,24 @@ const ToolRecommender = () => {
                         <p className="text-sm">{tool.reasoning}</p>
                       </div>
                     </CardContent>
-                    <CardFooter className="pt-0">
-                      <Button asChild className="w-full">
-                        <a href={tool.url} target="_blank" rel="noopener noreferrer">Visit Tool</a>
+                    <CardFooter className="pt-0 flex flex-col sm:flex-row gap-2 w-full">
+                      <Button 
+                        variant="default" 
+                        className="w-full"
+                        onClick={() => navigateToToolPage(tool.id, tool.name)}
+                      >
+                        View Tool Details <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(tool.url, '_blank', 'noopener,noreferrer');
+                        }}
+                        aria-label={`Visit ${tool.name} website`}
+                      >
+                        Visit Website <ExternalLink className="ml-2 h-3 w-3" />
                       </Button>
                     </CardFooter>
                   </Card>
