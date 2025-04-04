@@ -1,13 +1,14 @@
 
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.error(
@@ -15,6 +16,29 @@ const NotFound = () => {
       location.pathname
     );
   }, [location.pathname]);
+  
+  // Try to handle potential routing issues
+  useEffect(() => {
+    // Check if this was likely a direct URL access that should have been handled
+    const potentialValidRoutes = [
+      { path: '/categories', check: (p:string) => p.startsWith('/categories') },
+      { path: '/tool', check: (p:string) => p.startsWith('/tool/') },
+      { path: '/blog', check: (p:string) => p.startsWith('/blog/') },
+    ];
+    
+    const matchedRoute = potentialValidRoutes.find(route => 
+      route.check(location.pathname)
+    );
+    
+    if (matchedRoute) {
+      // If we detected a potentially valid route pattern that failed
+      console.log(`Potentially valid route detected: ${location.pathname}`);
+    }
+  }, [location.pathname]);
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -29,9 +53,13 @@ const NotFound = () => {
             The page at <code className="bg-gray-200 px-2 py-1 rounded">{location.pathname}</code> wasn't found.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button onClick={goBack} variant="outline">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Go Back
+            </Button>
             <Button asChild variant="default">
               <Link to="/">
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <Home className="mr-2 h-4 w-4" />
                 Return to Home
               </Link>
             </Button>

@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>All AI Tools - Discover & Compare Top AI Tools</title>
     <meta name="description" content="Discover & Compare the Best AI Tools for your needs. Our comprehensive directory includes reviews, features, and pricing for hundreds of AI tools." />
     <meta name="author" content="AITools Directory" />
@@ -21,10 +21,36 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    
+    <!-- Add base tag to support direct routes -->
+    <base href="/" />
+    
+    <!-- Add scroll behavior styles -->
+    <style>
+      html, body {
+        scroll-behavior: smooth;
+        position: relative;
+        width: 100%;
+        overflow-x: hidden;
+      }
+      
+      @media (max-width: 768px) {
+        .z-index-fix {
+          z-index: auto !important;
+          position: relative !important;
+        }
+        
+        .scroll-container {
+          overflow-x: hidden;
+          width: 100%;
+          position: relative;
+        }
+      }
+    </style>
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root" class="scroll-container"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

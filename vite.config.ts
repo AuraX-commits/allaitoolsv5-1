@@ -8,6 +8,21 @@ export default defineConfig({
   server: {
     host: "::",
     port: 8080,
+    // Add history API fallback for SPA routing
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/.*$/, to: '/index.html' },
+      ],
+    },
+  },
+  preview: {
+    port: 8080,
+    // Also add for preview server
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/.*$/, to: '/index.html' },
+      ],
+    },
   },
   plugins: [
     react(),
@@ -17,4 +32,6 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Add base URL configuration to ensure assets load correctly
+  base: "/",
 });
