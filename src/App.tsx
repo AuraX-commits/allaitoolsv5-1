@@ -35,8 +35,8 @@ const App = () => (
     <HelmetProvider>
       <AuthProvider>
         <TooltipProvider>
+          {/* Only include one toast provider to avoid conflicts */}
           <Toaster />
-          <Sonner />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
