@@ -20,8 +20,17 @@ export default defineConfig({
   build: {
     // Enable minification for production builds
     minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     // Configure chunk size optimization
     chunkSizeWarningLimit: 1000,
+    assetsInlineLimit: 4096, // Inline assets smaller than 4KB
+    cssCodeSplit: true,
+    sourcemap: false, // Disable sourcemaps in production for smaller files
     rollupOptions: {
       output: {
         // Improve chunking strategy
@@ -30,6 +39,8 @@ export default defineConfig({
             'react', 
             'react-dom', 
             'react-router-dom',
+          ],
+          tanstack: [
             '@tanstack/react-query'
           ],
           ui: [
@@ -40,9 +51,33 @@ export default defineConfig({
             'class-variance-authority',
             'clsx',
             'tailwind-merge'
+          ],
+          forms: [
+            'react-hook-form',
+            '@hookform/resolvers',
+            'zod'
+          ],
+          charts: [
+            'recharts'
           ]
-        }
+        },
+        // Ensure chunks don't change names between builds
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
       }
-    }
+    },
+    // Add cache-busting for assets
+    reportCompressedSize: false // Skip compressed size reporting for faster builds
+  },
+  // Add special build optimizations
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      '@tanstack/react-query'
+    ],
+    exclude: ['@capacitor/core'] // Example for excluding packages that cause issues
   }
 });
