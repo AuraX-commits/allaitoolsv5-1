@@ -188,20 +188,20 @@ const ToolsDirectory = () => {
           />
         </div>
 
-        {/* Results */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Results - Fixed grid layout with containment for mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
           {filteredTools.length > 0 ? (
             filteredTools.map((tool) => (
               <Link 
                 key={tool.id} 
                 to={`/tool/${tool.id}`}
-                className="block group"
+                className="block group relative"
               >
                 <ToolCard tool={tool} showSelection={false} />
               </Link>
             ))
           ) : (
-            <div className="col-span-3 py-16 text-center">
+            <div className="col-span-full py-16 text-center">
               <h3 className="text-xl font-medium mb-2">No tools found</h3>
               <p className="text-muted-foreground mb-4">
                 Try adjusting your search or filters to find what you're looking for.

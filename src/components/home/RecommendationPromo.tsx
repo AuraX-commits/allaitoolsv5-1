@@ -8,9 +8,9 @@ const RecommendationPromo = () => {
   const navigate = useNavigate();
   
   return (
-    <section className="py-12 bg-gradient-to-b from-background to-secondary/10">
+    <section className="py-12 bg-gradient-to-b from-secondary/10 to-background">
       <div className="container px-4">
-        <Card className="overflow-hidden border-primary/20">
+        <Card className="overflow-hidden border-primary/20 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-5">
             <div className="md:col-span-3 p-8">
               <CardHeader className="p-0 mb-4">

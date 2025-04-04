@@ -50,9 +50,9 @@ const Index = () => {
       <Navbar />
       <main>
         <Hero />
+        <RecommendationPromo />
         <ToolsDirectory />
         <CategoryGrid />
-        <RecommendationPromo />
         <ComparisonSection />
         <Newsletter />
       </main>
