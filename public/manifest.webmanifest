@@ -23,5 +23,8 @@
       "sizes": "512x512",
       "type": "image/svg+xml"
     }
-  ]
+  ],
+  "caching": {
+    "strategy": "network-first"
+  }
 }
