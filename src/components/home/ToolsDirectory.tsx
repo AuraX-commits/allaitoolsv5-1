@@ -102,6 +102,11 @@ const ToolsDirectory = () => {
       sortBy: "rating"
     });
   };
+  
+  // Function to generate URL-friendly slug from tool name
+  const generateSlug = (name: string): string => {
+    return name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+  };
 
   // Show loading state
   if (isLoading) {
@@ -194,7 +199,7 @@ const ToolsDirectory = () => {
             filteredTools.map((tool) => (
               <Link 
                 key={tool.id} 
-                to={`/tool/${tool.id}`}
+                to={`/tool/${tool.id}/${generateSlug(tool.name)}`}
                 className="block group relative"
               >
                 <ToolCard tool={tool} showSelection={false} />
