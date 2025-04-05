@@ -82,6 +82,13 @@ const Navbar = () => {
             Pricing
           </Link>
           <Link
+            to="/recommend"
+            className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Recommend
+          </Link>
+          <Link
             to="/blog"
             className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
             onClick={handleNavigation}
@@ -204,6 +211,13 @@ const Navbar = () => {
             onClick={handleNavigation}
           >
             Pricing
+          </Link>
+          <Link
+            to="/recommend"
+            className="block rounded-md px-3 py-2 text-base font-medium hover:bg-secondary"
+            onClick={handleNavigation}
+          >
+            Recommend
           </Link>
           <Link
             to="/blog"
