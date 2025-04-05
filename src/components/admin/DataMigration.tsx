@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { migrateToolsToSupabase, migrateNewToolsToSupabase, checkExistingTools, fetchCategories, fetchPricingOptions } from '@/utils/migrateToolsToSupabase';
 import { AlertCircle, CheckCircle2, Database, Download, Upload, RefreshCw, List, Plus } from 'lucide-react';
-import { aiTools } from '@/utils/toolsData';
 import { supabase } from '@/integrations/supabase/client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from '../ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { AITool } from '@/utils/toolsData';
 
 export function DataMigration() {
   const [checking, setChecking] = useState(false);
@@ -17,6 +17,7 @@ export function DataMigration() {
   const [migratingNew, setMigratingNew] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [loadingCategories, setLoadingCategories] = useState(false);
+  const [toolCount, setToolCount] = useState(0);
   const [categories, setCategories] = useState<string[]>([]);
   const [pricingOptions, setPricingOptions] = useState<string[]>([]);
   const { toast } = useToast();
@@ -31,7 +32,21 @@ export function DataMigration() {
     handleCheckData();
     // Load categories and pricing options
     loadCategoriesAndPricing();
+    // Get count of tools in the database
+    fetchToolCount();
   }, []);
+
+  const fetchToolCount = async () => {
+    try {
+      const { count } = await supabase
+        .from('ai_tools')
+        .select('*', { count: 'exact', head: true });
+      
+      setToolCount(count || 0);
+    } catch (error) {
+      console.error('Error getting tool count:', error);
+    }
+  };
 
   const loadCategoriesAndPricing = async () => {
     setLoadingCategories(true);
@@ -245,8 +260,8 @@ export function DataMigration() {
           <CardContent>
             <div className="space-y-4">
               <div className="bg-muted/50 p-4 rounded-md">
-                <h3 className="font-medium mb-2">Static Data Status</h3>
-                <p>You have {aiTools.length} tools in your static data file.</p>
+                <h3 className="font-medium mb-2">Database Status</h3>
+                <p>You have {toolCount} tools in your Supabase database.</p>
               </div>
               
               {status && (
@@ -264,14 +279,6 @@ export function DataMigration() {
                   )}
                   <div>
                     <p>{status.message}</p>
-                    {status.type === 'success' && status.count !== undefined && (
-                      <p className="text-sm mt-1">
-                        {status.count === aiTools.length 
-                          ? 'All tools have been successfully processed.'
-                          : `Note: The count differs from your static data (${aiTools.length} tools).`
-                        }
-                      </p>
-                    )}
                   </div>
                 </div>
               )}

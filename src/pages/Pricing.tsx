@@ -2,13 +2,34 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
-import { pricingOptions, aiTools } from "@/utils/toolsData";
+import { pricingOptions, AITool, mapRowToAITool } from "@/utils/toolsData";
 import ToolCard from "../components/home/ToolCard";
 import { Helmet } from "react-helmet-async";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabaseClient";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Pricing = () => {
   const [selectedPricing, setSelectedPricing] = useState<string>("All");
-  const [filteredTools, setFilteredTools] = useState(aiTools);
+  const [filteredTools, setFilteredTools] = useState<AITool[]>([]);
+
+  // Fetch tools from Supabase
+  const { data: aiTools = [], isLoading, error } = useQuery({
+    queryKey: ['aiTools'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ai_tools')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching tools:', error);
+        throw new Error(error.message);
+      }
+      
+      // Map database rows to AITool objects
+      return data.map(mapRowToAITool);
+    }
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -18,7 +39,60 @@ const Pricing = () => {
     } else {
       setFilteredTools(aiTools);
     }
-  }, [selectedPricing]);
+  }, [selectedPricing, aiTools]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="pt-24 pb-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mx-auto text-center mb-12">
+              <h1 className="text-3xl font-bold mb-4">AI Tools by Pricing</h1>
+              <p className="text-foreground/80">
+                Browse our collection of AI tools by pricing model to find the perfect solution that fits your budget and needs.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-card rounded-lg shadow-sm overflow-hidden border border-border">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-5">
+                    <Skeleton className="h-6 w-2/3 mb-2" />
+                    <Skeleton className="h-4 w-full mb-4" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="pt-24 pb-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mx-auto text-center mb-12">
+              <h1 className="text-3xl font-bold mb-4">Oops! Something went wrong</h1>
+              <p className="text-foreground/80">
+                We're having trouble loading the tools. Please try again later.
+              </p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -88,7 +162,7 @@ const Pricing = () => {
                 filteredTools.map((tool) => (
                   <div 
                     key={tool.id} 
-                    onClick={() => window.location.href = `/tool/${tool.id}`}
+                    onClick={() => window.location.href = `/tool/${tool.id}/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="cursor-pointer"
                   >
                     <ToolCard 

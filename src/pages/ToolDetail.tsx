@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ExternalLink, Star, Check, ChevronRight, ChevronLeft } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
-import { aiTools, type AITool, mapRowToAITool } from "@/utils/toolsData";
+import { type AITool, mapRowToAITool } from "@/utils/toolsData";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,7 +38,7 @@ const ToolDetail = () => {
     const fetchTool = async () => {
       setIsLoading(true);
       try {
-        // First try to get the tool from Supabase
+        // Get the tool from Supabase
         const { data, error } = await supabase
           .from('ai_tools')
           .select('*')
@@ -47,20 +47,8 @@ const ToolDetail = () => {
 
         if (error) {
           console.error("Error fetching from Supabase:", error);
-          // If there's an error with Supabase, fall back to local data
-          const localTool = aiTools.find(tool => tool.id === id);
-          if (localTool) {
-            setTool(localTool);
-            
-            // Get next and previous tools for navigation
-            const currentIndex = aiTools.findIndex(t => t.id === id);
-            setNextTool(aiTools[currentIndex + 1] || null);
-            setPrevTool(aiTools[currentIndex - 1] || null);
-          } else {
-            // If tool not found in either source, handle the error
-            console.error("Tool not found");
-            setTool(null);
-          }
+          // If there's an error with Supabase, handle the error
+          setTool(null);
         } else {
           // If we successfully got the tool from Supabase
           const mappedTool = mapRowToAITool(data);
@@ -81,6 +69,7 @@ const ToolDetail = () => {
         }
       } catch (error) {
         console.error("Error fetching tool:", error);
+        setTool(null);
       } finally {
         setIsLoading(false);
       }

@@ -21,6 +21,9 @@ export interface AITool {
   useCases?: string[];
 }
 
+// Empty array of AI tools (since we're using the database now)
+export const aiTools: AITool[] = [];
+
 // Create a type for the database row
 export type AIToolRow = Database['public']['Tables']['ai_tools']['Row'];
 
