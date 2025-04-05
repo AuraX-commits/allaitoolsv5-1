@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Bot, Loader2, ExternalLink, Check, ArrowRight } from "lucide-react";
+import { Bot, Loader2, ExternalLink, Check, ArrowRight, AlertCircle } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const formSchema = z.object({
   requirements: z.string().min(10, "Requirements must be at least 10 characters long"),
@@ -49,6 +50,7 @@ const ToolRecommender = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,6 +62,7 @@ const ToolRecommender = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     setRecommendations([]);
+    setError(null);
 
     try {
       const { data, error } = await supabase.functions.invoke("recommend-tools", {
@@ -73,15 +76,24 @@ const ToolRecommender = () => {
 
       console.log("Recommendations response:", data);
 
+      if (data && data.error) {
+        throw new Error(data.error);
+      }
+
       if (data && data.recommendations && Array.isArray(data.recommendations)) {
-        // Limit to showing only 4 recommendations maximum
-        setRecommendations(data.recommendations.slice(0, 4));
+        if (data.recommendations.length === 0) {
+          setError("No matching tools found for your requirements. Try being more specific or explore our tools directory.");
+        } else {
+          // Limit to showing only 4 recommendations maximum
+          setRecommendations(data.recommendations.slice(0, 4));
+        }
       } else {
         console.error("Invalid recommendations format:", data);
         throw new Error("Received invalid recommendation data");
       }
     } catch (error) {
       console.error("Error in recommendation process:", error);
+      setError(error instanceof Error ? error.message : "Failed to get recommendations");
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to get recommendations",
@@ -93,7 +105,7 @@ const ToolRecommender = () => {
   };
 
   const navigateToToolPage = (toolId: string, toolName: string) => {
-    const slug = toolName.toLowerCase().replace(/\s+/g, '-');
+    const slug = toolName.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
     navigate(`/tool/${toolId}/${slug}`);
   };
 
@@ -199,6 +211,16 @@ const ToolRecommender = () => {
               </Form>
             </CardContent>
           </Card>
+
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                {error}
+              </AlertDescription>
+            </Alert>
+          )}
 
           {recommendations.length > 0 && (
             <div className="space-y-6">
