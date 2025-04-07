@@ -9,6 +9,7 @@ import { AITool, mapRowToAITool } from "@/utils/toolsData";
 import Badge from "../components/common/Badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
 const Compare = () => {
   const location = useLocation();
@@ -20,20 +21,29 @@ const Compare = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    const params = new URLSearchParams(location.search);
-    const toolIds = params.get("tools")?.split(",") || [];
-    
     const fetchTools = async () => {
       setIsLoading(true);
       
       try {
+        const params = new URLSearchParams(location.search);
+        const toolIdParam = params.get("tools");
+        
+        let toolIds: string[] = [];
+        if (toolIdParam) {
+          toolIds = toolIdParam.includes(",") 
+            ? toolIdParam.split(",") 
+            : [toolIdParam];
+          
+          toolIds = toolIds.filter(id => id.trim() !== "");
+        }
+        
         if (toolIds.length > 0) {
-          const uniqueToolIds = [...new Set(toolIds)];
+          console.log("Fetching tools with IDs:", toolIds);
           
           const { data, error } = await supabase
             .from('ai_tools')
             .select('*')
-            .in('id', uniqueToolIds);
+            .in('id', toolIds);
           
           if (error) {
             console.error('Error fetching tools:', error);
@@ -42,6 +52,7 @@ const Compare = () => {
           }
           
           const mappedTools = data.map(row => mapRowToAITool(row));
+          console.log("Fetched tools:", mappedTools);
           
           if (mappedTools.length === 1) {
             const singleTool = mappedTools[0];
@@ -50,10 +61,11 @@ const Compare = () => {
               .select('*')
               .in('category', singleTool.category)
               .neq('id', singleTool.id)
-              .limit(1);
+              .limit(3);
               
             if (!relatedError && relatedToolsData && relatedToolsData.length > 0) {
-              mappedTools.push(mapRowToAITool(relatedToolsData[0]));
+              const relatedTools = relatedToolsData.slice(0, 2).map(mapRowToAITool);
+              mappedTools.push(...relatedTools);
             }
           }
           
@@ -66,7 +78,7 @@ const Compare = () => {
           const { data, error } = await supabase
             .from('ai_tools')
             .select('*')
-            .limit(2);
+            .limit(3);
             
           if (error) {
             console.error('Error fetching default tools:', error);

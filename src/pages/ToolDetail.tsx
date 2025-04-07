@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -86,11 +85,11 @@ const ToolDetail = () => {
     navigate(`/tool/${toolId}/${slug}`);
   };
 
-  // Fixed function to handle comparison navigation
+  // Fixed function to navigate to the compare page
   const navigateToCompare = () => {
-    if (tool && tool.id) {
-      // Ensure we're properly passing the tool ID to the compare page
-      navigate(`/compare?tools=${tool.id}`);
+    if (tool?.id) {
+      // Ensure we're encoding the tool ID properly in the URL
+      navigate(`/compare?tools=${encodeURIComponent(tool.id)}`);
     }
   };
 
@@ -348,7 +347,6 @@ const ToolDetail = () => {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    {/* Fixed comparison button with the correct handler */}
                     <Button 
                       variant="outline" 
                       onClick={navigateToCompare} 
