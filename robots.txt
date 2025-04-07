@@ -7,7 +7,18 @@ Allow: /
 Disallow: /admin/
 Disallow: /dashboard/
 
+# Allow search engines to access CSS, JS, and image files
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.gif$
+Allow: /*.svg$
+
+# Crawl delay suggestion (in seconds)
+Crawl-delay: 5
+
 # Sitemaps
 Sitemap: https://www.allaitools.tech/sitemap.xml
 Sitemap: https://www.allaitools.tech/image-sitemap.xml
-
