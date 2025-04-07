@@ -89,6 +89,7 @@ const ToolDetail = () => {
   // Fixed function to handle comparison navigation
   const navigateToCompare = () => {
     if (tool && tool.id) {
+      // Ensure we're properly passing the tool ID to the compare page
       navigate(`/compare?tools=${tool.id}`);
     }
   };

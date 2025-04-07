@@ -27,7 +27,8 @@ Allow: /tool
 # Crawl delay suggestion (in seconds)
 Crawl-delay: 5
 
-# Sitemaps
+# Sitemaps - including the new sitemap index and specialized sitemaps
+Sitemap: https://www.allaitools.tech/sitemap-index.xml
 Sitemap: https://www.allaitools.tech/sitemap.xml
 Sitemap: https://www.allaitools.tech/image-sitemap.xml
 Sitemap: https://www.allaitools.tech/tool-sitemap.xml

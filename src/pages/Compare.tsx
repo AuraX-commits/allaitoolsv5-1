@@ -27,11 +27,13 @@ const Compare = () => {
       setIsLoading(true);
       
       try {
-        if (toolIds.length >= 2) {
+        if (toolIds.length > 0) {
+          const uniqueToolIds = [...new Set(toolIds)];
+          
           const { data, error } = await supabase
             .from('ai_tools')
             .select('*')
-            .in('id', toolIds);
+            .in('id', uniqueToolIds);
           
           if (error) {
             console.error('Error fetching tools:', error);
@@ -40,6 +42,21 @@ const Compare = () => {
           }
           
           const mappedTools = data.map(row => mapRowToAITool(row));
+          
+          if (mappedTools.length === 1) {
+            const singleTool = mappedTools[0];
+            const { data: relatedToolsData, error: relatedError } = await supabase
+              .from('ai_tools')
+              .select('*')
+              .in('category', singleTool.category)
+              .neq('id', singleTool.id)
+              .limit(1);
+              
+            if (!relatedError && relatedToolsData && relatedToolsData.length > 0) {
+              mappedTools.push(mapRowToAITool(relatedToolsData[0]));
+            }
+          }
+          
           setTools(mappedTools);
           
           if (isMobile && mappedTools.length > 2) {
