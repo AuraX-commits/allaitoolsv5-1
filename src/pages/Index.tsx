@@ -20,7 +20,7 @@ const Index = () => {
   
   const seoKeywords = "AI tools, artificial intelligence tools, AI software directory, AI tool comparison, text generation AI, image AI tools, AI coding assistants, AI chatbots, AI writing tools, best AI tools 2025, free AI tools, AI for business, AI productivity tools, AI content creation, AI design tools, AI data analysis, AI marketing tools, AI for developers, AI research tools, generative AI tools, AI image generators, AI video creators, AI code generators, language model tools, AI transcription services, AI translation tools, AI customer service, AI for education, AI decision support, AI analytics tools, multimodal AI models, enterprise AI solutions, AI recommendation engines, no-code AI tools, large language models, AI automation, ChatGPT alternatives, Midjourney alternatives, DALL-E alternatives, AI voice generators, AI audio tools, AI SEO tools, AI copywriting tools, AI personal assistants, AI project management, AI meeting assistants, GPT-powered tools, enterprise AI software, AI browser extensions, AI APIs, AI-powered search, AI document analysis, AI legal tools, AI healthcare solutions, AI email assistants, AI presentation creators, AI summarization tools, AI grammar checkers, AI trend analysis, AI sentiment analysis, AI photo editors, AI music generators, AI video editors, AI competitive analysis, AI personalization tools, AI-powered CRM";
 
-  // Additional long-tail SEO keywords for deeper topical coverage
+  // Additional long-tail keywords for deeper topical coverage
   const longTailKeywords = `
     best artificial intelligence tools for small business productivity 2025,
     top AI-powered content creation tools for marketing professionals,
@@ -42,6 +42,30 @@ const Index = () => {
     AI voice and speech synthesis tools for natural-sounding audio content,
     proprietary vs open-source AI solutions comparison and feature analysis,
     AI technologies transforming creative industries and digital content creation
+  `;
+  
+  // Adding 20 three-word keyword phrases for more targeted SEO
+  const threeWordKeywords = `
+    AI content creation,
+    machine learning tools,
+    deep learning software,
+    natural language processing,
+    computer vision applications,
+    data science platforms,
+    AI workflow automation,
+    enterprise AI solutions,
+    prompt engineering tools,
+    text generation APIs,
+    AI image generators,
+    multimodal AI models,
+    AI code assistants,
+    conversational AI chatbots,
+    AI marketing automation,
+    video creation tools,
+    audio synthesis software,
+    AI business intelligence,
+    no-code AI platforms,
+    generative AI applications
   `;
 
   return (
@@ -72,7 +96,7 @@ const Index = () => {
         <meta name="twitter:image" content="/og-image.png" />
         <meta name="twitter:site" content="@AIToolsDirectory" />
         
-        <meta name="keywords" content={`${seoKeywords}, ${longTailKeywords}`} />
+        <meta name="keywords" content={`${seoKeywords}, ${longTailKeywords}, ${threeWordKeywords}`} />
         <link rel="canonical" href="https://www.allaitools.tech" />
         
         <meta name="robots" content="index, follow" />

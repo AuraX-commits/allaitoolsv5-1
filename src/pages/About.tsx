@@ -9,27 +9,83 @@ const About = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const pageTitle = "About Our AI Directory | Expert AI Tool Reviews & Comparisons | AllAITools.tech";
+  const pageDescription = "Learn about AllAITools.tech - the leading authority on AI tool discovery, evaluation, and comparison. Our expert team tests and reviews hundreds of AI tools across 20+ categories to help individuals and businesses find the perfect AI solutions for their unique needs. Discover our mission to democratize access to cutting-edge artificial intelligence technologies through comprehensive, unbiased reviews and detailed comparisons.";
+  
+  const seoKeywords = "about AI directory, AI tools experts, AI software reviewers, artificial intelligence tool curators, AI tool testing team, AI directory mission, AI tools comparison specialists, trustworthy AI reviews, AI tool discovery platform, AI software recommendation service, AI technology consultants, AI tool evaluation metrics, AI directory methodology, AI software rating system, AI tool features analysis, AI price comparison website, AI industry experts, AI product reviews, AI marketplace curators, AI tool database maintainers, AI solution advisors, AI software decision support, AI technology analysts, artificial intelligence advisory, AI tool selection assistance, unbiased AI reviews";
+  
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>About Us | AI Directory - Discover the Best AI Tools</title>
-        <meta 
-          name="description" 
-          content="Learn about AI Directory - your go-to resource for discovering, comparing, and evaluating the best AI tools and software across various categories." 
-        />
-        <meta property="og:title" content="About Us | AI Directory" />
-        <meta 
-          property="og:description" 
-          content="Learn about AI Directory - your go-to resource for discovering, comparing, and evaluating the best AI tools and software across various categories."
-        />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.allaitools.tech/about" />
+        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:site_name" content="All AI Tools Directory" />
+        
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="About Us | AI Directory" />
-        <meta 
-          name="twitter:description" 
-          content="Learn about AI Directory - your go-to resource for discovering, comparing, and evaluating the best AI tools and software across various categories."
-        />
-        <meta name="keywords" content="about AI Directory, AI tools database, artificial intelligence directory, AI software catalog" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content="/og-image.png" />
+        <meta name="twitter:site" content="@AIToolsDirectory" />
+        
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href="https://www.allaitools.tech/about" />
+        
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="AI Tools Directory Team" />
+        
+        {/* Schema.org Organization markup */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "AllAITools.tech",
+              "url": "https://www.allaitools.tech",
+              "logo": "https://www.allaitools.tech/logo.png",
+              "description": "${pageDescription}",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "email": "contact@allaitools.tech",
+                "contactType": "customer service"
+              },
+              "sameAs": [
+                "https://twitter.com/AIToolsDirectory",
+                "https://www.linkedin.com/company/allaitools",
+                "https://www.youtube.com/c/allaitools"
+              ]
+            }
+          `}
+        </script>
+        
+        {/* Schema.org AboutPage markup */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "AboutPage",
+              "name": "About AllAITools.tech",
+              "description": "${pageDescription}",
+              "publisher": {
+                "@type": "Organization",
+                "name": "AllAITools.tech",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://www.allaitools.tech/logo.png"
+                }
+              },
+              "isPartOf": {
+                "@type": "WebSite",
+                "name": "AllAITools.tech",
+                "url": "https://www.allaitools.tech"
+              }
+            }
+          `}
+        </script>
       </Helmet>
       
       <Navbar />

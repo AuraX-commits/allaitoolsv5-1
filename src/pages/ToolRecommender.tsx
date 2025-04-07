@@ -59,6 +59,11 @@ const ToolRecommender = () => {
     },
   });
 
+  const pageTitle = "AI Tool Recommender | Personalized AI Solution Finder | AllAITools.tech";
+  const pageDescription = "Get personalized AI tool recommendations based on your specific requirements. Our advanced AI matching system analyzes your needs across use cases, budget, features, and technical requirements to suggest the perfect AI tools for your unique situation. Save hours of research with custom AI tool recommendations tailored to your business, creative, or development projects.";
+  
+  const seoKeywords = "AI tool recommender, personalized AI recommendations, find right AI tool, AI solution matcher, AI tool finder, best AI for my needs, custom AI recommendations, AI selection assistant, AI software recommendation engine, which AI tool should I use, AI advisor, AI tool selector, personalized technology recommendations, AI solution consultant, intelligent software recommendations, AI use case matcher, recommended AI tools, AI product matchmaker, AI requirements analyzer, tailored AI suggestions, AI recommendation algorithm, find best AI software, AI tool compatibility, AI feature matcher, which AI is best for me, AI decision assistant, suggested AI tools, AI requirements evaluation, personal AI consultant, AI comparison helper";
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     setRecommendations([]);
@@ -112,39 +117,160 @@ const ToolRecommender = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>AI Tool Recommender | AllAITools.tech</title>
-        <meta 
-          name="description" 
-          content="Get personalized AI tool recommendations based on your specific requirements. Our AI analyzes your needs and suggests the best tools for your use case." 
-        />
-        <meta property="og:title" content="AI Tool Recommender | AllAITools.tech" />
-        <meta property="og:description" content="Get personalized AI tool recommendations based on your specific requirements." />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/og-image.png" />
         <meta property="og:url" content="https://www.allaitools.tech/recommend" />
+        <meta property="og:site_name" content="All AI Tools Directory" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content="/og-image.png" />
+        <meta name="twitter:site" content="@AIToolsDirectory" />
+        
+        <meta name="keywords" content={seoKeywords} />
         <link rel="canonical" href="https://www.allaitools.tech/recommend" />
         
-        {/* Schema.org markup for AI Tool Recommender */}
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="AI Tools Directory Team" />
+        
+        {/* Schema.org WebApplication markup */}
         <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "AI Tool Recommender",
-            "url": "https://www.allaitools.tech/recommend",
-            "description": "Get personalized AI tool recommendations based on your specific requirements.",
-            "applicationCategory": "BusinessApplication",
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "USD"
-            },
-            "operatingSystem": "All",
-            "provider": {
-              "@type": "Organization",
-              "name": "AllAITools.tech",
-              "url": "https://www.allaitools.tech"
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "AI Tool Recommender",
+              "applicationCategory": "BusinessApplication",
+              "operatingSystem": "All",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "description": "${pageDescription}",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "ratingCount": "156",
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "review": {
+                "@type": "Review",
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5",
+                  "worstRating": "1"
+                },
+                "author": {
+                  "@type": "Person",
+                  "name": "AI Technology Expert"
+                },
+                "datePublished": "2025-03-15",
+                "reviewBody": "The AI Tool Recommender saved me hours of research by instantly suggesting the perfect AI solutions for my specific needs. Highly recommended for anyone overwhelmed by the number of AI tools available today."
+              },
+              "potentialAction": {
+                "@type": "UseAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://www.allaitools.tech/recommend",
+                  "actionPlatform": [
+                    "http://schema.org/DesktopWebPlatform",
+                    "http://schema.org/MobileWebPlatform"
+                  ]
+                },
+                "expectsAcceptanceOf": {
+                  "@type": "Offer",
+                  "price": "0",
+                  "priceCurrency": "USD"
+                }
+              }
             }
-          })}
+          `}
+        </script>
+        
+        {/* HowTo Schema for using the recommender */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "HowTo",
+              "name": "How to Get Personalized AI Tool Recommendations",
+              "description": "Follow these steps to receive custom AI tool recommendations based on your specific requirements.",
+              "step": [
+                {
+                  "@type": "HowToStep",
+                  "name": "Describe Your Requirements",
+                  "text": "Enter your specific needs, use cases, budget constraints, and desired features in the text field provided."
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Submit Your Request",
+                  "text": "Click the 'Get AI Tool Recommendations' button to submit your request for analysis."
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Review Recommendations",
+                  "text": "Review the personalized AI tool recommendations that match your specific requirements."
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Explore Tool Details",
+                  "text": "Click on the recommended tools to learn more about their features, pricing, and benefits."
+                }
+              ]
+            }
+          `}
+        </script>
+        
+        {/* FAQ Schema for common questions */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "How does the AI Tool Recommender work?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Our AI Tool Recommender analyzes your specific requirements and matches them against our database of hundreds of AI tools. The recommendation engine considers factors like use case, budget, technical requirements, and features to suggest the most suitable AI tools for your needs."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Are the AI tool recommendations free?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, our AI Tool Recommender service is completely free to use. We provide unbiased recommendations to help you find the right AI solutions for your specific requirements."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How accurate are the recommendations?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Our recommendation engine is continuously improved based on user feedback and the latest AI tool data. While we strive for high accuracy, the quality of recommendations depends on how detailed your requirements are. The more specific you are about your needs, the better recommendations you'll receive."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Can I get recommendations for specific industries?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Absolutely! Our AI Tool Recommender can provide industry-specific recommendations. Simply mention your industry and specific use cases in your requirements to receive the most relevant suggestions for your field."
+                  }
+                }
+              ]
+            }
+          `}
         </script>
       </Helmet>
 

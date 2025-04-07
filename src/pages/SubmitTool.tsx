@@ -90,6 +90,11 @@ const SubmitTool = () => {
     },
   });
 
+  const pageTitle = "Submit Your AI Tool | Get Listed in the Top AI Directory | AllAITools.tech";
+  const pageDescription = "Submit your AI tool for inclusion in the AllAITools.tech directory - the internet's most comprehensive AI tool resource. Increase visibility, attract new users, and join the leading community of innovative AI solutions. Our submission process is simple, and our expert team reviews each tool to ensure quality listings that help users discover the best AI technologies.";
+
+  const seoKeywords = "submit AI tool, list AI software, AI directory submission, add AI tool listing, promote AI application, AI tool directory inclusion, get AI tool listed, AI product submission, AI software directory listing, AI tool promotion, artificial intelligence tool submission, submit new AI tool, AI directory application, list AI product, AI marketplace submission, add to AI directory, AI tool exposure, AI directory listing form, register AI tool, AI software promotion, AI tool visibility, AI listing service, AI product directory, AI tool registration, AI directory inclusion, add AI solution, AI company listing, submit AI software, AI developer directory, AI tool submission guidelines";
+
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
 
@@ -135,11 +140,140 @@ const SubmitTool = () => {
   return (
     <>
       <Helmet>
-        <title>Submit an AI Tool | All AI Tools</title>
-        <meta
-          name="description"
-          content="Submit your AI tool to our directory for review and inclusion."
-        />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.allaitools.tech/submit-tool" />
+        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:site_name" content="All AI Tools Directory" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content="/og-image.png" />
+        <meta name="twitter:site" content="@AIToolsDirectory" />
+        
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href="https://www.allaitools.tech/submit-tool" />
+        
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="AI Tools Directory Team" />
+        
+        {/* Schema.org Form markup */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              "name": "${pageTitle}",
+              "description": "${pageDescription}",
+              "url": "https://www.allaitools.tech/submit-tool",
+              "mainEntity": {
+                "@type": "WebContent",
+                "headline": "Submit Your AI Tool for Review",
+                "about": {
+                  "@type": "Thing",
+                  "name": "AI Tool Submission Process"
+                }
+              },
+              "potentialAction": {
+                "@type": "Action",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://www.allaitools.tech/submit-tool",
+                  "actionPlatform": [
+                    "http://schema.org/DesktopWebPlatform",
+                    "http://schema.org/MobileWebPlatform"
+                  ]
+                }
+              },
+              "speakable": {
+                "@type": "SpeakableSpecification",
+                "cssSelector": ["h1", ".submission-guidelines"]
+              }
+            }
+          `}
+        </script>
+        
+        {/* HowTo Schema for submission process */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "HowTo",
+              "name": "How to Submit Your AI Tool to AllAITools.tech",
+              "description": "Follow these steps to submit your AI tool for inclusion in our comprehensive directory.",
+              "step": [
+                {
+                  "@type": "HowToStep",
+                  "name": "Fill Your Tool Information",
+                  "text": "Provide the name, website URL, category, pricing model, and description of your AI tool."
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Add Creator Details",
+                  "text": "Optionally include founder/creator information to enhance the credibility of your listing."
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Provide Contact Information",
+                  "text": "Enter an email address where our team can reach you regarding your submission."
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Submit for Review",
+                  "text": "Submit your completed form for review by our expert team."
+                }
+              ]
+            }
+          `}
+        </script>
+        
+        {/* FAQ Schema for submission questions */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "Is it free to submit my AI tool to the directory?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, basic listings in the AllAITools.tech directory are completely free. We offer premium listing options with additional visibility features for those who want to highlight their tools."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How long does the review process take?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Our team typically reviews submissions within 3-5 business days. After review, you will receive an email notification about the status of your submission."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What are the criteria for accepting AI tools?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We accept AI tools that demonstrate clear value, functionality, and relevance to our users. Tools must be legitimate, operational, and provide genuine AI capabilities. We prioritize tools with unique features or that solve specific problems."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Can I update my tool information after submission?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, you can request updates to your tool listing at any time by contacting our team. We encourage keeping your information current, especially for pricing changes or new features."
+                  }
+                }
+              ]
+            }
+          `}
+        </script>
       </Helmet>
       <Navbar />
 
