@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -38,7 +37,6 @@ const About = () => {
         <meta name="robots" content="index, follow" />
         <meta name="author" content="AI Tools Directory Team" />
         
-        {/* Schema.org Organization markup */}
         <script type="application/ld+json">
           {`
             {
@@ -62,7 +60,6 @@ const About = () => {
           `}
         </script>
         
-        {/* Schema.org AboutPage markup */}
         <script type="application/ld+json">
           {`
             {
@@ -92,7 +89,6 @@ const About = () => {
       
       <main className="pt-24 pb-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Hero Section */}
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h1 className="text-4xl font-bold mb-6">About AI Directory</h1>
             <p className="text-xl text-foreground/80 leading-relaxed">
@@ -100,7 +96,6 @@ const About = () => {
             </p>
           </div>
           
-          {/* Mission Section */}
           <div className="max-w-3xl mx-auto mb-20">
             <div className="bg-white p-8 rounded-xl shadow-subtle border border-border/60">
               <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
@@ -116,7 +111,6 @@ const About = () => {
             </div>
           </div>
           
-          {/* What We Offer */}
           <div className="mb-20">
             <h2 className="text-2xl font-bold text-center mb-10">What We Offer</h2>
             
@@ -159,7 +153,6 @@ const About = () => {
             </div>
           </div>
           
-          {/* Team Section */}
           <div className="max-w-4xl mx-auto mb-20">
             <h2 className="text-2xl font-bold text-center mb-10">Our Team</h2>
             
@@ -177,7 +170,6 @@ const About = () => {
             </div>
           </div>
           
-          {/* Contact Section */}
           <div className="max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold text-center mb-6">Get in Touch</h2>
             <p className="text-center text-foreground/80 mb-8">
@@ -186,7 +178,7 @@ const About = () => {
             
             <div className="flex justify-center">
               <a 
-                href="mailto:contact@aidirectory.com" 
+                href="mailto:info@allaitools.tech" 
                 className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
               >
                 Contact Us

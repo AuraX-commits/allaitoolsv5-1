@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
@@ -123,8 +122,8 @@ const Contact = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">For general inquiries:</p>
-                  <a href="mailto:info@aidirectory.com" className="text-primary hover:underline">
-                    info@aidirectory.com
+                  <a href="mailto:info@allaitools.tech" className="text-primary hover:underline">
+                    info@allaitools.tech
                   </a>
                 </CardContent>
               </Card>

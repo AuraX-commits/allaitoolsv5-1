@@ -90,7 +90,7 @@ const Terms = () => {
               <p>These Terms shall be governed and construed in accordance with the laws of [Your Country], without regard to its conflict of law provisions.</p>
               
               <h2>13. Contact Us</h2>
-              <p>If you have any questions about these Terms, please contact us at contact@allaitools.tech.</p>
+              <p>If you have any questions about these Terms, please contact us at info@allaitools.tech.</p>
             </div>
           </div>
         </div>
