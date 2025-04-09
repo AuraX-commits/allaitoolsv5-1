@@ -1,23 +1,28 @@
 
-import { aiTools, mapAIToolToRow } from './toolsData';
+import { AITool, mapAIToolToRow } from './toolsData';
 import { supabase } from '@/lib/supabaseClient';
 
 /**
- * This utility function can be used to migrate the static data from toolsData.ts
- * to a Supabase database table. Run this function once to populate your database.
+ * This utility function can be used to migrate tool data to a Supabase database table.
+ * It expects an array of tools to be provided.
  * 
  * To use this:
  * 1. Make sure your Supabase environment variables are set
  * 2. Create a 'ai_tools' table in Supabase with the correct schema
- * 3. Import and call this function from a component or console
+ * 3. Import and call this function from a component
  */
-export async function migrateToolsToSupabase() {
+export async function migrateToolsToSupabase(tools: AITool[] = []) {
   try {
     console.log('Starting migration of tools data to Supabase...');
-    console.log(`Total tools to migrate: ${aiTools.length}`);
+    console.log(`Total tools to migrate: ${tools.length}`);
+
+    if (tools.length === 0) {
+      console.log('No tools to migrate. Please provide an array of tools.');
+      return { success: false, error: 'No tools provided for migration' };
+    }
 
     // Map tools to the database schema format
-    const toolsToMigrate = aiTools.map(tool => mapAIToolToRow(tool));
+    const toolsToMigrate = tools.map(tool => mapAIToolToRow(tool));
 
     const { data, error } = await supabase
       .from('ai_tools')
@@ -41,9 +46,14 @@ export async function migrateToolsToSupabase() {
  * This function adds new tools to the Supabase database without duplicating existing ones.
  * It checks each tool by ID and only inserts those that don't already exist.
  */
-export async function migrateNewToolsToSupabase(toolsToAdd = aiTools) {
+export async function migrateNewToolsToSupabase(toolsToAdd: AITool[] = []) {
   try {
     console.log('Starting migration of new tools to Supabase...');
+    
+    if (toolsToAdd.length === 0) {
+      console.log('No tools to migrate. Please provide an array of tools.');
+      return { success: false, error: 'No tools provided for migration' };
+    }
     
     // Get existing tool IDs from Supabase
     const { data: existingTools, error: fetchError } = await supabase

@@ -1,0 +1,45 @@
+
+# robots.txt for AllAITools.tech
+User-agent: *
+Allow: /
+
+# Disallow admin paths
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Allow search engines to access CSS, JS, and image files
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.gif$
+Allow: /*.svg$
+
+# Prioritize important pages
+Allow: /recommend
+Allow: /compare
+Allow: /categories
+Allow: /submit-tool
+Allow: /about
+Allow: /tool
+
+# Crawl delay suggestion (in seconds)
+Crawl-delay: 5
+
+# Sitemaps - including the new sitemap index and specialized sitemaps
+Sitemap: https://www.allaitools.tech/sitemap-index.xml
+Sitemap: https://www.allaitools.tech/sitemap.xml
+Sitemap: https://www.allaitools.tech/image-sitemap.xml
+Sitemap: https://www.allaitools.tech/tool-sitemap.xml
+Sitemap: https://www.allaitools.tech/category-sitemap.xml
+
+# Special instructions for major search engines
+User-agent: Googlebot
+Crawl-delay: 2
+
+User-agent: Bingbot
+Crawl-delay: 3
+
+User-agent: Slurp
+Crawl-delay: 4

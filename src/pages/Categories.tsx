@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
@@ -28,19 +27,29 @@ const Categories = () => {
   });
   const { toast } = useToast();
 
-  // Fetch tools from Supabase
-  const { data: aiTools = [], isLoading, error, refetch } = useQuery({
+  // Update current category from URL params
+  useEffect(() => {
+    const decodedCategory = category ? decodeURIComponent(category) : null;
+    console.log("URL category param changed to:", decodedCategory);
+    
+    setCurrentCategory(decodedCategory);
+    
+    // Update filters when category changes from URL
+    if (decodedCategory && decodedCategory !== "All") {
+      setFilters(prev => ({
+        ...prev,
+        category: decodedCategory
+      }));
+    }
+  }, [category]);
+
+  // Fetch tools from Supabase - use currentCategory in queryKey to trigger refetch
+  const { data: aiTools = [], isLoading, error } = useQuery({
     queryKey: ['aiTools', currentCategory],
     queryFn: async () => {
       console.log("Fetching tools with category:", currentCategory);
-      let query = supabase.from('ai_tools').select('*');
-      
-      // Only filter by category in the initial query if it's specified
-      if (currentCategory && currentCategory !== "All") {
-        query = query.filter('category', 'cs', `{${currentCategory}}`);
-      }
-      
-      const { data, error } = await query;
+      // Get all tools from the database
+      const { data, error } = await supabase.from('ai_tools').select('*');
       
       if (error) {
         console.error('Error fetching tools:', error);
@@ -53,24 +62,7 @@ const Categories = () => {
     }
   });
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    
-    let decodedCategory = category ? decodeURIComponent(category) : null;
-    console.log("URL category param changed to:", decodedCategory);
-    
-    setCurrentCategory(decodedCategory);
-    
-    // Update filters if category changes from URL
-    if (decodedCategory && decodedCategory !== "All") {
-      setFilters(prev => ({
-        ...prev,
-        category: decodedCategory || "All"
-      }));
-    }
-  }, [category]);
-
-  // Apply filters whenever they change
+  // Apply filters whenever they change or data loads
   useEffect(() => {
     if (!aiTools.length) {
       console.log("No tools to filter");

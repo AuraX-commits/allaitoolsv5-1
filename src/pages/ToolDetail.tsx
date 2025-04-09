@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ExternalLink, Star, Check, ChevronRight, ChevronLeft } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
-import { aiTools, type AITool, mapRowToAITool } from "@/utils/toolsData";
+import { type AITool, mapRowToAITool } from "@/utils/toolsData";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,7 +38,7 @@ const ToolDetail = () => {
     const fetchTool = async () => {
       setIsLoading(true);
       try {
-        // First try to get the tool from Supabase
+        // Get the tool from Supabase
         const { data, error } = await supabase
           .from('ai_tools')
           .select('*')
@@ -47,20 +47,8 @@ const ToolDetail = () => {
 
         if (error) {
           console.error("Error fetching from Supabase:", error);
-          // If there's an error with Supabase, fall back to local data
-          const localTool = aiTools.find(tool => tool.id === id);
-          if (localTool) {
-            setTool(localTool);
-            
-            // Get next and previous tools for navigation
-            const currentIndex = aiTools.findIndex(t => t.id === id);
-            setNextTool(aiTools[currentIndex + 1] || null);
-            setPrevTool(aiTools[currentIndex - 1] || null);
-          } else {
-            // If tool not found in either source, handle the error
-            console.error("Tool not found");
-            setTool(null);
-          }
+          // If there's an error with Supabase, handle the error
+          setTool(null);
         } else {
           // If we successfully got the tool from Supabase
           const mappedTool = mapRowToAITool(data);
@@ -81,6 +69,7 @@ const ToolDetail = () => {
         }
       } catch (error) {
         console.error("Error fetching tool:", error);
+        setTool(null);
       } finally {
         setIsLoading(false);
       }
@@ -94,6 +83,14 @@ const ToolDetail = () => {
   const navigateToTool = (toolId: string, toolName: string) => {
     const slug = toolName.toLowerCase().replace(/\s+/g, '-');
     navigate(`/tool/${toolId}/${slug}`);
+  };
+
+  // Fixed function to navigate to the compare page
+  const navigateToCompare = () => {
+    if (tool?.id) {
+      // Ensure we're encoding the tool ID properly in the URL
+      navigate(`/compare?tools=${encodeURIComponent(tool.id)}`);
+    }
   };
 
   const renderStars = (rating: number) => {
@@ -188,14 +185,14 @@ const ToolDetail = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>{tool.name} | AI Tools Directory</title>
+        <title>{tool?.name || 'Tool Detail'} | AI Tools Directory</title>
         <meta
           name="description"
-          content={tool.shortDescription}
+          content={tool?.shortDescription || 'Detailed information about this AI tool'}
         />
-        <meta property="og:title" content={`${tool.name} | AI Tools Directory`} />
-        <meta property="og:description" content={tool.shortDescription} />
-        <meta property="og:image" content={tool.logo} />
+        <meta property="og:title" content={`${tool?.name || 'Tool Detail'} | AI Tools Directory`} />
+        <meta property="og:description" content={tool?.shortDescription || 'Detailed information about this AI tool'} />
+        <meta property="og:image" content={tool?.logo || ''} />
         <meta property="og:type" content="website" />
         <link rel="canonical" href={`https://www.allaitools.tech/tool/${id}`} />
       </Helmet>
@@ -236,29 +233,29 @@ const ToolDetail = () => {
 
             <div className="flex flex-col md:flex-row gap-8 mb-12">
               <div className="w-full md:w-2/3">
-                <h1 className="text-4xl font-bold mb-2">{tool.name}</h1>
+                <h1 className="text-4xl font-bold mb-2">{tool?.name}</h1>
                 <div className="flex items-center text-foreground/70 mb-6">
                   <span className="flex items-center">
-                    {renderStars(tool.rating)}
+                    {tool && renderStars(tool.rating)}
                     <span className="ml-2">
-                      {tool.rating.toFixed(1)} ({tool.reviewCount} reviews)
+                      {tool?.rating.toFixed(1)} ({tool?.reviewCount} reviews)
                     </span>
                   </span>
                   <span className="mx-3">•</span>
-                  <span>{tool.pricing}</span>
+                  <span>{tool?.pricing}</span>
                 </div>
 
-                <p className="text-lg mb-8">{tool.description}</p>
+                <p className="text-lg mb-8">{tool?.description}</p>
 
                 <h2 className="text-2xl font-semibold mb-4">Key Features</h2>
                 <ul className="mb-8">
-                  {renderFeatureList(tool.features)}
+                  {tool && renderFeatureList(tool.features)}
                 </ul>
 
                 <div className="mb-8">
                   <h2 className="text-2xl font-semibold mb-4">Categories</h2>
                   <div className="flex flex-wrap gap-2">
-                    {tool.category.map((cat) => (
+                    {tool?.category.map((cat) => (
                       <Badge key={cat} variant="secondary">
                         {cat}
                       </Badge>
@@ -274,7 +271,7 @@ const ToolDetail = () => {
                   </TabsList>
                   <TabsContent value="pros" className="mt-4">
                     <ul className="space-y-2">
-                      {tool.pros?.map((pro, index) => (
+                      {tool?.pros?.map((pro, index) => (
                         <li key={index} className="flex items-start">
                           <Check className="h-5 w-5 mr-2 text-green-500 mt-0.5 flex-shrink-0" />
                           <span>{pro}</span>
@@ -284,7 +281,7 @@ const ToolDetail = () => {
                   </TabsContent>
                   <TabsContent value="cons" className="mt-4">
                     <ul className="space-y-2">
-                      {tool.cons?.map((con, index) => (
+                      {tool?.cons?.map((con, index) => (
                         <li key={index} className="flex items-start">
                           <ChevronRight className="h-5 w-5 mr-2 text-red-500 mt-0.5 flex-shrink-0" />
                           <span>{con}</span>
@@ -294,7 +291,7 @@ const ToolDetail = () => {
                   </TabsContent>
                   <TabsContent value="usecases" className="mt-4">
                     <ul className="space-y-2">
-                      {tool.useCases?.map((useCase, index) => (
+                      {tool?.useCases?.map((useCase, index) => (
                         <li key={index} className="flex items-start">
                           <ChevronRight className="h-5 w-5 mr-2 text-blue-500 mt-0.5 flex-shrink-0" />
                           <span>{useCase}</span>
@@ -310,32 +307,32 @@ const ToolDetail = () => {
                   <CardHeader>
                     <div className="flex justify-center mb-4">
                       <img
-                        src={tool.logo}
-                        alt={`${tool.name} logo`}
+                        src={tool?.logo}
+                        alt={`${tool?.name} logo`}
                         className="h-24 w-24 object-contain"
                       />
                     </div>
-                    <CardTitle className="text-center">{tool.name}</CardTitle>
+                    <CardTitle className="text-center">{tool?.name}</CardTitle>
                     <CardDescription className="text-center">
-                      {tool.pricing}
+                      {tool?.pricing}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button asChild className="w-full">
-                      <a href={tool.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                      <a href={tool?.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
                         <ExternalLink className="h-4 w-4 mr-2" />
                         Visit Website
                       </a>
                     </Button>
                     
-                    <SaveToolButton toolId={tool.id} />
+                    {tool && <SaveToolButton toolId={tool.id} />}
                     
                     <Separator />
                     
                     <div>
                       <h3 className="font-medium mb-2">API Access</h3>
                       <div className="flex items-center">
-                        {tool.apiAccess ? (
+                        {tool?.apiAccess ? (
                           <>
                             <Check className="h-5 w-5 text-green-500 mr-2" />
                             <span>Available</span>
@@ -350,7 +347,11 @@ const ToolDetail = () => {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button variant="outline" onClick={() => navigate(`/compare?tools=${tool.id}`)} className="w-full">
+                    <Button 
+                      variant="outline" 
+                      onClick={navigateToCompare} 
+                      className="w-full"
+                    >
                       Compare with other tools
                     </Button>
                   </CardFooter>

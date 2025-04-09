@@ -117,6 +117,49 @@ export const generateSitemap = async (): Promise<string> => {
   return sitemap;
 };
 
+// Generate a dedicated tool sitemap for easier management in search console
+export const generateToolSitemap = async (): Promise<string> => {
+  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+`;
+
+  try {
+    // Fetch ALL tools from Supabase
+    const { data: aiTools, error } = await supabase
+      .from('ai_tools')
+      .select('*');
+    
+    if (error) {
+      console.error('Error fetching tools for tool sitemap:', error);
+      throw error;
+    }
+    
+    console.log(`Adding ${aiTools?.length || 0} tools to dedicated tool sitemap`);
+    
+    // Add tool detail pages
+    if (aiTools && aiTools.length > 0) {
+      aiTools.forEach(toolRow => {
+        const tool = mapRowToAITool(toolRow);
+        const slug = tool.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+        sitemap += `  <url>
+    <loc>${baseUrl}/tool/${tool.id}/${slug}</loc>
+    <lastmod>${getCurrentDate()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+`;
+      });
+    }
+  } catch (error) {
+    console.error('Error generating tool sitemap content:', error);
+  }
+
+  // Close urlset tag
+  sitemap += `</urlset>`;
+
+  return sitemap;
+};
+
 // Add image-specific information to the sitemap for images
 export const generateImageSitemap = async (): Promise<string> => {
   let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -179,5 +222,57 @@ export const generateImageSitemap = async (): Promise<string> => {
   return sitemap;
 };
 
-// Export function to generate sitemap and save it to a file
-export default generateSitemap;
+// Generate a category sitemap for improved organization
+export const generateCategorySitemap = async (): Promise<string> => {
+  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+`;
+
+  try {
+    // Fetch all tools to extract categories
+    const { data: aiTools, error } = await supabase
+      .from('ai_tools')
+      .select('*');
+    
+    if (error) {
+      console.error('Error fetching tools for category sitemap:', error);
+      throw error;
+    }
+    
+    // Extract unique categories
+    const allCategories = new Set<string>();
+    aiTools?.forEach(toolRow => {
+      const tool = mapRowToAITool(toolRow);
+      tool.category.forEach(cat => allCategories.add(cat));
+    });
+    
+    const categories = Array.from(allCategories);
+    console.log(`Adding ${categories.length} categories to dedicated category sitemap`);
+    
+    // Add each category page
+    categories.forEach(category => {
+      sitemap += `  <url>
+    <loc>${baseUrl}/categories/${encodeURIComponent(category)}</loc>
+    <lastmod>${getCurrentDate()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+`;
+    });
+  } catch (error) {
+    console.error('Error generating category sitemap content:', error);
+  }
+
+  // Close urlset tag
+  sitemap += `</urlset>`;
+
+  return sitemap;
+};
+
+// Export all sitemap generation functions
+export default {
+  generateSitemap,
+  generateImageSitemap,
+  generateToolSitemap,
+  generateCategorySitemap
+};

@@ -49,7 +49,10 @@ serve(async (req) => {
     }
 
     if (!tools || tools.length === 0) {
-      return new Response(JSON.stringify({ recommendations: [] }), {
+      return new Response(JSON.stringify({ 
+        recommendations: [],
+        message: "No tools found in database" 
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -69,6 +72,9 @@ serve(async (req) => {
       url: tool.url,
       logo: tool.logo
     }));
+
+    console.log(`Processing recommendation for requirements: "${requirements.substring(0, 50)}..."`);
+    console.log(`Found ${toolsData.length} tools in database`);
 
     // Create a prompt for Gemini
     const prompt = `
@@ -99,6 +105,7 @@ Include ONLY the JSON response, no additional text.
 `;
 
     // Call Gemini API for recommendations
+    console.log("Calling Gemini API...");
     const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent", {
       method: "POST",
       headers: {
@@ -124,19 +131,21 @@ Include ONLY the JSON response, no additional text.
       }),
     });
 
-    const geminiResponse = await response.json();
-    
     if (!response.ok) {
-      console.error("Gemini API error:", geminiResponse);
-      throw new Error(`Gemini API error: ${JSON.stringify(geminiResponse)}`);
+      const errorText = await response.text();
+      console.error("Gemini API error response:", errorText);
+      throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
     }
 
+    const geminiResponse = await response.json();
+    console.log("Received response from Gemini API");
+    
     // Extract the generated text from Gemini's response
     const generatedText = geminiResponse.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!generatedText) {
-      console.error("Invalid Gemini response:", geminiResponse);
-      throw new Error("Invalid response from Gemini API");
+      console.error("Invalid Gemini response:", JSON.stringify(geminiResponse, null, 2));
+      throw new Error("Invalid response from Gemini API - no text generated");
     }
 
     // Extract the JSON from the generated text
@@ -146,11 +155,14 @@ Include ONLY the JSON response, no additional text.
       const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         recommendationsJson = JSON.parse(jsonMatch[0]);
+        console.log(`Successfully parsed recommendations - found ${recommendationsJson.recommendations?.length || 0} tools`);
       } else {
+        console.error("No JSON found in Gemini response:", generatedText);
         throw new Error("No JSON found in Gemini response");
       }
     } catch (e) {
-      console.error("Error parsing Gemini response:", e, generatedText);
+      console.error("Error parsing Gemini response:", e);
+      console.error("Raw response text:", generatedText);
       throw new Error(`Error parsing recommendations: ${e.message}`);
     }
 
@@ -160,7 +172,10 @@ Include ONLY the JSON response, no additional text.
 
   } catch (error) {
     console.error("Error in recommend-tools function:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      recommendations: [] 
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
