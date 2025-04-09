@@ -116,7 +116,7 @@ const Privacy = () => {
               <p>We may update this Privacy Policy from time to time to reflect changes in our practices or applicable laws. If we make material changes, we will notify you by email (if you have an account) or by posting a notice on our Website prior to the changes becoming effective.</p>
               
               <h2>9. Contact Us</h2>
-              <p>If you have any questions about this Privacy Policy, please contact us at privacy@allaitools.tech.</p>
+              <p>If you have any questions about this Privacy Policy, please contact us at info@allaitools.tech.</p>
             </div>
           </div>
         </div>
