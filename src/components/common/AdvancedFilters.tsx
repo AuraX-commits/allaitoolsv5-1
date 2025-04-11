@@ -8,7 +8,7 @@ export type FilterOptions = {
   category: string;
   pricing: string;
   rating: number | null;
-  features: string[];
+  features: string[]; // Keeping for compatibility but won't be used
   sortBy: "rating" | "reviewCount" | "newest";
 };
 
@@ -30,15 +30,6 @@ const AdvancedFilters = ({
   useEffect(() => {
     setLocalFilters(filters);
   }, [filters]);
-  
-  const features = [
-    "API Access", 
-    "Mobile App", 
-    "Chrome Extension", 
-    "Collaboration", 
-    "Export Options",
-    "Custom Training"
-  ];
 
   const handleCategoryChange = (category: string) => {
     const updatedFilters = { ...localFilters, category };
@@ -54,16 +45,6 @@ const AdvancedFilters = ({
 
   const handleRatingChange = (rating: number | null) => {
     const updatedFilters = { ...localFilters, rating };
-    setLocalFilters(updatedFilters);
-    onFilterChange(updatedFilters);
-  };
-
-  const handleFeatureToggle = (feature: string) => {
-    const updatedFeatures = localFilters.features.includes(feature)
-      ? localFilters.features.filter(f => f !== feature)
-      : [...localFilters.features, feature];
-    
-    const updatedFilters = { ...localFilters, features: updatedFeatures };
     setLocalFilters(updatedFilters);
     onFilterChange(updatedFilters);
   };
@@ -91,7 +72,6 @@ const AdvancedFilters = ({
     return localFilters.category !== "All" || 
            localFilters.pricing !== "All" || 
            localFilters.rating !== null || 
-           localFilters.features.length > 0 || 
            localFilters.sortBy !== "rating";
   };
 
@@ -163,7 +143,9 @@ const AdvancedFilters = ({
               ))}
             </div>
           </div>
-          
+        </div>
+        
+        <div className="space-y-4">
           <div>
             <h3 className="text-sm font-medium mb-2">Minimum Rating</h3>
             <div className="flex gap-2">
@@ -183,28 +165,6 @@ const AdvancedFilters = ({
                       {rating}+ <Star className="ml-1 h-3 w-3 fill-current" />
                     </div>
                   )}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-sm font-medium mb-2">Features</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {features.map((feature) => (
-                <button
-                  key={feature}
-                  onClick={() => handleFeatureToggle(feature)}
-                  className="flex items-center text-left px-3 py-2 rounded-md text-sm hover:bg-secondary/50 transition-colors"
-                >
-                  {localFilters.features.includes(feature) ? (
-                    <CheckSquare className="h-4 w-4 mr-2 text-primary" />
-                  ) : (
-                    <Square className="h-4 w-4 mr-2 text-muted-foreground" />
-                  )}
-                  {feature}
                 </button>
               ))}
             </div>
