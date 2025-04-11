@@ -1,8 +1,11 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { AuthProvider } from "./context/AuthContext";
 import Index from "./pages/Index";
 import Compare from "./pages/Compare";
@@ -76,6 +79,9 @@ const App = () => (
               </Routes>
             </div>
           </BrowserRouter>
+          {/* Add Vercel Analytics and Speed Insights */}
+          <Analytics />
+          <SpeedInsights />
         </TooltipProvider>
       </AuthProvider>
     </HelmetProvider>
