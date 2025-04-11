@@ -1,9 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 import { 
@@ -18,7 +17,6 @@ import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -112,30 +110,6 @@ const Navbar = () => {
         </div>
         
         <div className="flex items-center gap-2">
-          {isSearchVisible ? (
-            <div className="relative w-full max-w-xs">
-              <Input
-                type="text"
-                placeholder="Search AI tools..."
-                className="pr-8"
-              />
-              <button
-                onClick={() => setIsSearchVisible(false)}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-              >
-                <X className="h-4 w-4 text-muted-foreground" />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setIsSearchVisible(true)}
-              className="hidden sm:flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary"
-            >
-              <Search className="h-4 w-4 mr-1" />
-              Search
-            </button>
-          )}
-          
           <ThemeToggle />
           
           {user ? (
@@ -240,15 +214,6 @@ const Navbar = () => {
           >
             Submit Tool
           </Link>
-          
-          <div className="relative mt-4">
-            <Input
-              type="text"
-              placeholder="Search AI tools..."
-              className="w-full"
-            />
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          </div>
           
           {!user ? (
             <div className="mt-6 flex flex-col gap-2">

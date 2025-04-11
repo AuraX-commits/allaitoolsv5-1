@@ -10,6 +10,127 @@ import { Clock, Calendar, Tag, ArrowLeft, MessageSquare } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
+// Custom styles for blog content
+const blogStyles = `
+  .blog-content h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #222;
+    border-bottom: 2px solid #f1f0fb;
+    padding-bottom: 0.5rem;
+  }
+  
+  .blog-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #1A1F2C;
+  }
+  
+  .blog-content p {
+    margin-bottom: 1.25rem;
+    line-height: 1.7;
+  }
+  
+  .blog-content ul, .blog-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .blog-content ul li, .blog-content ol li {
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  
+  .blog-content ul {
+    list-style-type: disc;
+  }
+  
+  .blog-content ol {
+    list-style-type: decimal;
+  }
+  
+  .blog-content blockquote {
+    border-left: 4px solid #9b87f5;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    background-color: #f1f0fb;
+    border-radius: 0.25rem;
+    font-style: italic;
+    color: #1A1F2C;
+  }
+  
+  .blog-content blockquote p {
+    margin-bottom: 0;
+  }
+  
+  .blog-content a {
+    color: #7E69AB;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  
+  .blog-content a:hover {
+    color: #6E59A5;
+  }
+  
+  .blog-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  .blog-content code {
+    background-color: #f1f0fb;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+  }
+  
+  .blog-content pre {
+    background-color: #1A1F2C;
+    color: #fff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  
+  .blog-content pre code {
+    background-color: transparent;
+    color: #fff;
+    padding: 0;
+  }
+  
+  .blog-content hr {
+    margin: 2rem 0;
+    border: 0;
+    height: 1px;
+    background-color: #f1f0fb;
+  }
+  
+  .blog-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+  }
+  
+  .blog-content th, .blog-content td {
+    border: 1px solid #f1f0fb;
+    padding: 0.75rem;
+    text-align: left;
+  }
+  
+  .blog-content th {
+    background-color: #f1f0fb;
+    font-weight: 600;
+  }
+`;
+
 const BlogPost = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -63,6 +184,7 @@ const BlogPost = () => {
         <meta name="twitter:image" content={post.coverImage} />
         <meta name="keywords" content={post.tags.join(', ')} />
         <link rel="canonical" href={`https://www.allaitools.tech/blog/${post.slug}`} />
+        <style type="text/css">{blogStyles}</style>
       </Helmet>
       
       <Navbar />
@@ -114,7 +236,7 @@ const BlogPost = () => {
             
             {/* Article Content */}
             <div 
-              className="prose prose-lg max-w-none mb-12"
+              className="prose prose-lg max-w-none mb-12 blog-content"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
             
