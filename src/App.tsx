@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { AuthProvider } from "./context/AuthContext";
+import { useState } from "react";
 import Index from "./pages/Index";
 import Compare from "./pages/Compare";
 import ToolDetail from "./pages/ToolDetail";
@@ -28,10 +29,9 @@ import Admin from './pages/Admin';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/auth/PrivateRoute';
 import ToolRecommender from './pages/ToolRecommender';
-import { useState } from "react";
 
 const App = () => {
-  // Move QueryClient instantiation inside the component
+  // Create a new QueryClient instance inside the component using useState to ensure it's stable
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
