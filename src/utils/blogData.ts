@@ -1,3 +1,4 @@
+
 export interface BlogPost {
   id: string;
   slug: string;
@@ -28,7 +29,7 @@ export const blogPosts: BlogPost[] = [
       
       <p>Whether you're a professional writer looking to enhance productivity, a business owner seeking to scale content operations, or a student wanting to improve your writing, today's AI writing tools offer specialized features designed to address your unique challenges. Let's explore this transformative technology and how it can revolutionize your approach to written communication.</p>
       
-      <img src="/placeholder.svg" alt="Evolution of AI writing tools showing progression from simple grammar checkers to advanced cognitive writing assistants" class="my-4 rounded-lg w-full h-auto" />
+      <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Evolution of AI writing tools showing progression from simple grammar checkers to advanced cognitive writing assistants" class="my-4 rounded-lg w-full h-auto" />
       
       <h2>Core Capabilities of Modern AI Writing Tools</h2>
       
@@ -92,7 +93,7 @@ export const blogPosts: BlogPost[] = [
       <h3>Creative Writing</h3>
       <p>For fiction and creative content, specialized AI collaborators offer story structure guidance, character development tools, and stylistic variety. These systems are trained on literary works and can help overcome creative blocks while maintaining the author's unique voice.</p>
       
-      <img src="/placeholder.svg" alt="Various industry-specific AI writing applications showing specialized tools for different professional domains" class="my-4 rounded-lg w-full h-auto" />
+      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Various industry-specific AI writing applications showing specialized tools for different professional domains" class="my-4 rounded-lg w-full h-auto" />
       
       <h2>Top AI Writing Tools of 2025</h2>
       
@@ -197,7 +198,7 @@ export const blogPosts: BlogPost[] = [
     `,
     author: {
       name: "Emily Richardson",
-      avatar: "/placeholder.svg",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
       title: "Content Strategy Director"
     },
     date: "April 5, 2025",
@@ -222,7 +223,7 @@ export const blogPosts: BlogPost[] = [
       <h3>1. Democratization of AI</h3>
       <p>Perhaps the most significant trend we're witnessing is the democratization of AI. Complex AI capabilities that were once available only to tech giants with massive resources are now accessible to startups, small businesses, and even individual creators. This accessibility is driving innovation at an incredible pace.</p>
       
-      <img src="/placeholder.svg" alt="Democratization of AI showing diverse users accessing AI technology" class="my-4 rounded-lg w-full h-auto" />
+      <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Democratization of AI showing diverse users accessing AI technology" class="my-4 rounded-lg w-full h-auto" />
       
       <h3>2. Specialized AI Tools</h3>
       <p>Rather than general-purpose AI, we're seeing a proliferation of specialized tools designed for specific industries and use cases. Whether it's AI for medical diagnosis, legal document analysis, or music production, these specialized tools are delivering exceptional results within their domains.</p>
@@ -230,7 +231,7 @@ export const blogPosts: BlogPost[] = [
       <h3>3. Multimodal AI</h3>
       <p>The latest generation of AI tools can process and generate multiple types of data - text, images, audio, and video. This multimodal capability is opening up new possibilities for creative expression and problem-solving.</p>
       
-      <img src="/placeholder.svg" alt="Multimodal AI visualization showing text, image, audio and video processing capabilities" class="my-4 rounded-lg w-full h-auto" />
+      <img src="https://images.unsplash.com/photo-1677442135973-0d09d34062f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80" alt="Multimodal AI visualization showing text, image, audio and video processing capabilities" class="my-4 rounded-lg w-full h-auto" />
       
       <h3>4. Focus on Ethical AI</h3>
       <p>As AI becomes more pervasive, there's growing awareness about the importance of ethical considerations. The most forward-thinking AI tools now incorporate features to mitigate bias, ensure fairness, and provide transparency in how decisions are made.</p>
@@ -260,7 +261,7 @@ export const blogPosts: BlogPost[] = [
     `,
     author: {
       name: "Alex Morgan",
-      avatar: "/placeholder.svg",
+      avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80",
       title: "AI Research Analyst"
     },
     date: "October 15, 2023",
@@ -280,7 +281,7 @@ export const blogPosts: BlogPost[] = [
       
       <p>But with so many options available, how do you choose the right tool for your specific needs? In this article, we'll compare the leading AI image generators, examining their strengths, weaknesses, and ideal use cases.</p>
       
-      <img src="/placeholder.svg" alt="Comparison of AI-generated images from different platforms showing varying art styles" class="my-4 rounded-lg w-full h-auto" />
+      <img src="https://images.unsplash.com/photo-1659535880591-78ed91b35158?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Comparison of AI-generated images from different platforms showing varying art styles" class="my-4 rounded-lg w-full h-auto" />
       
       <h2>Midjourney</h2>
       
@@ -310,7 +311,7 @@ export const blogPosts: BlogPost[] = [
       <h3>Ideal For</h3>
       <p>Artists, designers, and creative professionals looking for high-quality, artistic images that don't necessarily need to match exact specifications.</p>
       
-      <img src="/placeholder.svg" alt="Example of Midjourney-generated artistic landscape with vibrant colors" class="my-4 rounded-lg w-full h-auto" />
+      <img src="https://images.unsplash.com/photo-1686193392774-3c917fc25aba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Example of Midjourney-generated artistic landscape with vibrant colors" class="my-4 rounded-lg w-full h-auto" />
       
       <h2>DALL-E 2</h2>
       
@@ -388,7 +389,7 @@ export const blogPosts: BlogPost[] = [
     `,
     author: {
       name: "Jasmine Chen",
-      avatar: "/placeholder.svg",
+      avatar: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
       title: "Digital Artist & Tech Writer"
     },
     date: "September 28, 2023",
@@ -475,7 +476,7 @@ export const blogPosts: BlogPost[] = [
     `,
     author: {
       name: "Marcus Thompson",
-      avatar: "/placeholder.svg",
+      avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
       title: "Content Strategy Director"
     },
     date: "August 10, 2023",
@@ -610,7 +611,7 @@ export const blogPosts: BlogPost[] = [
     `,
     author: {
       name: "Dr. Eliza Rivera",
-      avatar: "/placeholder.svg",
+      avatar: "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1452&q=80",
       title: "AI Interaction Specialist"
     },
     date: "July 15, 2023",
@@ -628,7 +629,7 @@ export const blogPosts: BlogPost[] = [
       <h2>The Ethical Imperative in Artificial Intelligence</h2>
       <p>As artificial intelligence becomes increasingly embedded in our daily lives and critical systems, ethical considerations have shifted from academic discussions to urgent practical concerns. The rapid advancement of AI capabilities has outpaced the development of ethical frameworks and regulations, creating a landscape where technology often operates ahead of our collective understanding of its implications.</p>
       
-      <img src="/placeholder.svg" alt="Illustration showing the balance between AI advancement and ethical considerations" class="my-4 rounded-lg w-full h-auto" />
+      <img src="https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Illustration showing the balance between AI advancement and ethical considerations" class="my-4 rounded-lg w-full h-auto" />
       
       <h2>Core Ethical Challenges in AI</h2>
       
@@ -674,7 +675,7 @@ export const blogPosts: BlogPost[] = [
         <li>Recognizing that ethical AI is increasingly a competitive advantage</li>
       </ul>
       
-      <img src="/placeholder.svg" alt="Corporate governance structure for ethical AI implementation" class="my-4 rounded-lg w-full h-auto" />
+      <img src="https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Corporate governance structure for ethical AI implementation" class="my-4 rounded-lg w-full h-auto" />
       
       <h3>The User's Role</h3>
       <p>Users of AI systems also have important responsibilities:</p>
@@ -733,7 +734,7 @@ export const blogPosts: BlogPost[] = [
     `,
     author: {
       name: "Dr. Jonathan Park",
-      avatar: "/placeholder.svg",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80",
       title: "AI Ethics Researcher"
     },
     date: "June 5, 2023",
@@ -743,3 +744,4 @@ export const blogPosts: BlogPost[] = [
     tags: ["AI Ethics", "Responsible AI", "Technology Policy", "Bias", "Privacy"]
   }
 ];
+
