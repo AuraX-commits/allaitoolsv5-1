@@ -6,6 +6,15 @@ import type { Database } from '../../types/supabase';
 const SUPABASE_URL = "https://favhnurmqbtzttzxvfmm.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhdmhudXJtcWJ0enR0enh2Zm1tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjU0MzcsImV4cCI6MjA1NzYwMTQzN30.PvyTOGaeK7ID1D51SrwwDp2_N7mZzD1oIoEaSYN8NZc";
 
+// Validate that we have the required configuration
+if (!SUPABASE_URL) {
+  console.error('Missing SUPABASE_URL');
+}
+
+if (!SUPABASE_PUBLISHABLE_KEY) {
+  console.error('Missing SUPABASE_PUBLISHABLE_KEY');
+}
+
 // Make sure email confirmation URL redirects correctly
 export const supabase = createClient<Database>(
   SUPABASE_URL, 
