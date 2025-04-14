@@ -10,6 +10,7 @@ import Badge from "../components/common/Badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { ReplaceToolButton } from "@/components/comparison/ReplaceToolButton";
 
 const Compare = () => {
   const location = useLocation();
@@ -98,6 +99,39 @@ const Compare = () => {
     
     fetchTools();
   }, [location.search, isMobile]);
+
+  const handleReplaceTool = async (oldToolId: string, newToolId: string) => {
+    try {
+      const { data: newToolData, error } = await supabase
+        .from('ai_tools')
+        .select('*')
+        .eq('id', newToolId)
+        .single();
+        
+      if (error) {
+        console.error('Error fetching replacement tool:', error);
+        return;
+      }
+      
+      const newTool = mapRowToAITool(newToolData);
+      setTools(prevTools => 
+        prevTools.map(tool => 
+          tool.id === oldToolId ? newTool : tool
+        )
+      );
+      
+      const params = new URLSearchParams(location.search);
+      const toolIds = params.get("tools")?.split(",") || [];
+      const updatedToolIds = toolIds.map(id => 
+        id === oldToolId ? newToolId : id
+      );
+      const newSearch = `?tools=${updatedToolIds.join(",")}`;
+      window.history.replaceState({}, "", `/compare${newSearch}`);
+      
+    } catch (err) {
+      console.error('Error in handleReplaceTool:', err);
+    }
+  };
 
   const allFeatures = [...new Set(tools.flatMap(tool => tool.features))];
   
@@ -355,26 +389,32 @@ const Compare = () => {
                     </div>
                     {visibleTools.map(tool => (
                       <div key={tool.id} className="p-4 border-l border-border">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-secondary/30 flex items-center justify-center">
-                            <img 
-                              src={tool.logo} 
-                              alt={`${tool.name} logo`} 
-                              className="w-8 h-8 object-contain"
-                            />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold">
-                              <Link to={`/tool/${tool.id}`} className="hover:text-primary transition-colors">
-                                {tool.name}
-                              </Link>
-                            </h3>
-                            <div className="flex items-center mt-1">
-                              <span className="text-amber-500 font-medium text-sm">{tool.rating}</span>
-                              <span className="mx-1 text-muted-foreground text-xs">•</span>
-                              <span className="text-xs text-muted-foreground">{tool.reviewCount} reviews</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 rounded-lg overflow-hidden bg-secondary/30 flex items-center justify-center">
+                              <img 
+                                src={tool.logo} 
+                                alt={`${tool.name} logo`} 
+                                className="w-8 h-8 object-contain"
+                              />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold">
+                                <Link to={`/tool/${tool.id}`} className="hover:text-primary transition-colors">
+                                  {tool.name}
+                                </Link>
+                              </h3>
+                              <div className="flex items-center mt-1">
+                                <span className="text-amber-500 font-medium text-sm">{tool.rating}</span>
+                                <span className="mx-1 text-muted-foreground text-xs">•</span>
+                                <span className="text-xs text-muted-foreground">{tool.reviewCount} reviews</span>
+                              </div>
                             </div>
                           </div>
+                          <ReplaceToolButton
+                            toolId={tool.id}
+                            onReplace={handleReplaceTool}
+                          />
                         </div>
                       </div>
                     ))}
