@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -10,12 +10,16 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { Shield, Users, Database, Settings } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/lib/supabaseClient";
 
 const Admin = () => {
   const { user, isAdmin, isLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-
+  const [toolCount, setToolCount] = useState<number>(0);
+  const [userCount, setUserCount] = useState<number>(0);
+  const [adminEmail, setAdminEmail] = useState<string>('');
+  
   useEffect(() => {
     window.scrollTo(0, 0);
     
@@ -35,9 +39,41 @@ const Admin = () => {
           variant: "destructive",
         });
         navigate("/dashboard");
+      } else {
+        // Fetch counts for admin dashboard
+        fetchStats();
       }
     }
   }, [user, isAdmin, isLoading, navigate, toast]);
+
+  const fetchStats = async () => {
+    try {
+      // Get tool count
+      const { count: toolCount, error: toolError } = await supabase
+        .from('ai_tools')
+        .select('*', { count: 'exact', head: true });
+      
+      if (!toolError) {
+        setToolCount(toolCount || 0);
+      }
+      
+      // Get user count
+      const { count: userCount, error: userError } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+        
+      if (!userError) {
+        setUserCount(userCount || 0);
+      }
+      
+      // Get admin email
+      if (user) {
+        setAdminEmail(user.email || 'admin@example.com');
+      }
+    } catch (error) {
+      console.error('Error fetching admin stats:', error);
+    }
+  };
 
   // Don't render anything until we've checked admin status
   if (isLoading) {
@@ -77,7 +113,7 @@ const Admin = () => {
                 <Database className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">8</div>
+                <div className="text-2xl font-bold">{toolCount}</div>
                 <p className="text-xs text-muted-foreground">
                   AI tools in the directory
                 </p>
@@ -89,7 +125,7 @@ const Admin = () => {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1</div>
+                <div className="text-2xl font-bold">{userCount}</div>
                 <p className="text-xs text-muted-foreground">
                   Registered users on the platform
                 </p>
@@ -101,7 +137,7 @@ const Admin = () => {
                 <Settings className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-sm font-medium truncate">admin@example.com</div>
+                <div className="text-sm font-medium truncate">{adminEmail}</div>
                 <p className="text-xs text-muted-foreground">
                   Current admin access
                 </p>
