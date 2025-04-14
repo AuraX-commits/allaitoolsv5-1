@@ -45,7 +45,7 @@ const ComparisonSection = () => {
     };
 
     fetchInitialTools();
-  }, []);
+  }, [selectedTools.length]);
 
   // Search functionality using Supabase
   useEffect(() => {
