@@ -9,11 +9,13 @@ import { AITool, mapRowToAITool } from "@/utils/toolsData";
 import Badge from "../components/common/Badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { SearchBar } from "@/components/comparison/SearchBar";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
 const Compare = () => {
   const location = useLocation();
   const [tools, setTools] = useState<AITool[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [visibleToolIndexes, setVisibleToolIndexes] = useState<number[]>([0, 1]);
   const isMobile = useIsMobile();
@@ -98,6 +100,45 @@ const Compare = () => {
     
     fetchTools();
   }, [location.search, isMobile]);
+
+  useEffect(() => {
+    const searchTools = async () => {
+      if (!searchTerm) return;
+      
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('ai_tools')
+          .select('*')
+          .or(`name.ilike.%${searchTerm}%,shortdescription.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+          .limit(6);
+        
+        if (error) {
+          console.error('Error searching tools:', error);
+          return;
+        }
+        
+        const mappedTools = data.map(row => mapRowToAITool(row));
+        
+        const currentToolIds = new Set(tools.map(t => t.id));
+        const newTools = mappedTools.filter(t => !currentToolIds.has(t.id));
+        
+        if (newTools.length > 0) {
+          setTools(prevTools => [...prevTools, ...newTools]);
+        }
+      } catch (err) {
+        console.error('Error in searchTools:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    const debounce = setTimeout(() => {
+      searchTools();
+    }, 300);
+    
+    return () => clearTimeout(debounce);
+  }, [searchTerm, tools]);
 
   const allFeatures = [...new Set(tools.flatMap(tool => tool.features))];
   
@@ -316,6 +357,14 @@ const Compare = () => {
               <p className="text-foreground/70">
                 Side-by-side comparison of {tools.length} AI tools
               </p>
+            </div>
+
+            <div className="mb-8">
+              <SearchBar
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                onClear={() => setSearchTerm("")}
+              />
             </div>
 
             {isMobile && tools.length > 2 && (
