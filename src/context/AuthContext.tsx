@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
+
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { User, Session, Provider, OAuthResponse } from "@supabase/supabase-js";
+import type { User, Session, Provider } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 
 type AuthContextType = {
