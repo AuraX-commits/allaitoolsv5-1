@@ -69,7 +69,7 @@ const Index = () => {
   `;
 
   return (
-    <div className="min-h-screen overflow-hidden">
+    <div className="min-h-screen overflow-hidden bg-background">
       <Helmet>
         <title>AI Directory - Discover & Compare the Best AI Tools in 2025</title>
         <meta 

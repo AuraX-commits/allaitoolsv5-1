@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface SaveToolButtonProps {
   toolId: string;
@@ -14,6 +15,7 @@ interface SaveToolButtonProps {
 const SaveToolButton = ({ toolId, minimal = false }: SaveToolButtonProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isSaved, setIsSaved] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
@@ -55,9 +57,12 @@ const SaveToolButton = ({ toolId, minimal = false }: SaveToolButtonProps) => {
     if (!user) {
       toast({
         title: "Not logged in",
-        description: "Please sign in to save tools",
+        description: "Please sign in to add tools to your toolkit",
         variant: "destructive",
       });
+      
+      // Redirect to login page
+      navigate("/signin");
       return;
     }
 
@@ -78,7 +83,7 @@ const SaveToolButton = ({ toolId, minimal = false }: SaveToolButtonProps) => {
         setIsSaved(false);
         toast({
           title: "Tool removed",
-          description: "Tool removed from your saved list",
+          description: "Tool removed from your toolkit",
         });
       } else {
         // Add to saved tools
@@ -97,15 +102,15 @@ const SaveToolButton = ({ toolId, minimal = false }: SaveToolButtonProps) => {
 
         setIsSaved(true);
         toast({
-          title: "Tool saved",
-          description: "Tool added to your saved list",
+          title: "Tool added",
+          description: "Tool added to your toolkit",
         });
       }
     } catch (error) {
       console.error("Error toggling saved status:", error);
       toast({
         title: "Error",
-        description: `Failed to ${isSaved ? 'remove' : 'save'} tool`,
+        description: `Failed to ${isSaved ? 'remove' : 'add'} tool`,
         variant: "destructive",
       });
     } finally {
@@ -118,10 +123,10 @@ const SaveToolButton = ({ toolId, minimal = false }: SaveToolButtonProps) => {
       <Button
         variant="ghost"
         size="sm"
-        disabled={isChecking || isLoading || !user}
+        disabled={isChecking || isLoading}
         onClick={toggleSave}
         className="p-2 h-auto"
-        title={isSaved ? "Remove from saved tools" : "Save tool"}
+        title={isSaved ? "Remove from your toolkit" : "Add to your toolkit"}
       >
         {isSaved ? (
           <BookmarkCheck className="h-5 w-5 text-primary" />
@@ -135,10 +140,9 @@ const SaveToolButton = ({ toolId, minimal = false }: SaveToolButtonProps) => {
   return (
     <Button
       variant={isSaved ? "default" : "outline"}
-      size="sm"
       disabled={isChecking || isLoading}
       onClick={toggleSave}
-      className="flex items-center gap-1"
+      className="w-full flex items-center justify-center gap-2"
     >
       {isLoading ? (
         <span className="flex items-center">
@@ -146,19 +150,19 @@ const SaveToolButton = ({ toolId, minimal = false }: SaveToolButtonProps) => {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          {isSaved ? "Removing..." : "Saving..."}
+          {isSaved ? "Removing..." : "Adding..."}
         </span>
       ) : (
         <>
           {isSaved ? (
             <>
-              <BookmarkCheck className="h-4 w-4 mr-1" />
-              Saved
+              <BookmarkCheck className="h-5 w-5" />
+              Added to Toolkit
             </>
           ) : (
             <>
-              <Bookmark className="h-4 w-4 mr-1" />
-              Save
+              <Bookmark className="h-5 w-5" />
+              Add to Your Toolkit
             </>
           )}
         </>

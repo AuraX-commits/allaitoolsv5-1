@@ -9,6 +9,17 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 import { Skeleton } from "../ui/skeleton";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
+const TOOLS_PER_PAGE = 18;
 
 const ToolsDirectory = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +31,7 @@ const ToolsDirectory = () => {
     sortBy: "rating"
   });
   const [filteredTools, setFilteredTools] = useState<AITool[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Fetch tools from Supabase
   const { data: aiTools = [], isLoading, error } = useQuery({
@@ -90,7 +102,14 @@ const ToolsDirectory = () => {
     }
     
     setFilteredTools(result);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [searchTerm, filters, aiTools]);
+
+  // Calculate pagination values
+  const totalPages = Math.ceil(filteredTools.length / TOOLS_PER_PAGE);
+  const startIndex = (currentPage - 1) * TOOLS_PER_PAGE;
+  const endIndex = startIndex + TOOLS_PER_PAGE;
+  const currentTools = filteredTools.slice(startIndex, endIndex);
 
   const resetFilters = () => {
     setSearchTerm("");
@@ -108,13 +127,63 @@ const ToolsDirectory = () => {
     return name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
   };
 
+  // Generate array of page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      // If we have less than or equal to maxVisiblePages, show all pages
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always include first page
+      pages.push(1);
+      
+      // Calculate start and end of middle pages
+      let startPage = Math.max(currentPage - Math.floor(maxVisiblePages / 2), 2);
+      let endPage = startPage + maxVisiblePages - 3; // -3 because we always show first and last page, plus one ellipsis
+      
+      // Adjust if endPage exceeds totalPages
+      if (endPage >= totalPages) {
+        endPage = totalPages - 1;
+        startPage = Math.max(endPage - (maxVisiblePages - 3) + 1, 2);
+      }
+      
+      // Add ellipsis after first page if needed
+      if (startPage > 2) {
+        pages.push('ellipsis-start');
+      }
+      
+      // Add middle pages
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      
+      // Add ellipsis before last page if needed
+      if (endPage < totalPages - 1) {
+        pages.push('ellipsis-end');
+      }
+      
+      // Always include last page if more than 1 page
+      if (totalPages > 1) {
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
   // Show loading state
   if (isLoading) {
     return (
-      <section className="py-16 bg-secondary/30" id="tools-directory">
+      <section className="py-16 bg-gradient-to-b from-secondary/30 to-background" id="tools-directory">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Discover AI Tools</h2>
+            <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+              Discover AI Tools
+            </h2>
             <p className="text-foreground/80">
               Browse our curated collection of AI-powered tools and find the perfect solution for your needs.
             </p>
@@ -140,7 +209,7 @@ const ToolsDirectory = () => {
   // Show error state
   if (error) {
     return (
-      <section className="py-16 bg-secondary/30" id="tools-directory">
+      <section className="py-16 bg-gradient-to-b from-secondary/30 to-background" id="tools-directory">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Oops! Something went wrong</h2>
@@ -154,11 +223,16 @@ const ToolsDirectory = () => {
   }
 
   return (
-    <section className="py-16 bg-secondary/30" id="tools-directory">
+    <section className="py-16 bg-gradient-to-b from-secondary/30 to-background" id="tools-directory">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Discover AI Tools</h2>
-          <p className="text-foreground/80">
+          <span className="text-sm font-medium text-primary/80 uppercase tracking-wider mb-2 inline-block">
+            Cutting-Edge Solutions
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+            Discover AI Tools
+          </h2>
+          <p className="text-foreground/80 text-lg">
             Browse our curated collection of AI-powered tools and find the perfect solution for your needs.
           </p>
         </div>
@@ -172,7 +246,7 @@ const ToolsDirectory = () => {
             <input
               type="text"
               placeholder="Search AI tools..."
-              className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -193,14 +267,14 @@ const ToolsDirectory = () => {
           />
         </div>
 
-        {/* Results - Fixed grid layout with containment for mobile */}
+        {/* Results with fixed grid layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
-          {filteredTools.length > 0 ? (
-            filteredTools.map((tool) => (
+          {currentTools.length > 0 ? (
+            currentTools.map((tool) => (
               <Link 
                 key={tool.id} 
                 to={`/tool/${tool.id}/${generateSlug(tool.name)}`}
-                className="block group relative"
+                className="block group relative transform transition-all duration-300"
               >
                 <ToolCard tool={tool} showSelection={false} />
               </Link>
@@ -221,11 +295,52 @@ const ToolsDirectory = () => {
           )}
         </div>
 
+        {/* Pagination */}
+        {filteredTools.length > 0 && totalPages > 1 && (
+          <div className="mt-12">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => setCurrentPage(curr => Math.max(curr - 1, 1))}
+                    className={`cursor-pointer ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
+                  />
+                </PaginationItem>
+
+                {getPageNumbers().map((page, index) => (
+                  page === 'ellipsis-start' || page === 'ellipsis-end' ? (
+                    <PaginationItem key={`ellipsis-${index}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem key={`page-${page}`}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page as number)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => setCurrentPage(curr => Math.min(curr + 1, totalPages))}
+                    className={`cursor-pointer ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}`}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
+
         {/* View More Link */}
         <div className="text-center mt-12">
           <Link 
             to="/categories" 
-            className="inline-flex items-center px-6 py-3 text-primary hover:bg-primary hover:text-white border border-primary rounded-lg transition-colors duration-200"
+            className="inline-flex items-center px-6 py-3 text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
           >
             View All Categories
           </Link>
