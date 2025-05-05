@@ -393,17 +393,7 @@ const ToolRecommender = () => {
                       >
                         View Tool Details <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full" 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(tool.url, '_blank', 'noopener,noreferrer');
-                        }}
-                        aria-label={`Visit ${tool.name} website`}
-                      >
-                        Visit Website <ExternalLink className="ml-2 h-3 w-3" />
-                      </Button>
+                     
                     </CardFooter>
                   </Card>
                 ))}
