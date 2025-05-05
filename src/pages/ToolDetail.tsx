@@ -303,7 +303,7 @@ const ToolDetail = () => {
               </div>
 
               <div className="w-full md:w-1/3">
-                <Card>
+                <Card className="sticky top-24">
                   <CardHeader>
                     <div className="flex justify-center mb-4">
                       <img
@@ -317,15 +317,16 @@ const ToolDetail = () => {
                       {tool?.pricing}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-6">
+                    {/* Add to Toolkit button - replaced Save button */}
+                    {tool && <SaveToolButton toolId={tool.id} />}
+                    
                     <Button asChild className="w-full">
                       <a href={tool?.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
                         <ExternalLink className="h-4 w-4 mr-2" />
                         Visit Website
                       </a>
                     </Button>
-                    
-                    {tool && <SaveToolButton toolId={tool.id} />}
                     
                     <Separator />
                     
