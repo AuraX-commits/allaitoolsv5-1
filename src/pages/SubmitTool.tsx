@@ -54,13 +54,16 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  logoUrl: z.string().url({
+    logoUrl: z.string().url({
     message: "Please enter a valid logo URL.",
-  }).optional().or(z.literal("")),
-  founderName: z.string().optional(),
+  }),
+  founderName: z.string().min(2, {
+    message: "Founder name must be at least 2 characters.",
+  }),
   founderEmail: z.string().email({
-    message: "Please enter a valid email address.",
-  }).optional().or(z.literal("")),
+    message: "Please enter a valid founder email address.",
+  }),
+
   submitterName: z.string().optional(),
   submitterRole: z.string().optional(),
 });
