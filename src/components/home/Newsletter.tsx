@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, CheckCircle, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -22,7 +21,7 @@ const Newsletter = () => {
   const { toast } = useToast();
 
   // Show dialog automatically after 5 seconds
-  useState(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       // Only show if not already subscribed
       if (!localStorage.getItem("newsletter-subscribed")) {
@@ -30,7 +29,7 @@ const Newsletter = () => {
       }
     }, 5000);
     return () => clearTimeout(timer);
-  });
+  }, []);
 
   const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
