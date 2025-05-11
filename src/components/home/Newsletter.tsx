@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, CheckCircle, Mail } from "lucide-react";
