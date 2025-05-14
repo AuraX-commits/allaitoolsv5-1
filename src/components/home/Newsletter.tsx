@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, CheckCircle, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -20,9 +20,10 @@ const Newsletter = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const { toast } = useToast();
-
+  const newsletterSectionRef = useRef<HTMLElement>(null);
+  
   // Show dialog automatically after 5 seconds
-  useState(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       // Only show if not already subscribed
       if (!localStorage.getItem("newsletter-subscribed")) {
@@ -30,7 +31,17 @@ const Newsletter = () => {
       }
     }, 5000);
     return () => clearTimeout(timer);
-  });
+  }, []);
+
+  const scrollToNewsletter = () => {
+    setShowDialog(false);
+    setTimeout(() => {
+      newsletterSectionRef.current?.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 100);
+  };
 
   const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -129,21 +140,21 @@ const Newsletter = () => {
                 Receive 20% discount codes for premium AI tools
               </p>
             </div>
-            {!isSubscribed ? <NewsletterForm /> : (
-              <div className="flex flex-col items-center bg-background/50 rounded-lg p-6">
-                <CheckCircle className="h-12 w-12 text-green-500 mb-2" />
-                <h3 className="text-xl font-bold">Thank You for Subscribing!</h3>
-                <p className="text-muted-foreground mt-2">
-                  Your first AI tools newsletter is on its way!
-                </p>
-              </div>
-            )}
+            <Button 
+              onClick={scrollToNewsletter}
+              className="w-full h-12 px-8 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 transition-all duration-300"
+            >
+              Subscribe to Newsletter
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
       
       {/* Main newsletter section */}
-      <section className="bg-gradient-to-r from-primary/10 to-blue-500/10 py-16">
+      <section 
+        ref={newsletterSectionRef}
+        className="bg-gradient-to-r from-primary/10 to-blue-500/10 py-16"
+      >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <Card className="overflow-hidden shadow-xl border-primary/20">
