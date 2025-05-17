@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef, useCallback } from "react"; // Added useCallback
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, CheckCircle, Mail } from "lucide-react";
@@ -55,7 +56,7 @@ const Newsletter = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const { toast } = useToast();
-  const newsletterSectionRef = useRef < HTMLElement > (null);
+  const newsletterSectionRef = useRef<HTMLElement>(null);
 
   // Show dialog automatically after 5 seconds
   useEffect(() => {
@@ -75,10 +76,10 @@ const Newsletter = () => {
         behavior: "smooth",
         block: "start", // Changed to 'start' for better visibility usually
       });
-       // Optional: focus the email input after scrolling
-      const emailInput = newsletterSectionRef.current?.querySelector('input[type="email"]');
+      // Optional: focus the email input after scrolling
+      const emailInput = newsletterSectionRef.current?.querySelector('input[type="email"]') as HTMLInputElement | null;
       if (emailInput) {
-        (emailInput).focus();
+        emailInput.focus();
       }
     }, 100); // Small delay to ensure dialog is closed
   };
