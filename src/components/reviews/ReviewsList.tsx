@@ -170,7 +170,7 @@ const ReviewsList = ({ toolId, toolName }: ReviewsListProps) => {
       {reviews.length === 0 ? (
         <Card>
           <CardContent className="text-center py-8">
-            <p className="text-muted-foreground">No reviews yet.</p>
+            <p className="text-muted-foreground">Drop a review and make tool's day! 🌟</p>
           </CardContent>
         </Card>
       ) : (
