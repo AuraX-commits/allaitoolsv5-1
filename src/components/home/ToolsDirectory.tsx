@@ -28,7 +28,7 @@ const ToolsDirectory = () => {
     pricing: "All",
     rating: null,
     features: [],
-    sortBy: "rating"
+    sortBy: "newest"
   });
   const [filteredTools, setFilteredTools] = useState<AITool[]>([]);
   const [currentPage, setCurrentPage] = useState(1);

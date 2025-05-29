@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { User, Bookmark, Cog, Home, LayoutDashboard } from "lucide-react";
+import { User, Bookmark, Cog, Home, LayoutDashboard, Activity } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import ProfilePage from "../components/dashboard/ProfilePage";
 import SavedToolsPage from "../components/dashboard/SavedToolsPage";
 import DashboardOverview from "../components/dashboard/DashboardOverview";
+import UserActivityPage from "../components/dashboard/UserActivityPage";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 
@@ -83,6 +84,18 @@ const Dashboard = () => {
               <span className={cn(collapsed && "hidden")}>Saved Tools</span>
             </Link>
             <Link
+              to="/dashboard/activity"
+              className={cn(
+                "flex items-center px-3 py-2 rounded-md text-sm",
+                location.pathname === "/dashboard/activity"
+                  ? "bg-secondary font-medium"
+                  : "hover:bg-secondary/50"
+              )}
+            >
+              <Activity className="h-5 w-5 mr-3" />
+              <span className={cn(collapsed && "hidden")}>My Activity</span>
+            </Link>
+            <Link
               to="/"
               className="flex items-center px-3 py-2 rounded-md text-sm hover:bg-secondary/50"
             >
@@ -98,6 +111,7 @@ const Dashboard = () => {
             <Route path="/" element={<DashboardOverview />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/saved-tools" element={<SavedToolsPage />} />
+            <Route path="/activity" element={<UserActivityPage />} />
           </Routes>
         </main>
       </div>

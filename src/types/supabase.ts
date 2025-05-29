@@ -83,6 +83,32 @@ export interface Database {
           created_at?: string | null
         }
       }
+      comments: {
+        Row: {
+          id: string
+          user_id: string
+          tool_id: string
+          content: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          tool_id: string
+          content: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          tool_id?: string
+          content?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
       contact_submissions: {
         Row: {
           id: string
@@ -150,6 +176,7 @@ export interface Database {
           avatar_url: string | null
           created_at: string
           updated_at: string
+          email: string | null
         }
         Insert: {
           id: string
@@ -157,11 +184,45 @@ export interface Database {
           avatar_url?: string | null
           created_at?: string
           updated_at?: string
+          email?: string | null
         }
         Update: {
           id?: string
           username?: string | null
           avatar_url?: string | null
+          created_at?: string
+          updated_at?: string
+          email?: string | null
+        }
+      }
+      reviews: {
+        Row: {
+          id: string
+          user_id: string
+          tool_id: string
+          rating: number
+          title: string | null
+          content: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          tool_id: string
+          rating: number
+          title?: string | null
+          content?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          tool_id?: string
+          rating?: number
+          title?: string | null
+          content?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -232,7 +293,10 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_tool_rating: {
+        Args: { tool_uuid: string }
+        Returns: Record<string, unknown>
+      }
     }
     Enums: {
       [_ in never]: never
