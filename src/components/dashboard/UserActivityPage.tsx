@@ -18,11 +18,7 @@ interface UserReview {
   content: string | null;
   created_at: string;
   updated_at: string;
-  ai_tools: {
-    id: string;
-    name: string;
-    logo: string;
-  };
+  tool_id: string;
 }
 
 interface UserComment {
@@ -30,16 +26,19 @@ interface UserComment {
   content: string;
   created_at: string;
   updated_at: string;
-  ai_tools: {
-    id: string;
-    name: string;
-    logo: string;
-  };
+  tool_id: string;
+}
+
+interface ToolInfo {
+  id: string;
+  name: string;
+  logo: string;
 }
 
 const UserActivityPage = () => {
   const [reviews, setReviews] = useState<UserReview[]>([]);
   const [comments, setComments] = useState<UserComment[]>([]);
+  const [toolsMap, setToolsMap] = useState<Map<string, ToolInfo>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -60,7 +59,7 @@ const UserActivityPage = () => {
           content,
           created_at,
           updated_at,
-          ai_tools(id, name, logo)
+          tool_id
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -75,12 +74,34 @@ const UserActivityPage = () => {
           content,
           created_at,
           updated_at,
-          ai_tools(id, name, logo)
+          tool_id
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (commentsError) throw commentsError;
+
+      // Get unique tool IDs
+      const allToolIds = new Set([
+        ...(reviewsData || []).map(r => r.tool_id),
+        ...(commentsData || []).map(c => c.tool_id)
+      ]);
+
+      // Fetch tool information
+      if (allToolIds.size > 0) {
+        const { data: toolsData, error: toolsError } = await supabase
+          .from('ai_tools')
+          .select('id, name, logo')
+          .in('id', Array.from(allToolIds));
+
+        if (toolsError) throw toolsError;
+
+        const toolsMapData = new Map<string, ToolInfo>();
+        toolsData?.forEach(tool => {
+          toolsMapData.set(tool.id, tool);
+        });
+        setToolsMap(toolsMapData);
+      }
 
       setReviews(reviewsData || []);
       setComments(commentsData || []);
@@ -213,61 +234,66 @@ const UserActivityPage = () => {
               </CardContent>
             </Card>
           ) : (
-            reviews.map((review) => (
-              <Card key={review.id}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3">
-                      <img
-                        src={review.ai_tools.logo}
-                        alt={review.ai_tools.name}
-                        className="h-12 w-12 object-contain rounded"
-                      />
-                      <div>
-                        <CardTitle className="text-lg">{review.ai_tools.name}</CardTitle>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <div className="flex items-center">
-                            {renderStars(review.rating)}
+            reviews.map((review) => {
+              const tool = toolsMap.get(review.tool_id);
+              if (!tool) return null;
+              
+              return (
+                <Card key={review.id}>
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3">
+                        <img
+                          src={tool.logo}
+                          alt={tool.name}
+                          className="h-12 w-12 object-contain rounded"
+                        />
+                        <div>
+                          <CardTitle className="text-lg">{tool.name}</CardTitle>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <div className="flex items-center">
+                              {renderStars(review.rating)}
+                            </div>
+                            <Badge variant="secondary">{review.rating}/5</Badge>
                           </div>
-                          <Badge variant="secondary">{review.rating}/5</Badge>
+                          <p className="text-sm text-muted-foreground flex items-center mt-1">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            {format(new Date(review.created_at), 'MMM d, yyyy')}
+                            {review.updated_at !== review.created_at && ' (edited)'}
+                          </p>
                         </div>
-                        <p className="text-sm text-muted-foreground flex items-center mt-1">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          {format(new Date(review.created_at), 'MMM d, yyyy')}
-                          {review.updated_at !== review.created_at && ' (edited)'}
-                        </p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigateToTool(tool.id, tool.name)}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteReview(review.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigateToTool(review.ai_tools.id, review.ai_tools.name)}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteReview(review.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                {(review.title || review.content) && (
-                  <CardContent>
-                    {review.title && (
-                      <h4 className="font-medium mb-2">{review.title}</h4>
-                    )}
-                    {review.content && (
-                      <p className="text-muted-foreground">{review.content}</p>
-                    )}
-                  </CardContent>
-                )}
-              </Card>
-            ))
+                  </CardHeader>
+                  {(review.title || review.content) && (
+                    <CardContent>
+                      {review.title && (
+                        <h4 className="font-medium mb-2">{review.title}</h4>
+                      )}
+                      {review.content && (
+                        <p className="text-muted-foreground">{review.content}</p>
+                      )}
+                    </CardContent>
+                  )}
+                </Card>
+              );
+            })
           )}
         </TabsContent>
 
@@ -283,48 +309,53 @@ const UserActivityPage = () => {
               </CardContent>
             </Card>
           ) : (
-            comments.map((comment) => (
-              <Card key={comment.id}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3">
-                      <img
-                        src={comment.ai_tools.logo}
-                        alt={comment.ai_tools.name}
-                        className="h-12 w-12 object-contain rounded"
-                      />
-                      <div>
-                        <CardTitle className="text-lg">{comment.ai_tools.name}</CardTitle>
-                        <p className="text-sm text-muted-foreground flex items-center mt-1">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          {format(new Date(comment.created_at), 'MMM d, yyyy')}
-                          {comment.updated_at !== comment.created_at && ' (edited)'}
-                        </p>
+            comments.map((comment) => {
+              const tool = toolsMap.get(comment.tool_id);
+              if (!tool) return null;
+              
+              return (
+                <Card key={comment.id}>
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3">
+                        <img
+                          src={tool.logo}
+                          alt={tool.name}
+                          className="h-12 w-12 object-contain rounded"
+                        />
+                        <div>
+                          <CardTitle className="text-lg">{tool.name}</CardTitle>
+                          <p className="text-sm text-muted-foreground flex items-center mt-1">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            {format(new Date(comment.created_at), 'MMM d, yyyy')}
+                            {comment.updated_at !== comment.created_at && ' (edited)'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigateToTool(tool.id, tool.name)}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigateToTool(comment.ai_tools.id, comment.ai_tools.name)}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteComment(comment.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground whitespace-pre-wrap">{comment.content}</p>
-                </CardContent>
-              </Card>
-            ))
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground whitespace-pre-wrap">{comment.content}</p>
+                  </CardContent>
+                </Card>
+              );
+            })
           )}
         </TabsContent>
       </Tabs>

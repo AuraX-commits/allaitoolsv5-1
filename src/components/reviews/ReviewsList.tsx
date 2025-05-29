@@ -19,10 +19,6 @@ interface Review {
   created_at: string;
   updated_at: string;
   user_id: string;
-  profiles: {
-    username: string | null;
-    email: string | null;
-  } | null;
 }
 
 interface ReviewsListProps {
@@ -34,6 +30,7 @@ const ReviewsList = ({ toolId, toolName }: ReviewsListProps) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userReview, setUserReview] = useState<Review | null>(null);
+  const [userProfiles, setUserProfiles] = useState<Map<string, { username: string | null; email: string | null }>>(new Map());
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -49,8 +46,7 @@ const ReviewsList = ({ toolId, toolName }: ReviewsListProps) => {
           content,
           created_at,
           updated_at,
-          user_id,
-          profiles(username, email)
+          user_id
         `)
         .eq('tool_id', toolId)
         .order('created_at', { ascending: false });
@@ -63,6 +59,26 @@ const ReviewsList = ({ toolId, toolName }: ReviewsListProps) => {
       if (user && data) {
         const currentUserReview = data.find(review => review.user_id === user.id);
         setUserReview(currentUserReview || null);
+      }
+
+      // Get unique user IDs and fetch their profiles
+      const userIds = [...new Set((data || []).map(review => review.user_id))];
+      if (userIds.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, username, email')
+          .in('id', userIds);
+
+        if (!profilesError && profilesData) {
+          const profilesMap = new Map();
+          profilesData.forEach(profile => {
+            profilesMap.set(profile.id, {
+              username: profile.username,
+              email: profile.email
+            });
+          });
+          setUserProfiles(profilesMap);
+        }
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -112,7 +128,8 @@ const ReviewsList = ({ toolId, toolName }: ReviewsListProps) => {
   };
 
   const getDisplayName = (review: Review) => {
-    return review.profiles?.username || review.profiles?.email?.split('@')[0] || 'Anonymous User';
+    const profile = userProfiles.get(review.user_id);
+    return profile?.username || profile?.email?.split('@')[0] || 'Anonymous User';
   };
 
   if (isLoading) {
