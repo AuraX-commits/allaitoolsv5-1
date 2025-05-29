@@ -127,7 +127,9 @@ const CommentsList = ({ toolId }: CommentsListProps) => {
     <div className="space-y-6">
       <div className="flex items-center space-x-2">
         <MessageCircle className="h-5 w-5" />
-        <h3 className="text-xl font-semibold">Comments ({comments.length})</h3>
+        <h3 className="text-xl font-semibold">
+          {comments.length > 0 ? `Comments (${comments.length})` : 'Comments'}
+        </h3>
       </div>
 
       <CommentForm toolId={toolId} onSuccess={fetchComments} />
@@ -135,7 +137,7 @@ const CommentsList = ({ toolId }: CommentsListProps) => {
       {comments.length === 0 ? (
         <Card>
           <CardContent className="text-center py-8">
-            <p className="text-muted-foreground">No comments yet. Start the conversation!</p>
+            <p className="text-muted-foreground">Silence is golden, but comments are better! Drop your thoughts below! 💭</p>
           </CardContent>
         </Card>
       ) : (

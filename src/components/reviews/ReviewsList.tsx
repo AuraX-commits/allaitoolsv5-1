@@ -149,7 +149,9 @@ const ReviewsList = ({ toolId, toolName }: ReviewsListProps) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold">Reviews ({reviews.length})</h3>
+        <h3 className="text-xl font-semibold">
+          {reviews.length > 0 ? `Reviews (${reviews.length})` : 'Reviews'}
+        </h3>
         {user && (
           <ReviewForm
             toolId={toolId}
@@ -168,7 +170,7 @@ const ReviewsList = ({ toolId, toolName }: ReviewsListProps) => {
       {reviews.length === 0 ? (
         <Card>
           <CardContent className="text-center py-8">
-            <p className="text-muted-foreground">No reviews yet. Be the first to review this tool!</p>
+            <p className="text-muted-foreground">This tool is still waiting for its first fan! Drop a review and make its day! 🌟</p>
           </CardContent>
         </Card>
       ) : (
