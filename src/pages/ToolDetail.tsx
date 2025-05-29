@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -21,6 +22,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SaveToolButton from "@/components/tool/SaveToolButton";
+import ReviewsList from "@/components/reviews/ReviewsList";
+import CommentsList from "@/components/reviews/CommentsList";
 
 const ToolDetail = () => {
   const { id, name } = useParams();
@@ -358,6 +361,14 @@ const ToolDetail = () => {
                   </CardFooter>
                 </Card>
               </div>
+            </div>
+
+            {/* Reviews and Comments Section */}
+            <div className="space-y-12">
+              <Separator />
+              <ReviewsList toolId={id!} toolName={tool.name} />
+              <Separator />
+              <CommentsList toolId={id!} />
             </div>
           </div>
         </div>
