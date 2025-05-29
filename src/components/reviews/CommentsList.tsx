@@ -44,7 +44,7 @@ const CommentsList = ({ toolId }: CommentsListProps) => {
           created_at,
           updated_at,
           user_id,
-          profiles!inner(username, email)
+          profiles(username, email)
         `)
         .eq('tool_id', toolId)
         .order('created_at', { ascending: false });

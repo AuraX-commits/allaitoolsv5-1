@@ -18,6 +18,7 @@ interface Review {
   content: string | null;
   created_at: string;
   updated_at: string;
+  user_id: string;
   profiles: {
     username: string | null;
     email: string | null;
@@ -49,7 +50,7 @@ const ReviewsList = ({ toolId, toolName }: ReviewsListProps) => {
           created_at,
           updated_at,
           user_id,
-          profiles!inner(username, email)
+          profiles(username, email)
         `)
         .eq('tool_id', toolId)
         .order('created_at', { ascending: false });

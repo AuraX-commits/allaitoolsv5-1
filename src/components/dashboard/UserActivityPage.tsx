@@ -60,7 +60,7 @@ const UserActivityPage = () => {
           content,
           created_at,
           updated_at,
-          ai_tools!inner(id, name, logo)
+          ai_tools(id, name, logo)
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -75,7 +75,7 @@ const UserActivityPage = () => {
           content,
           created_at,
           updated_at,
-          ai_tools!inner(id, name, logo)
+          ai_tools(id, name, logo)
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
