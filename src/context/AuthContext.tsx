@@ -30,62 +30,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Get the current session on mount
-    const getSession = async () => {
-      setIsLoading(true);
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Error getting session:", error);
-        } else {
-          setSession(data.session);
-          setUser(data.session?.user || null);
-          
-          // Check if user is admin
-          if (data.session?.user) {
-            checkIfAdmin(data.session.user.id);
-          }
-        }
-      } catch (error) {
-        console.error("Unexpected error during getSession:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getSession();
-
-    // Subscribe to auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state change event:", _event);
-      setSession(session);
-      setUser(session?.user || null);
-      
-      // Check if user is admin
-      if (session?.user) {
-        checkIfAdmin(session.user.id);
-      } else {
-        setIsAdmin(false);
-      }
-      
-      setIsLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  const checkIfAdmin = async (userId: string) => {
+  const checkIfAdmin = async (userId: string, userEmail?: string) => {
     try {
       // Check if the user's email exists in the admin_users table
       const { data, error } = await supabase
         .from('admin_users')
         .select('email')
-        .eq('email', user?.email)
+        .eq('email', userEmail)
         .single();
 
       if (error && error.code !== 'PGRST116') {
@@ -98,6 +49,62 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAdmin(false);
     }
   };
+
+  useEffect(() => {
+    let mounted = true;
+
+    // Get the current session on mount
+    const getSession = async () => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error getting session:", error);
+        } else if (mounted) {
+          setSession(data.session);
+          setUser(data.session?.user || null);
+          
+          // Check if user is admin
+          if (data.session?.user) {
+            checkIfAdmin(data.session.user.id, data.session.user.email);
+          }
+        }
+      } catch (error) {
+        console.error("Unexpected error during getSession:", error);
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    getSession();
+
+    // Subscribe to auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      
+      console.log("Auth state change event:", _event);
+      setSession(session);
+      setUser(session?.user || null);
+      
+      // Check if user is admin
+      if (session?.user) {
+        checkIfAdmin(session.user.id, session.user.email);
+      } else {
+        setIsAdmin(false);
+      }
+      
+      setIsLoading(false);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
