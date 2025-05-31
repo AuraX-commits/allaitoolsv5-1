@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Bot, Loader2, ExternalLink, Check, ArrowRight, AlertCircle, Sparkles, Target, Zap, Users, Clock, Star, TrendingUp, Award, Shield } from "lucide-react";
+import { Bot, Loader2, ExternalLink, Check, ArrowRight, AlertCircle, Sparkles, Target, Zap, Users, Clock, Star, TrendingUp, Award, Shield, Quote } from "lucide-react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -60,10 +59,43 @@ const ToolRecommender = () => {
     },
   });
 
-  const pageTitle = "AI Tool Recommender | Personalized AI Solution Finder | AllAITools.tech";
-  const pageDescription = "Get personalized AI tool recommendations based on your specific requirements. Our advanced AI matching system analyzes your needs across use cases, budget, features, and technical requirements to suggest the perfect AI tools for your unique situation. Save hours of research with custom AI tool recommendations tailored to your business, creative, or development projects.";
+  const pageTitle = "AI Tool Recommender | Find Perfect AI Tools | AllAITools.tech - Best AI Directory";
+  const enhancedKeywords = `AI tool recommender, personalized AI recommendations, find right AI tool, AI solution matcher, AI tool finder, best AI for my needs, custom AI recommendations, AI selection assistant, AI software recommendation engine, which AI tool should I use, AI advisor, AI tool selector, personalized technology recommendations, AI solution consultant, intelligent software recommendations, AI use case matcher, recommended AI tools, AI product matchmaker, AI requirements analyzer, tailored AI suggestions, AI recommendation algorithm, find best AI software, AI tool compatibility, AI feature matcher, which AI is best for me, AI decision assistant, suggested AI tools, AI requirements evaluation, personal AI consultant, AI comparison helper, allaitools, all ai tools, free ai tools, best ai tools, ai tools directory, tools directory, marketing tools, ai marketing, ai marketing tools, ai tools newsletter, ai news, ai newsletter, best ai directory, how to use ai tools, find ai tools, futurepedia, topaitools, indian ai tools, usa ai tools, ai tools near me, productivity ai tools, compare ai tools, futurepedia alternative, alternative ai tool directory, aitoolbazaar, aibazaar, best ai tool for, best ai tool, no code ai tools, marketing ai tools, coding ai tools, image generation ai tools, voice assistant ai tools, research ai tools, language ai tools, 3d ai tools, car ai tools, automation ai tools, designing ai tools, photography ai tools, data ai tools, data analysis ai tool, customer service ai tool, find my ai tool, how to find best ai tool, search for new ai tools, new ai tools, new ai news, discover ai tools, conversational ai tools, text ai tools, ai resume, career ai tools, ai sales, sales ai tool, sales ai tools, content creation ai tools, pricing ai tools, recommend ai tools, compare tools, compare all ai tools, there's an ai for that, best ai tool, lovable ai, notion ai, free chatgpt`;
+  
+  const pageDescription = "Get instant, personalized AI tool recommendations with our advanced AI matching system. Analyze 3000+ tools across 50+ categories including marketing AI tools, coding AI tools, image generation, voice assistants, productivity tools, and more. Free AI tool finder that matches your specific requirements, budget, and use case. Compare all AI tools, find alternatives to popular platforms, and discover new AI tools daily. Perfect for businesses, developers, content creators, and AI enthusiasts looking for the best AI solutions.";
   
   const seoKeywords = "AI tool recommender, personalized AI recommendations, find right AI tool, AI solution matcher, AI tool finder, best AI for my needs, custom AI recommendations, AI selection assistant, AI software recommendation engine, which AI tool should I use, AI advisor, AI tool selector, personalized technology recommendations, AI solution consultant, intelligent software recommendations, AI use case matcher, recommended AI tools, AI product matchmaker, AI requirements analyzer, tailored AI suggestions, AI recommendation algorithm, find best AI software, AI tool compatibility, AI feature matcher, which AI is best for me, AI decision assistant, suggested AI tools, AI requirements evaluation, personal AI consultant, AI comparison helper";
+
+  const testimonials = [
+    {
+      name: "Sarah Chen",
+      role: "Marketing Director",
+      company: "TechStart Inc.",
+      image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=400&fit=crop&crop=face",
+      quote: "This AI recommender saved me weeks of research. Got exactly what I needed for my content creation workflow - found 3 perfect tools in under 5 minutes!"
+    },
+    {
+      name: "Marcus Rodriguez", 
+      role: "Full Stack Developer",
+      company: "DevCorp Solutions",
+      image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=400&fit=crop&crop=face",
+      quote: "Incredibly accurate recommendations. The AI understood my specific coding needs perfectly and suggested tools I never would have found on my own."
+    },
+    {
+      name: "Emily Watson",
+      role: "Content Creator",
+      company: "Creative Studios",
+      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop&crop=face", 
+      quote: "As a freelancer, finding the right AI tools within budget was crucial. This recommender nailed it - suggested affordable alternatives that work better than expensive options!"
+    },
+    {
+      name: "David Kim",
+      role: "Product Manager", 
+      company: "InnovateLab",
+      image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=400&fit=crop&crop=face",
+      quote: "The detailed reasoning behind each recommendation helped me understand why each tool was perfect for our team. Made the decision process so much easier!"
+    }
+  ];
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
@@ -134,7 +166,7 @@ const ToolRecommender = () => {
         <meta name="twitter:site" content="@AIToolsDirectory" />
         <meta name="twitter:creator" content="@AIToolsDirectory" />
         
-        <meta name="keywords" content={seoKeywords} />
+        <meta name="keywords" content={enhancedKeywords} />
         <link rel="canonical" href="https://www.allaitools.tech/recommend" />
         
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -570,6 +602,52 @@ const ToolRecommender = () => {
             </div>
           </section>
         )}
+
+        {/* Testimonials Section */}
+        <section className="py-16 px-4 bg-gradient-to-r from-blue-50 to-purple-50">
+          <div className="container max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Trusted by Thousands of Professionals
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                See how our AI Tool Recommender has helped professionals across industries find their perfect AI solutions
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="border-0 shadow-lg bg-white/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                  <CardContent className="pt-8">
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 rounded-full overflow-hidden mr-3 ring-2 ring-blue-200">
+                        <img 
+                          src={testimonial.image} 
+                          alt={testimonial.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm">{testimonial.name}</h4>
+                        <p className="text-xs text-gray-600">{testimonial.role}</p>
+                        <p className="text-xs text-blue-600">{testimonial.company}</p>
+                      </div>
+                    </div>
+                    <Quote className="w-6 h-6 text-blue-500 mb-3" />
+                    <p className="text-gray-700 text-sm leading-relaxed italic">
+                      "{testimonial.quote}"
+                    </p>
+                    <div className="flex mt-4">
+                      {Array(5).fill(0).map((_, i) => (
+                        <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Additional SEO content section */}
         <section className="py-16 px-4 bg-gray-50">

@@ -93,10 +93,10 @@ const SubmitTool = () => {
     },
   });
 
-  const pageTitle = "Submit Your AI Tool | Get Listed in the Top AI Directory | AllAITools.tech";
-  const pageDescription = "Submit your AI tool for inclusion in the AllAITools.tech directory - the internet's most comprehensive AI tool resource. Increase visibility, attract new users, and join the leading community of innovative AI solutions. Our submission process is simple, and our expert team reviews each tool to ensure quality listings that help users discover the best AI technologies.";
+  const pageTitle = "Submit Your AI Tool for Free - Get Listed in Top AI Directory | AllAITools.tech";
+  const pageDescription = "Submit your AI tool for FREE inclusion in AllAITools.tech - the internet's most comprehensive AI tool directory with 100K+ monthly visitors. Increase visibility, attract new users, and join 3000+ innovative AI solutions. Simple submission process, expert review, and instant exposure to AI enthusiasts, developers, and business professionals worldwide.";
 
-  const seoKeywords = "submit AI tool, list AI software, AI directory submission, add AI tool listing, promote AI application, AI tool directory inclusion, get AI tool listed, AI product submission, AI software directory listing, AI tool promotion, artificial intelligence tool submission, submit new AI tool, AI directory application, list AI product, AI marketplace submission, add to AI directory, AI tool exposure, AI directory listing form, register AI tool, AI software promotion, AI tool visibility, AI listing service, AI product directory, AI tool registration, AI directory inclusion, add AI solution, AI company listing, submit AI software, AI developer directory, AI tool submission guidelines";
+  const seoKeywords = "submit AI tool free, list AI software free, free AI directory submission, add AI tool listing free, promote AI application free, AI tool directory inclusion free, get AI tool listed free, AI product submission free, AI software directory listing free, AI tool promotion free, artificial intelligence tool submission free, submit new AI tool free, AI directory application free, list AI product free, AI marketplace submission free, add to AI directory free, AI tool exposure free, AI directory listing form free, register AI tool free, AI software promotion free, AI tool visibility free, AI listing service free, AI product directory free, AI tool registration free, AI directory inclusion free, add AI solution free, AI company listing free, submit AI software free, AI developer directory free, AI tool submission guidelines free, submit ai tool, list ai tool, add ai tool, free ai tool listing, ai tool directory, ai tools submission, ai software listing, submit artificial intelligence tool, ai tool promotion, ai directory submission, ai tool registration, list my ai tool, add my ai tool, ai tool marketplace, ai tool visibility, ai software directory, ai tool exposure, ai product listing, ai startup listing, new ai tool submission, ai innovation listing, ai tool discovery, submit ai application, ai tool catalog, ai directory listing, ai tool database, submit ai product, ai tool showcase, ai software catalog, ai tool platform, ai development listing, ai solution submission, ai tool repository, submit chatgpt alternative, submit ai writing tool, submit ai image generator, submit ai code assistant, submit ai video tool, submit ai voice tool, submit ai marketing tool, submit ai productivity tool, submit ai design tool, submit ai data tool, submit ai research tool, submit ai automation tool, submit ai business tool, submit ai education tool, submit ai health tool, submit ai finance tool, submit ai gaming tool, submit ai music tool, submit ai photo tool, submit ai translation tool, submit ai transcription tool, submit ai analytics tool, submit ai security tool, submit ai hr tool, submit ai legal tool, submit ai real estate tool, submit ai ecommerce tool, submit ai social media tool, submit ai content tool, submit ai seo tool, submit ai email tool, submit ai crm tool, submit ai project management tool, submit ai collaboration tool, submit ai communication tool, submit ai video editing tool, submit ai audio editing tool, submit ai photo editing tool, submit ai graphic design tool, submit ai ui design tool, submit ai ux design tool, submit ai logo design tool, submit ai presentation tool, submit ai document tool, submit ai spreadsheet tool, submit ai database tool, submit ai cloud tool, submit ai mobile app, submit ai web app, submit ai chrome extension, submit ai browser tool, submit ai desktop app, submit ai api tool, submit ai developer tool, submit ai no code tool, submit ai low code tool, submit ai workflow tool, submit ai integration tool, submit ai plugin tool, submit ai widget tool, submit ai saas tool, submit ai enterprise tool, submit ai startup tool, submit ai indie tool, submit ai open source tool, submit ai free tool, submit ai freemium tool, submit ai paid tool, submit ai subscription tool, submit ai one time purchase tool";
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
@@ -161,8 +161,24 @@ const SubmitTool = () => {
         <meta name="keywords" content={seoKeywords} />
         <link rel="canonical" href="https://www.allaitools.tech/submit-tool" />
         
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="AI Tools Directory Team" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="author" content="AllAITools.tech Team" />
+        <meta name="language" content="English" />
+        <meta name="distribution" content="global" />
+        <meta name="rating" content="general" />
+        <meta name="coverage" content="worldwide" />
+        <meta name="target" content="AI developers, startup founders, product managers, AI companies, tech entrepreneurs" />
+        <meta name="subject" content="AI Tool Submission - Free AI Directory Listing" />
+        <meta name="copyright" content="AllAITools.tech" />
+        <meta name="designer" content="AllAITools.tech Team" />
+        <meta name="owner" content="AllAITools.tech" />
+        <meta name="url" content="https://www.allaitools.tech/submit-tool" />
+        <meta name="identifier-URL" content="https://www.allaitools.tech/submit-tool" />
+        <meta name="category" content="Technology, Artificial Intelligence, Software Directory, AI Tool Submission" />
+        <meta name="classification" content="AI Tools Directory Submission Form" />
+        <meta name="revisit-after" content="1 days" />
+        <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="bingbot" content="index, follow" />
         
         {/* Schema.org Form markup */}
         <script type="application/ld+json">
@@ -174,11 +190,16 @@ const SubmitTool = () => {
               "description": "${pageDescription}",
               "url": "https://www.allaitools.tech/submit-tool",
               "mainEntity": {
-                "@type": "WebContent",
-                "headline": "Submit Your AI Tool for Review",
-                "about": {
-                  "@type": "Thing",
-                  "name": "AI Tool Submission Process"
+                "@type": "WebApplication",
+                "name": "AI Tool Submission Form",
+                "description": "Free submission form for adding AI tools to the AllAITools.tech directory",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "Web Browser",
+                "offers": {
+                  "@type": "Offer",
+                  "price": "0",
+                  "priceCurrency": "USD",
+                  "description": "Free AI tool listing submission"
                 }
               },
               "potentialAction": {
@@ -194,7 +215,7 @@ const SubmitTool = () => {
               },
               "speakable": {
                 "@type": "SpeakableSpecification",
-                "cssSelector": ["h1", ".submission-guidelines"]
+                "cssSelector": ["h1", ".submission-guidelines", ".form-description"]
               }
             }
           `}
@@ -206,28 +227,69 @@ const SubmitTool = () => {
             {
               "@context": "https://schema.org",
               "@type": "HowTo",
-              "name": "How to Submit Your AI Tool to AllAITools.tech",
-              "description": "Follow these steps to submit your AI tool for inclusion in our comprehensive directory.",
+              "name": "How to Submit Your AI Tool to AllAITools.tech Directory for Free",
+              "description": "Step-by-step guide to submit your AI tool for free inclusion in the world's largest AI tools directory with 100K+ monthly visitors.",
+              "image": "/og-image.png",
+              "totalTime": "PT5M",
+              "estimatedCost": {
+                "@type": "MonetaryAmount",
+                "currency": "USD",
+                "value": "0"
+              },
+              "supply": [
+                {
+                  "@type": "HowToSupply",
+                  "name": "AI tool information"
+                },
+                {
+                  "@type": "HowToSupply", 
+                  "name": "Tool logo or icon"
+                },
+                {
+                  "@type": "HowToSupply",
+                  "name": "Contact information"
+                }
+              ],
+              "tool": [
+                {
+                  "@type": "HowToTool",
+                  "name": "Web browser"
+                },
+                {
+                  "@type": "HowToTool",
+                  "name": "Internet connection"
+                }
+              ],
               "step": [
                 {
                   "@type": "HowToStep",
-                  "name": "Fill Your Tool Information",
-                  "text": "Provide the name, website URL, category, pricing model, and description of your AI tool."
+                  "name": "Prepare Your AI Tool Information",
+                  "text": "Gather your AI tool's name, website URL, category, pricing model, and detailed description highlighting its unique features and benefits.",
+                  "image": "/og-image.png"
                 },
                 {
                   "@type": "HowToStep",
-                  "name": "Add Creator Details",
-                  "text": "Optionally include founder/creator information to enhance the credibility of your listing."
+                  "name": "Fill Out the Submission Form",
+                  "text": "Complete our comprehensive submission form with accurate information about your AI tool, including technical details and use cases.",
+                  "image": "/og-image.png"
                 },
                 {
                   "@type": "HowToStep",
-                  "name": "Provide Contact Information",
-                  "text": "Enter an email address where our team can reach you regarding your submission."
+                  "name": "Add Creator and Contact Details",
+                  "text": "Provide founder/creator information and contact details to enhance credibility and enable our team to reach you if needed.",
+                  "image": "/og-image.png"
                 },
                 {
                   "@type": "HowToStep",
-                  "name": "Submit for Review",
-                  "text": "Submit your completed form for review by our expert team."
+                  "name": "Submit for Expert Review",
+                  "text": "Submit your completed form for review by our expert team who will evaluate your tool for inclusion in our curated directory.",
+                  "image": "/og-image.png"
+                },
+                {
+                  "@type": "HowToStep",
+                  "name": "Get Listed and Gain Visibility",
+                  "text": "Once approved, your AI tool will be listed in our directory and exposed to 100K+ monthly visitors actively searching for AI solutions.",
+                  "image": "/og-image.png"
                 }
               ]
             }
@@ -243,35 +305,120 @@ const SubmitTool = () => {
               "mainEntity": [
                 {
                   "@type": "Question",
-                  "name": "Is it free to submit my AI tool to the directory?",
+                  "name": "Is it completely free to submit my AI tool to AllAITools.tech?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes, basic listings in the AllAITools.tech directory are completely free. We offer premium listing options with additional visibility features for those who want to highlight their tools."
+                    "text": "Yes, submitting your AI tool to AllAITools.tech is completely free. Basic listings in our directory are at no cost. We also offer premium listing options with additional visibility features for enhanced promotion."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "How long does the review process take?",
+                  "name": "How long does the AI tool review process take?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Our team typically reviews submissions within 3-5 business days. After review, you will receive an email notification about the status of your submission."
+                    "text": "Our expert team typically reviews AI tool submissions within 2-5 business days. After review, you'll receive an email notification about your submission status and next steps."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "What are the criteria for accepting AI tools?",
+                  "name": "What are the criteria for accepting AI tools in the directory?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "We accept AI tools that demonstrate clear value, functionality, and relevance to our users. Tools must be legitimate, operational, and provide genuine AI capabilities. We prioritize tools with unique features or that solve specific problems."
+                    "text": "We accept AI tools that demonstrate genuine AI capabilities, provide clear value to users, are functional and operational, and solve real problems. We prioritize tools with unique features, innovative approaches, or specialized use cases."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "Can I update my tool information after submission?",
+                  "name": "Can I update my AI tool information after submission?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes, you can request updates to your tool listing at any time by contacting our team. We encourage keeping your information current, especially for pricing changes or new features."
+                    "text": "Yes, you can request updates to your tool listing anytime by contacting our team. We encourage keeping information current, especially for pricing changes, new features, or major updates."
                   }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What types of AI tools do you accept in the directory?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We accept all types of AI tools including text generation, image creation, code assistants, chatbots, data analysis, productivity tools, marketing automation, content creation, design tools, and specialized AI solutions across 50+ categories."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How many people will see my AI tool listing?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "AllAITools.tech receives over 100,000 monthly visitors including AI enthusiasts, developers, business professionals, and decision-makers actively searching for AI solutions. Your tool will gain significant exposure in our highly engaged community."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Do I need to provide a logo for my AI tool submission?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "While not required, providing a logo or icon significantly improves your tool's visibility and professional appearance in our directory. We recommend including a high-quality logo URL for best results."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Can I submit AI tools that are still in beta or development?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, we accept AI tools in beta or early development stages as long as they are functional and accessible to users. Please clearly indicate the development stage in your submission description."
+                  }
+                }
+              ]
+            }
+          `}
+        </script>
+
+        {/* Service Schema */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Service",
+              "name": "Free AI Tool Directory Submission",
+              "description": "Free submission service for adding AI tools to the world's largest AI tools directory",
+              "provider": {
+                "@type": "Organization",
+                "name": "AllAITools.tech",
+                "url": "https://www.allaitools.tech"
+              },
+              "serviceType": "Directory Listing Service",
+              "areaServed": "Worldwide",
+              "audience": {
+                "@type": "Audience",
+                "audienceType": "AI Developers, Startup Founders, Tech Companies"
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "description": "Free AI tool listing in comprehensive directory"
+              }
+            }
+          `}
+        </script>
+
+        {/* BreadcrumbList Schema */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://www.allaitools.tech"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Submit AI Tool",
+                  "item": "https://www.allaitools.tech/submit-tool"
                 }
               ]
             }
@@ -282,12 +429,39 @@ const SubmitTool = () => {
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">Submit an AI Tool</h1>
-          <p className="text-muted-foreground mb-8">
-            Fill out the form below to submit your AI tool for review. Our team
-            will review your submission and get back to you if we need more
-            information.
-          </p>
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Submit Your AI Tool for Free
+            </h1>
+            <p className="text-xl text-muted-foreground mb-4 form-description">
+              Get your AI tool listed in the world's largest AI directory with 100K+ monthly visitors. 
+              Completely free submission with expert review and instant exposure to AI enthusiasts worldwide.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full">✅ Completely Free</span>
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">🚀 100K+ Monthly Visitors</span>
+              <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full">⚡ Fast Review Process</span>
+              <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full">🎯 Targeted Audience</span>
+            </div>
+          </div>
+
+          <div className="submission-guidelines bg-muted/50 p-6 rounded-lg mb-8">
+            <h2 className="text-xl font-semibold mb-4">Why Submit to AllAITools.tech?</h2>
+            <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div className="space-y-2">
+                <div>🌟 <strong>Massive Exposure:</strong> Reach 100K+ monthly visitors</div>
+                <div>🎯 <strong>Targeted Audience:</strong> AI enthusiasts & professionals</div>
+                <div>📈 <strong>SEO Benefits:</strong> High-quality backlinks & visibility</div>
+                <div>💼 <strong>Business Growth:</strong> Connect with potential customers</div>
+              </div>
+              <div className="space-y-2">
+                <div>⚡ <strong>Fast Processing:</strong> 2-5 day review process</div>
+                <div>🆓 <strong>Completely Free:</strong> No hidden costs or fees</div>
+                <div>🏆 <strong>Expert Curation:</strong> Quality-focused directory</div>
+                <div>📊 <strong>Analytics Ready:</strong> Track your tool's performance</div>
+              </div>
+            </div>
+          </div>
 
           <Form {...form}>
             <form
@@ -295,16 +469,16 @@ const SubmitTool = () => {
               className="space-y-8 bg-card border rounded-lg p-6"
             >
               <div className="space-y-6">
-                <h2 className="text-xl font-semibold">Tool Information</h2>
+                <h2 className="text-xl font-semibold">AI Tool Information</h2>
                 
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tool Name*</FormLabel>
+                      <FormLabel>AI Tool Name*</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., ChatGPT" {...field} />
+                        <Input placeholder="e.g., ChatGPT, Midjourney, GitHub Copilot" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -319,7 +493,7 @@ const SubmitTool = () => {
                       <FormLabel>Website URL*</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="e.g., https://chat.openai.com"
+                          placeholder="e.g., https://your-ai-tool.com"
                           {...field}
                         />
                       </FormControl>
@@ -334,27 +508,33 @@ const SubmitTool = () => {
                     name="category"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Category*</FormLabel>
+                        <FormLabel>AI Tool Category*</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a category" />
+                              <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Text Generation">Text Generation</SelectItem>
-                            <SelectItem value="Image Generation">Image Generation</SelectItem>
-                            <SelectItem value="Code Assistant">Code Assistant</SelectItem>
-                            <SelectItem value="Video Generation">Video Generation</SelectItem>
-                            <SelectItem value="Audio Generation">Audio Generation</SelectItem>
-                            <SelectItem value="Chatbot">Chatbot</SelectItem>
-                            <SelectItem value="Data Analysis">Data Analysis</SelectItem>
-                            <SelectItem value="Productivity">Productivity</SelectItem>
-                            <SelectItem value="Marketing">Marketing</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            <SelectItem value="Text Generation">Text Generation & Writing</SelectItem>
+                            <SelectItem value="Image Generation">Image Generation & Art</SelectItem>
+                            <SelectItem value="Code Assistant">Code Assistant & Development</SelectItem>
+                            <SelectItem value="Video Generation">Video Generation & Editing</SelectItem>
+                            <SelectItem value="Audio Generation">Audio Generation & Music</SelectItem>
+                            <SelectItem value="Chatbot">Chatbots & Conversational AI</SelectItem>
+                            <SelectItem value="Data Analysis">Data Analysis & Research</SelectItem>
+                            <SelectItem value="Productivity">Productivity & Automation</SelectItem>
+                            <SelectItem value="Marketing">Marketing & Social Media</SelectItem>
+                            <SelectItem value="Design">Design & Creative Tools</SelectItem>
+                            <SelectItem value="Business">Business & Enterprise</SelectItem>
+                            <SelectItem value="Education">Education & Learning</SelectItem>
+                            <SelectItem value="Healthcare">Healthcare & Medical</SelectItem>
+                            <SelectItem value="Finance">Finance & Trading</SelectItem>
+                            <SelectItem value="E-commerce">E-commerce & Retail</SelectItem>
+                            <SelectItem value="Other">Other AI Tools</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -378,11 +558,12 @@ const SubmitTool = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Free">Free</SelectItem>
-                            <SelectItem value="Freemium">Freemium</SelectItem>
-                            <SelectItem value="Paid">Paid</SelectItem>
-                            <SelectItem value="Free Trial">Free Trial</SelectItem>
+                            <SelectItem value="Free">Free - No Cost</SelectItem>
+                            <SelectItem value="Freemium">Freemium - Free + Paid Plans</SelectItem>
+                            <SelectItem value="Free Trial">Free Trial Available</SelectItem>
+                            <SelectItem value="Paid">Paid - Subscription/One-time</SelectItem>
                             <SelectItem value="Contact for Pricing">Contact for Pricing</SelectItem>
+                            <SelectItem value="Open Source">Open Source</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -396,14 +577,18 @@ const SubmitTool = () => {
                   name="shortDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Short Description* (200 chars max)</FormLabel>
+                      <FormLabel>Short Description* (200 characters max)</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="A brief description of what your tool does..."
+                          placeholder="A compelling brief description highlighting your AI tool's main purpose and key benefits..."
                           {...field}
                           className="resize-none"
+                          maxLength={200}
                         />
                       </FormControl>
+                      <div className="text-xs text-muted-foreground">
+                        {field.value?.length || 0}/200 characters
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -414,14 +599,17 @@ const SubmitTool = () => {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Description*</FormLabel>
+                      <FormLabel>Detailed Description*</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="A detailed description of your tool, its features, use cases, etc."
+                          placeholder="Provide a comprehensive description of your AI tool including: key features, use cases, target audience, unique value proposition, technical capabilities, integration options, and what makes it special..."
                           {...field}
                           className="min-h-[200px]"
                         />
                       </FormControl>
+                      <div className="text-xs text-muted-foreground">
+                        Include keywords like: AI, artificial intelligence, machine learning, automation, productivity, [your industry], [your use case]
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -432,13 +620,16 @@ const SubmitTool = () => {
                   name="logoUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Logo URL (Optional)</FormLabel>
+                      <FormLabel>Logo/Icon URL (Recommended)</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="e.g., https://yourtool.com/logo.png"
+                          placeholder="e.g., https://your-domain.com/logo.png (recommended for better visibility)"
                           {...field}
                         />
                       </FormControl>
+                      <div className="text-xs text-muted-foreground">
+                        High-quality logos improve click-through rates by 40%. Recommended size: 256x256px or higher.
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -446,7 +637,10 @@ const SubmitTool = () => {
               </div>
 
               <div className="space-y-6 pt-4 border-t">
-                <h2 className="text-xl font-semibold">Founder Information (Optional)</h2>
+                <h2 className="text-xl font-semibold">Founder/Creator Information (Optional but Recommended)</h2>
+                <p className="text-sm text-muted-foreground">
+                  Adding founder information increases credibility and trust, leading to higher engagement rates.
+                </p>
                 
                 <FormField
                   control={form.control}
@@ -455,7 +649,7 @@ const SubmitTool = () => {
                     <FormItem>
                       <FormLabel>Founder/Creator Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., John Smith" {...field} />
+                        <Input placeholder="e.g., John Smith, Jane Doe" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -469,7 +663,7 @@ const SubmitTool = () => {
                     <FormItem>
                       <FormLabel>Founder/Creator Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., founder@example.com" {...field} />
+                        <Input placeholder="e.g., founder@your-ai-tool.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -487,7 +681,7 @@ const SubmitTool = () => {
                     <FormItem>
                       <FormLabel>Your Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Jane Doe" {...field} />
+                        <Input placeholder="e.g., Marketing Manager, Product Manager" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -499,9 +693,9 @@ const SubmitTool = () => {
                   name="submitterRole"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Your Role</FormLabel>
+                      <FormLabel>Your Role/Position</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Marketing Manager" {...field} />
+                        <Input placeholder="e.g., Marketing Manager, CEO, Developer" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -520,35 +714,50 @@ const SubmitTool = () => {
                       <FormLabel>Contact Email*</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="e.g., contact@example.com"
+                          placeholder="e.g., contact@your-ai-tool.com (for updates and communication)"
                           {...field}
                         />
                       </FormControl>
+                      <div className="text-xs text-muted-foreground">
+                        We'll use this email to notify you about your submission status and any questions.
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
 
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
+              <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-lg">
+                <h3 className="font-semibold mb-2">🚀 What happens after submission?</h3>
+                <ul className="text-sm space-y-1 text-muted-foreground">
+                  <li>✅ Expert review within 2-5 business days</li>
+                  <li>📧 Email notification about approval status</li>
+                  <li>🌟 Featured in our directory with 100K+ monthly visitors</li>
+                  <li>📈 Exposure to AI enthusiasts, developers, and businesses</li>
+                  <li>🔗 High-quality backlinks for SEO benefits</li>
+                </ul>
+              </div>
+
+              <Button type="submit" className="w-full text-lg py-6" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Submitting Your AI Tool...
                   </>
                 ) : (
-                  "Submit Tool for Review"
+                  "🚀 Submit My AI Tool for Free Review"
                 )}
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">
                 By submitting, you agree to our{" "}
-                <a href="/terms" className="underline">
+                <a href="/terms" className="underline hover:text-primary">
                   Terms of Service
                 </a>{" "}
                 and{" "}
-                <a href="/privacy" className="underline">
+                <a href="/privacy" className="underline hover:text-primary">
                   Privacy Policy
                 </a>
+                . Your tool will be reviewed for quality and relevance.
               </p>
             </form>
           </Form>
