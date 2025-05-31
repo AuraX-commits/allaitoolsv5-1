@@ -23,6 +23,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
 import SubmitTool from "./pages/SubmitTool";
+import Advertise from "./pages/Advertise";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Admin from './pages/Admin';
@@ -69,6 +70,7 @@ const App = () => {
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/submit-tool" element={<SubmitTool />} />
+                  <Route path="/advertise" element={<Advertise />} />
                   <Route path="/login" element={<SignIn />} />
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/admin" element={<Admin />} />
