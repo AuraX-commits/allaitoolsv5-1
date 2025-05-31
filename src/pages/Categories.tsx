@@ -12,6 +12,8 @@ import { AITool, mapRowToAITool } from "@/utils/toolsData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 import { useToast } from "@/hooks/use-toast";
+import BreadcrumbNav from "@/components/common/BreadcrumbNav";
+import { generateLocalSeoKeywords, generateLocalSeoDescription } from "@/utils/localSeoHelper";
 
 const Categories = () => {
   const { category } = useParams<{ category: string }>();
@@ -240,9 +242,14 @@ const Categories = () => {
       'free trials ai tools', 'ai tools discount', 'ai tools coupon'
     ];
     
+    // Add local SEO keywords
+    const localKeywords = currentCategory && currentCategory !== "All" 
+      ? generateLocalSeoKeywords('AI Tools', currentCategory, 'Mixed')
+      : generateLocalSeoKeywords('AI Tools Directory', 'General', 'Mixed');
+    
     return [...baseKeywords, ...categorySpecificKeywords, ...toolTypeKeywords, 
-            ...useKeywords, ...competitorKeywords, ...intentKeywords, ...pricingKeywords]
-           .slice(0, 120).join(', ');
+            ...useKeywords, ...competitorKeywords, ...intentKeywords, ...pricingKeywords, ...localKeywords]
+           .slice(0, 180).join(', ');
   };
 
   const getCategoryStructuredData = () => {
@@ -462,6 +469,14 @@ const Categories = () => {
       
       <main className="pt-24 pb-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb Navigation */}
+          <BreadcrumbNav 
+            category={currentCategory || undefined}
+            customItems={currentCategory ? undefined : [
+              { label: 'Categories', href: '/categories' }
+            ]}
+          />
+
           <div className="mb-8">
             <Link to="/" className="inline-flex items-center text-foreground/70 hover:text-primary transition-colors">
               <ArrowLeft className="w-4 h-4 mr-2" />

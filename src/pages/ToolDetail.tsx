@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -24,6 +23,8 @@ import Footer from "../components/layout/Footer";
 import SaveToolButton from "@/components/tool/SaveToolButton";
 import ReviewsList from "@/components/reviews/ReviewsList";
 import CommentsList from "@/components/reviews/CommentsList";
+import BreadcrumbNav from "@/components/common/BreadcrumbNav";
+import { generateLocalSeoKeywords, generateLocalSeoDescription, getLocalStructuredData } from "@/utils/localSeoHelper";
 
 const ToolDetail = () => {
   const { id, name } = useParams();
@@ -133,7 +134,9 @@ const ToolDetail = () => {
     const ratingText = `${tool.rating}/5 stars from ${tool.reviewCount} reviews`;
     const pricingKeyword = tool.pricing === 'Free' ? 'Free' : tool.pricing === 'Freemium' ? 'Free & Premium' : 'Premium';
     
-    return `In-depth ${tool.name} review 2025: ${tool.shortDescription} Comprehensive analysis of features including ${mainFeatures}. ${pricingKeyword} pricing model with ${tool.pricing} plans. Expert review reveals pros, cons, use cases, and best alternatives. ${ratingText}. Perfect for ${categoryList} needs. Compare with similar AI tools, read user feedback, and discover if ${tool.name} is worth it for your business. Find free trials, API access details, and honest evaluation of this ${categoryList} solution. Make informed decisions with our detailed feature comparison, pricing analysis, and real-world testing results.`;
+    const baseDescription = `In-depth ${tool.name} review 2025: ${tool.shortDescription} Comprehensive analysis of features including ${mainFeatures}. ${pricingKeyword} pricing model with ${tool.pricing} plans. Expert review reveals pros, cons, use cases, and best alternatives. ${ratingText}. Perfect for ${categoryList} needs. Compare with similar AI tools, read user feedback, and discover if ${tool.name} is worth it for your business. Find free trials, API access details, and honest evaluation of this ${categoryList} solution. Make informed decisions with our detailed feature comparison, pricing analysis, and real-world testing results.`;
+    
+    return generateLocalSeoDescription(tool.name, tool.category[0], baseDescription);
   };
 
   const getAdvancedKeywords = () => {
@@ -177,7 +180,10 @@ const ToolDetail = () => {
       'generative ai tools', 'ai automation tools', 'business ai tools'
     ];
     
-    return [...baseKeywords, ...categoryKeywords, ...featureKeywords, ...pricingKeywords, ...competitorKeywords, ...generalAIKeywords].slice(0, 80).join(', ');
+    // Add local SEO keywords
+    const localKeywords = generateLocalSeoKeywords(tool.name, tool.category[0], tool.pricing);
+    
+    return [...baseKeywords, ...categoryKeywords, ...featureKeywords, ...pricingKeywords, ...competitorKeywords, ...generalAIKeywords, ...localKeywords].slice(0, 150).join(', ');
   };
 
   const getStructuredData = () => {
@@ -369,9 +375,14 @@ const ToolDetail = () => {
         {/* Preconnect for Performance */}
         <link rel="preconnect" href={new URL(tool?.url || 'https://example.com').origin} />
         
-        {/* Structured Data */}
+        {/* Enhanced Structured Data with Local SEO */}
         <script type="application/ld+json">
           {JSON.stringify(getStructuredData())}
+        </script>
+        
+        {/* Local Service Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(getLocalStructuredData(tool?.name || '', tool?.category[0] || ''))}
         </script>
         
         {/* Additional Structured Data for Breadcrumbs */}
@@ -437,6 +448,14 @@ const ToolDetail = () => {
                   "@type": "Answer",
                   "text": `${tool?.name} key features include: ${tool?.features.slice(0, 5).join(', ')}.`
                 }
+              },
+              {
+                "@type": "Question",
+                "name": `Is ${tool?.name} available in major tech hubs?`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": `Yes, ${tool?.name} is widely used by tech professionals in Silicon Valley, New York, London, Berlin, and other major tech hubs worldwide.`
+                }
               }
             ]
           })}
@@ -448,6 +467,12 @@ const ToolDetail = () => {
       <main className="flex-grow pt-24 pb-20">
         <div className="container px-4">
           <div className="max-w-5xl mx-auto">
+            {/* Breadcrumb Navigation */}
+            <BreadcrumbNav 
+              toolName={tool?.name}
+              category={tool?.category[0]}
+            />
+
             {/* Navigation between tools */}
             <div className="flex justify-between mb-6">
               {prevTool ? (
