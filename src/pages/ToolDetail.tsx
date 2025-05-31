@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -130,6 +131,7 @@ const ToolDetail = () => {
     const mainFeatures = tool.features.slice(0, 4).join(', ');
     const categoryList = tool.category.join(', ');
     const ratingText = `${tool.rating}/5 stars from ${tool.reviewCount} reviews`;
+    const pricingKeyword = tool.pricing === 'Free' ? 'Free' : tool.pricing === 'Freemium' ? 'Free & Premium' : 'Premium';
     
     return `In-depth ${tool.name} review 2025: ${tool.shortDescription} Comprehensive analysis of features including ${mainFeatures}. ${pricingKeyword} pricing model with ${tool.pricing} plans. Expert review reveals pros, cons, use cases, and best alternatives. ${ratingText}. Perfect for ${categoryList} needs. Compare with similar AI tools, read user feedback, and discover if ${tool.name} is worth it for your business. Find free trials, API access details, and honest evaluation of this ${categoryList} solution. Make informed decisions with our detailed feature comparison, pricing analysis, and real-world testing results.`;
   };
