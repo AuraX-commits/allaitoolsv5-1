@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Star, ExternalLink, Plus, X, ArrowRight } from 'lucide-react';
-import { toolsData } from '@/utils/toolsData';
+import { aiTools } from '@/utils/toolsData';
 import { ReplaceToolButton } from '@/components/comparison/ReplaceToolButton';
 import BreadcrumbNav from '@/components/common/BreadcrumbNav';
 import { ScrollToTop } from '@/components/common/ScrollToTop';
@@ -40,21 +41,21 @@ const Compare: React.FC = () => {
     const selectedTools = [];
 
     if (tool1Id) {
-      const tool1 = toolsData.find(tool => tool.id === tool1Id);
+      const tool1 = aiTools.find(tool => tool.id === tool1Id);
       if (tool1) {
         selectedTools.push(tool1);
       }
     }
 
     if (tool2Id) {
-      const tool2 = toolsData.find(tool => tool.id === tool2Id);
+      const tool2 = aiTools.find(tool => tool.id === tool2Id);
       if (tool2) {
         selectedTools.push(tool2);
       }
     }
 
     if (tool3Id) {
-      const tool3 = toolsData.find(tool => tool.id === tool3Id);
+      const tool3 = aiTools.find(tool => tool.id === tool3Id);
       if (tool3) {
         selectedTools.push(tool3);
       }
@@ -65,7 +66,7 @@ const Compare: React.FC = () => {
     // SEO Keywords and Description
     if (selectedTools.length > 0) {
       const toolNames = selectedTools.map(tool => tool.name).join(' vs ');
-      const category = selectedTools[0].categories[0];
+      const category = selectedTools[0].category[0];
       const pricing = selectedTools[0].pricing;
 
       const keywords = generateLocalSeoKeywords(toolNames, category, pricing);
@@ -94,6 +95,19 @@ const Compare: React.FC = () => {
 
     setSearchParams(params);
     setTools(updatedTools);
+  };
+
+  const replaceTool = (oldToolId: string, newToolId: string) => {
+    const updatedTools = tools.map(tool => 
+      tool.id === oldToolId ? aiTools.find(t => t.id === newToolId) || tool : tool
+    );
+    setTools(updatedTools);
+    
+    const params: { [key: string]: string | null } = {};
+    updatedTools.forEach((tool, i) => {
+      params[`tool${i + 1}`] = tool.id;
+    });
+    setSearchParams(params);
   };
 
   const clearTools = () => {
@@ -133,9 +147,15 @@ const Compare: React.FC = () => {
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold flex items-center justify-between">
                     {tool.name}
-                    <Button variant="outline" size="icon" onClick={() => removeTool(index)}>
-                      <X className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <ReplaceToolButton
+                        toolId={tool.id}
+                        onReplace={replaceTool}
+                      />
+                      <Button variant="outline" size="icon" onClick={() => removeTool(index)}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardTitle>
                   <CardDescription>
                     <a href={tool.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline flex items-center">
@@ -145,17 +165,17 @@ const Compare: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="mb-2">
-                    <Badge>{tool.categories[0]}</Badge>
+                    <Badge>{tool.category[0]}</Badge>
                   </div>
                   <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
                   <div className="flex items-center mb-2">
                     <Star className="h-5 w-5 text-yellow-500 mr-1" />
-                    <span>{tool.rating} ({tool.votes} votes)</span>
+                    <span>{tool.rating} ({tool.reviewCount} reviews)</span>
                   </div>
                   <Separator className="my-2" />
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {tool.tags && tool.tags.map((tag, i) => (
-                      <Badge key={i} variant="secondary">{tag}</Badge>
+                    {tool.features && tool.features.map((feature, i) => (
+                      <Badge key={i} variant="secondary">{feature}</Badge>
                     ))}
                   </div>
                   <Separator className="my-2" />
@@ -173,16 +193,22 @@ const Compare: React.FC = () => {
 
             {tools.length < 3 && (
               <Card className="shadow-md flex items-center justify-center">
-                <CardContent className="flex items-center justify-center">
-                  <ReplaceToolButton />
+                <CardContent className="flex items-center justify-center p-8">
+                  <Button onClick={addTool} variant="outline" className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add Tool to Compare
+                  </Button>
                 </CardContent>
               </Card>
             )}
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-lg">No tools selected for comparison. Add tools to compare.</p>
-            <ReplaceToolButton />
+            <p className="text-lg mb-4">No tools selected for comparison. Add tools to compare.</p>
+            <Button onClick={addTool} className="flex items-center gap-2 mx-auto">
+              <Plus className="h-4 w-4" />
+              Add Tools to Compare
+            </Button>
           </div>
         )}
 
