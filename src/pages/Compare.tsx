@@ -6,99 +6,98 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Star, ExternalLink, Plus, X, ArrowRight } from 'lucide-react';
-import { aiTools, AITool } from '@/utils/toolsData';
+import { AITool, mapRowToAITool } from '@/utils/toolsData';
 import { ReplaceToolButton } from '@/components/comparison/ReplaceToolButton';
 import BreadcrumbNav from '@/components/common/BreadcrumbNav';
 import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { Helmet } from 'react-helmet-async';
 import { generateLocalSeoKeywords, generateLocalSeoDescription } from '@/utils/localSeoHelper';
+import { supabase } from '@/lib/supabaseClient';
 
 const Compare: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [tools, setTools] = useState<AITool[]>([]);
   const [seoKeywords, setSeoKeywords] = useState<string[]>([]);
   const [seoDescription, setSeoDescription] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const tool1Id = searchParams.get('tool1');
-    const tool2Id = searchParams.get('tool2');
-    const tool3Id = searchParams.get('tool3');
-
-    const selectedTools = [];
-
-    if (tool1Id) {
-      const tool1 = aiTools.find(tool => tool.id === tool1Id);
-      if (tool1) {
-        selectedTools.push(tool1);
+    const fetchTools = async () => {
+      const toolsParam = searchParams.get('tools');
+      
+      if (!toolsParam) {
+        setTools([]);
+        setIsLoading(false);
+        return;
       }
-    }
 
-    if (tool2Id) {
-      const tool2 = aiTools.find(tool => tool.id === tool2Id);
-      if (tool2) {
-        selectedTools.push(tool2);
+      const toolIds = toolsParam.split(',');
+      
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('ai_tools')
+          .select('*')
+          .in('id', toolIds);
+
+        if (error) {
+          console.error('Error fetching tools:', error);
+          setTools([]);
+          return;
+        }
+
+        const selectedTools = data.map(row => mapRowToAITool(row));
+        setTools(selectedTools);
+
+        // SEO Keywords and Description
+        if (selectedTools.length > 0) {
+          const toolNames = selectedTools.map(tool => tool.name).join(' vs ');
+          const category = selectedTools[0].category[0];
+          const pricing = selectedTools[0].pricing;
+
+          const keywords = generateLocalSeoKeywords(toolNames, category, pricing);
+          setSeoKeywords(keywords);
+
+          const baseDescription = `Compare ${toolNames} and find the best AI tool for your needs.`;
+          const description = generateLocalSeoDescription(toolNames, category, baseDescription);
+          setSeoDescription(description);
+        }
+      } catch (err) {
+        console.error('Error in fetchTools:', err);
+        setTools([]);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
 
-    if (tool3Id) {
-      const tool3 = aiTools.find(tool => tool.id === tool3Id);
-      if (tool3) {
-        selectedTools.push(tool3);
-      }
-    }
-
-    setTools(selectedTools);
-
-    // SEO Keywords and Description
-    if (selectedTools.length > 0) {
-      const toolNames = selectedTools.map(tool => tool.name).join(' vs ');
-      const category = selectedTools[0].category[0];
-      const pricing = selectedTools[0].pricing;
-
-      const keywords = generateLocalSeoKeywords(toolNames, category, pricing);
-      setSeoKeywords(keywords);
-
-      const baseDescription = `Compare ${toolNames} and find the best AI tool for your needs.`;
-      const description = generateLocalSeoDescription(toolNames, category, baseDescription);
-      setSeoDescription(description);
-    }
+    fetchTools();
   }, [searchParams]);
 
   const addTool = () => {
-    // Logic to add a tool, possibly navigating to a search page
-    const currentToolIds = tools.map(tool => tool.id);
-    setSearchParams({ tool1: currentToolIds[0], tool2: currentToolIds[1], tool3: 'search' });
+    // Navigate to categories page or home to select tools
+    window.location.href = '/categories';
   };
 
-  const removeTool = (index: number) => {
-    const updatedTools = [...tools];
-    updatedTools.splice(index, 1);
-
-    const params: { [key: string]: string | null } = {};
-    updatedTools.forEach((tool, i) => {
-      params[`tool${i + 1}`] = tool.id;
-    });
-
-    setSearchParams(params);
-    setTools(updatedTools);
+  const removeTool = (toolId: string) => {
+    const updatedTools = tools.filter(tool => tool.id !== toolId);
+    const updatedToolIds = updatedTools.map(tool => tool.id);
+    
+    if (updatedToolIds.length > 0) {
+      setSearchParams({ tools: updatedToolIds.join(',') });
+    } else {
+      setSearchParams({});
+    }
   };
 
   const replaceTool = (oldToolId: string, newToolId: string) => {
-    const updatedTools = tools.map(tool => 
-      tool.id === oldToolId ? aiTools.find(t => t.id === newToolId) || tool : tool
+    const updatedToolIds = tools.map(tool => 
+      tool.id === oldToolId ? newToolId : tool.id
     );
-    setTools(updatedTools);
-    
-    const params: { [key: string]: string | null } = {};
-    updatedTools.forEach((tool, i) => {
-      params[`tool${i + 1}`] = tool.id;
-    });
-    setSearchParams(params);
+    setSearchParams({ tools: updatedToolIds.join(',') });
   };
 
   const clearTools = () => {
     setSearchParams({});
-    setTools([]);
   };
 
   const getUniqueFeatures = (): string[] => {
@@ -112,6 +111,14 @@ const Compare: React.FC = () => {
   };
 
   const uniqueFeatures = getUniqueFeatures();
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="text-center">Loading comparison...</div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -138,7 +145,7 @@ const Compare: React.FC = () => {
                         toolId={tool.id}
                         onReplace={replaceTool}
                       />
-                      <Button variant="outline" size="icon" onClick={() => removeTool(index)}>
+                      <Button variant="outline" size="icon" onClick={() => removeTool(tool.id)}>
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
