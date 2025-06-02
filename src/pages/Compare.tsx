@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Star, ExternalLink, Plus, X, ArrowRight } from 'lucide-react';
+import { Star, ExternalLink, Plus, X } from 'lucide-react';
 import { AITool, mapRowToAITool } from '@/utils/toolsData';
 import { ReplaceToolButton } from '@/components/comparison/ReplaceToolButton';
 import BreadcrumbNav from '@/components/common/BreadcrumbNav';
@@ -13,6 +13,16 @@ import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { Helmet } from 'react-helmet-async';
 import { generateLocalSeoKeywords, generateLocalSeoDescription } from '@/utils/localSeoHelper';
 import { supabase } from '@/lib/supabaseClient';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { SearchBar } from '@/components/comparison/SearchBar';
+import { ToolGrid } from '@/components/comparison/ToolGrid';
+import { useToolComparison } from '@/hooks/use-tool-comparison';
 
 const Compare: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,6 +30,14 @@ const Compare: React.FC = () => {
   const [seoKeywords, setSeoKeywords] = useState<string[]>([]);
   const [seoDescription, setSeoDescription] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [addToolDialogOpen, setAddToolDialogOpen] = useState(false);
+  
+  const {
+    searchTerm,
+    setSearchTerm,
+    displayTools,
+    isLoading: isSearchLoading,
+  } = useToolComparison();
 
   useEffect(() => {
     const fetchTools = async () => {
@@ -73,9 +91,14 @@ const Compare: React.FC = () => {
     fetchTools();
   }, [searchParams]);
 
-  const addTool = () => {
-    // Navigate to categories page or home to select tools
-    window.location.href = '/categories';
+  const addTool = (newToolId: string) => {
+    const currentToolIds = tools.map(tool => tool.id);
+    if (!currentToolIds.includes(newToolId)) {
+      const updatedToolIds = [...currentToolIds, newToolId];
+      setSearchParams({ tools: updatedToolIds.join(',') });
+    }
+    setAddToolDialogOpen(false);
+    setSearchTerm("");
   };
 
   const removeTool = (toolId: string) => {
@@ -187,10 +210,32 @@ const Compare: React.FC = () => {
             {tools.length < 3 && (
               <Card className="shadow-md flex items-center justify-center">
                 <CardContent className="flex items-center justify-center p-8">
-                  <Button onClick={addTool} variant="outline" className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    Add Tool to Compare
-                  </Button>
+                  <Dialog open={addToolDialogOpen} onOpenChange={setAddToolDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="flex items-center gap-2">
+                        <Plus className="h-4 w-4" />
+                        Add Tool to Compare
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Add Tool to Compare</DialogTitle>
+                      </DialogHeader>
+                      <div className="py-4">
+                        <SearchBar
+                          searchTerm={searchTerm}
+                          onSearchChange={setSearchTerm}
+                          onClear={() => setSearchTerm("")}
+                        />
+                        <ToolGrid
+                          tools={displayTools.filter(tool => !tools.some(selectedTool => selectedTool.id === tool.id))}
+                          selectedTools={[]}
+                          isLoading={isSearchLoading}
+                          onToolSelect={addTool}
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </CardContent>
               </Card>
             )}
@@ -198,10 +243,32 @@ const Compare: React.FC = () => {
         ) : (
           <div className="text-center">
             <p className="text-lg mb-4">No tools selected for comparison. Add tools to compare.</p>
-            <Button onClick={addTool} className="flex items-center gap-2 mx-auto">
-              <Plus className="h-4 w-4" />
-              Add Tools to Compare
-            </Button>
+            <Dialog open={addToolDialogOpen} onOpenChange={setAddToolDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="flex items-center gap-2 mx-auto">
+                  <Plus className="h-4 w-4" />
+                  Add Tools to Compare
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Add Tools to Compare</DialogTitle>
+                </DialogHeader>
+                <div className="py-4">
+                  <SearchBar
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    onClear={() => setSearchTerm("")}
+                  />
+                  <ToolGrid
+                    tools={displayTools}
+                    selectedTools={[]}
+                    isLoading={isSearchLoading}
+                    onToolSelect={addTool}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         )}
 
