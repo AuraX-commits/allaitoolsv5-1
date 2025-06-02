@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -24,6 +23,8 @@ import Footer from "../components/layout/Footer";
 import SaveToolButton from "@/components/tool/SaveToolButton";
 import ReviewsList from "@/components/reviews/ReviewsList";
 import CommentsList from "@/components/reviews/CommentsList";
+import BreadcrumbNav from "@/components/common/BreadcrumbNav";
+import { generateLocalSeoKeywords, generateLocalSeoDescription, getLocalStructuredData } from "@/utils/localSeoHelper";
 
 const ToolDetail = () => {
   const { id, name } = useParams();
@@ -116,6 +117,133 @@ const ToolDetail = () => {
     ));
   };
 
+  const getAdvancedPageTitle = () => {
+    if (!tool) return 'AI Tool Details | AllAITools.tech';
+    
+    const categoryKeywords = tool.category.slice(0, 2).join(' & ');
+    const pricingKeyword = tool.pricing === 'Free' ? 'Free' : tool.pricing === 'Freemium' ? 'Free & Premium' : 'Premium';
+    
+    return `${tool.name} Review 2025: ${pricingKeyword} ${categoryKeywords} AI Tool | Features, Pricing, Alternatives & User Reviews | AllAITools.tech Directory`;
+  };
+
+  const getAdvancedPageDescription = () => {
+    if (!tool) return 'Comprehensive AI tool review with features, pricing, and alternatives.';
+    
+    const mainFeatures = tool.features.slice(0, 4).join(', ');
+    const categoryList = tool.category.join(', ');
+    const ratingText = `${tool.rating}/5 stars from ${tool.reviewCount} reviews`;
+    const pricingKeyword = tool.pricing === 'Free' ? 'Free' : tool.pricing === 'Freemium' ? 'Free & Premium' : 'Premium';
+    
+    const baseDescription = `In-depth ${tool.name} review 2025: ${tool.shortDescription} Comprehensive analysis of features including ${mainFeatures}. ${pricingKeyword} pricing model with ${tool.pricing} plans. Expert review reveals pros, cons, use cases, and best alternatives. ${ratingText}. Perfect for ${categoryList} needs. Compare with similar AI tools, read user feedback, and discover if ${tool.name} is worth it for your business. Find free trials, API access details, and honest evaluation of this ${categoryList} solution. Make informed decisions with our detailed feature comparison, pricing analysis, and real-world testing results.`;
+    
+    return generateLocalSeoDescription(tool.name, tool.category[0], baseDescription);
+  };
+
+  const getAdvancedKeywords = () => {
+    if (!tool) return '';
+    
+    const baseKeywords = [
+      `${tool.name} review`, `${tool.name} pricing`, `${tool.name} features`, `${tool.name} alternatives`,
+      `${tool.name} vs competitors`, `is ${tool.name} worth it`, `${tool.name} free trial`,
+      `${tool.name} API`, `${tool.name} tutorial`, `how to use ${tool.name}`,
+      `${tool.name} coupon`, `${tool.name} discount`, `${tool.name} login`,
+      `${tool.name} affiliate`, `${tool.name} use cases`, `${tool.name} credits`,
+      `best ${tool.name} alternative`, `${tool.name} comparison`, `${tool.name} honest review`
+    ];
+    
+    const categoryKeywords = tool.category.flatMap(cat => [
+      `best ${cat} AI tools`, `${cat} AI software`, `${cat} artificial intelligence`,
+      `top ${cat} tools 2025`, `free ${cat} AI tools`, `${cat} AI solutions`,
+      `${cat} AI for business`, `${cat} AI automation`, `${cat} machine learning tools`
+    ]);
+    
+    const featureKeywords = tool.features.slice(0, 8).map(feature => 
+      `AI ${feature.toLowerCase()}`
+    );
+    
+    const pricingKeywords = [
+      `${tool.pricing.toLowerCase()} AI tools`, `${tool.pricing.toLowerCase()} ${tool.category[0]}`,
+      `affordable AI tools`, `budget AI solutions`, `enterprise AI pricing`
+    ];
+    
+    const competitorKeywords = [
+      'chatgpt alternative', 'notion ai alternative', 'jasper ai alternative',
+      'copy ai alternative', 'grammarly ai alternative', 'canva ai alternative',
+      'midjourney alternative', 'stable diffusion alternative', 'openai alternative'
+    ];
+    
+    const generalAIKeywords = [
+      'allaitools', 'all ai tools', 'best ai tools 2025', 'ai tools directory',
+      'free ai tools', 'productivity ai tools', 'no code ai tools',
+      'ai for beginners', 'ai tool finder', 'compare ai tools',
+      'ai tools review', 'artificial intelligence tools', 'machine learning tools',
+      'generative ai tools', 'ai automation tools', 'business ai tools'
+    ];
+    
+    // Add local SEO keywords
+    const localKeywords = generateLocalSeoKeywords(tool.name, tool.category[0], tool.pricing);
+    
+    return [...baseKeywords, ...categoryKeywords, ...featureKeywords, ...pricingKeywords, ...competitorKeywords, ...generalAIKeywords, ...localKeywords].slice(0, 150).join(', ');
+  };
+
+  const getStructuredData = () => {
+    if (!tool) return {};
+    
+    return {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": tool.name,
+      "description": tool.description,
+      "applicationCategory": "AIApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": tool.pricing === "Free" ? "0" : "varies",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": tool.rating,
+        "reviewCount": tool.reviewCount,
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "AI Tool Developer"
+      },
+      "datePublished": "2024-01-01",
+      "dateModified": new Date().toISOString().split('T')[0],
+      "image": tool.logo,
+      "url": tool.url,
+      "sameAs": [tool.url],
+      "featureList": tool.features,
+      "applicationSubCategory": tool.category,
+      "softwareVersion": "Latest",
+      "downloadUrl": tool.url,
+      "screenshot": tool.logo,
+      "video": {
+        "@type": "VideoObject",
+        "name": `${tool.name} Demo Video`,
+        "description": `Learn how to use ${tool.name} effectively`
+      },
+      "review": {
+        "@type": "Review",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": tool.rating,
+          "bestRating": "5"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "AllAITools.tech"
+        },
+        "reviewBody": `Comprehensive review of ${tool.name}: ${tool.shortDescription}`
+      }
+    };
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -188,16 +316,150 @@ const ToolDetail = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>{tool?.name || 'Tool Detail'} | AI Tools Directory</title>
-        <meta
-          name="description"
-          content={tool?.shortDescription || 'Detailed information about this AI tool'}
-        />
-        <meta property="og:title" content={`${tool?.name || 'Tool Detail'} | AI Tools Directory`} />
-        <meta property="og:description" content={tool?.shortDescription || 'Detailed information about this AI tool'} />
-        <meta property="og:image" content={tool?.logo || ''} />
-        <meta property="og:type" content="website" />
-        <link rel="canonical" href={`https://www.allaitools.tech/tool/${id}`} />
+        <title>{getAdvancedPageTitle()}</title>
+        <meta name="description" content={getAdvancedPageDescription()} />
+        <meta name="keywords" content={getAdvancedKeywords()} />
+        
+        {/* Advanced SEO Meta Tags */}
+        <meta name="author" content="AllAITools.tech Expert Review Team" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="bingbot" content="index, follow" />
+        <meta name="language" content="English" />
+        <meta name="revisit-after" content="3 days" />
+        <meta name="distribution" content="global" />
+        <meta name="rating" content="general" />
+        <meta name="coverage" content="worldwide" />
+        
+        {/* Open Graph Enhanced */}
+        <meta property="og:title" content={getAdvancedPageTitle()} />
+        <meta property="og:description" content={getAdvancedPageDescription()} />
+        <meta property="og:image" content={tool?.logo || '/og-image.png'} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={`${tool?.name} AI Tool Logo and Interface`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://www.allaitools.tech/tool/${id}/${name}`} />
+        <meta property="og:site_name" content="AllAITools.tech - Best AI Tools Directory 2025" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="article:author" content="AllAITools.tech" />
+        <meta property="article:published_time" content="2024-01-01T00:00:00Z" />
+        <meta property="article:modified_time" content={new Date().toISOString()} />
+        <meta property="article:section" content="AI Tools Review" />
+        <meta property="article:tag" content={tool?.category.join(', ') || 'AI Tools'} />
+        
+        {/* Twitter Enhanced */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={getAdvancedPageTitle()} />
+        <meta name="twitter:description" content={getAdvancedPageDescription()} />
+        <meta name="twitter:image" content={tool?.logo || '/og-image.png'} />
+        <meta name="twitter:image:alt" content={`${tool?.name} AI Tool Review and Features`} />
+        <meta name="twitter:site" content="@AIToolsDirectory" />
+        <meta name="twitter:creator" content="@AIToolsDirectory" />
+        <meta name="twitter:label1" content="Rating" />
+        <meta name="twitter:data1" content={`${tool?.rating}/5 stars`} />
+        <meta name="twitter:label2" content="Price" />
+        <meta name="twitter:data2" content={tool?.pricing || 'Varies'} />
+        
+        {/* Additional SEO Tags */}
+        <meta name="theme-color" content="#667eea" />
+        <meta name="msapplication-TileColor" content="#667eea" />
+        <meta name="application-name" content="AllAITools.tech" />
+        <meta name="apple-mobile-web-app-title" content={`${tool?.name} Review | AllAITools`} />
+        <meta name="format-detection" content="telephone=no" />
+        
+        {/* Canonical and Alternatives */}
+        <link rel="canonical" href={`https://www.allaitools.tech/tool/${id}/${name}`} />
+        <link rel="alternate" hrefLang="en" href={`https://www.allaitools.tech/tool/${id}/${name}`} />
+        
+        {/* Preconnect for Performance */}
+        <link rel="preconnect" href={new URL(tool?.url || 'https://example.com').origin} />
+        
+        {/* Enhanced Structured Data with Local SEO */}
+        <script type="application/ld+json">
+          {JSON.stringify(getStructuredData())}
+        </script>
+        
+        {/* Local Service Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(getLocalStructuredData(tool?.name || '', tool?.category[0] || ''))}
+        </script>
+        
+        {/* Additional Structured Data for Breadcrumbs */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://www.allaitools.tech"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "AI Tools",
+                "item": "https://www.allaitools.tech/categories"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": tool?.category[0] || "AI Tool",
+                "item": `https://www.allaitools.tech/categories/${encodeURIComponent(tool?.category[0] || 'AI')}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": tool?.name || "Tool",
+                "item": `https://www.allaitools.tech/tool/${id}/${name}`
+              }
+            ]
+          })}
+        </script>
+        
+        {/* FAQ Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": `What is ${tool?.name}?`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": tool?.description || `${tool?.name} is an AI tool for ${tool?.category[0]}`
+                }
+              },
+              {
+                "@type": "Question",
+                "name": `How much does ${tool?.name} cost?`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": `${tool?.name} offers ${tool?.pricing} pricing model. Check the official website for detailed pricing information.`
+                }
+              },
+              {
+                "@type": "Question",
+                "name": `What are the main features of ${tool?.name}?`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": `${tool?.name} key features include: ${tool?.features.slice(0, 5).join(', ')}.`
+                }
+              },
+              {
+                "@type": "Question",
+                "name": `Is ${tool?.name} available in major tech hubs?`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": `Yes, ${tool?.name} is widely used by tech professionals in Silicon Valley, New York, London, Berlin, and other major tech hubs worldwide.`
+                }
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <Navbar />
@@ -205,6 +467,12 @@ const ToolDetail = () => {
       <main className="flex-grow pt-24 pb-20">
         <div className="container px-4">
           <div className="max-w-5xl mx-auto">
+            {/* Breadcrumb Navigation */}
+            <BreadcrumbNav 
+              toolName={tool?.name}
+              category={tool?.category[0]}
+            />
+
             {/* Navigation between tools */}
             <div className="flex justify-between mb-6">
               {prevTool ? (
