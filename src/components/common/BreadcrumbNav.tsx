@@ -26,7 +26,7 @@ const BreadcrumbNav: React.FC<BreadcrumbNavProps> = ({ toolName, category, custo
 
   // Generate breadcrumb items based on the current route
   const generateBreadcrumbItems = () => {
-    const items = [
+    const items: Array<{ label: string; href?: string }> = [
       { label: 'Home', href: '/' }
     ];
 
