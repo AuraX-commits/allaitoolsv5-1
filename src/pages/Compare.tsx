@@ -6,30 +6,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Star, ExternalLink, Plus, X, ArrowRight } from 'lucide-react';
-import { aiTools } from '@/utils/toolsData';
+import { aiTools, AITool } from '@/utils/toolsData';
 import { ReplaceToolButton } from '@/components/comparison/ReplaceToolButton';
 import BreadcrumbNav from '@/components/common/BreadcrumbNav';
 import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { Helmet } from 'react-helmet-async';
 import { generateLocalSeoKeywords, generateLocalSeoDescription } from '@/utils/localSeoHelper';
 
-interface Tool {
-  id: string;
-  name: string;
-  description: string;
-  categories: string[];
-  pricing: string;
-  url: string;
-  rating: number;
-  votes: number;
-  tags: string[];
-  featured: boolean;
-  [key: string]: any;
-}
-
 const Compare: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tools, setTools] = useState<Tool[]>([]);
+  const [tools, setTools] = useState<AITool[]>([]);
   const [seoKeywords, setSeoKeywords] = useState<string[]>([]);
   const [seoDescription, setSeoDescription] = useState<string>('');
 
