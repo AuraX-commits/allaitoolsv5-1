@@ -1,4 +1,4 @@
-
+<script type='text/javascript' src='//pl26834204.profitableratecpm.com/69/0c/99/690c991e5276410fb941b547108da734.js'></script>
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useToast } from "@/hooks/use-toast";
