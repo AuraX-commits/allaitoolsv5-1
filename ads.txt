@@ -1,3 +1,5 @@
+google.com, pub-5613986148156763, DIRECT, f08c47fec0942fa0
+
 adquack added and now removed
 adsterra added 
 3 units- one in index bottom page, one in index header, one in submit tool page
