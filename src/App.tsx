@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { AuthProvider } from "./context/AuthContext";
+import { useScrollToTop } from "./hooks/useScrollToTop";
 import { useState } from "react";
 import Index from "./pages/Index";
 import Compare from "./pages/Compare";
@@ -31,6 +32,12 @@ import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/auth/PrivateRoute';
 import ToolRecommender from './pages/ToolRecommender';
 
+// Component to handle scroll to top on route changes
+const ScrollToTopWrapper = ({ children }: { children: React.ReactNode }) => {
+  useScrollToTop();
+  return <>{children}</>;
+};
+
 const App = () => {
   // Create a new QueryClient instance inside the component using useState to ensure it's stable
   const [queryClient] = useState(() => new QueryClient({
@@ -50,46 +57,48 @@ const App = () => {
             {/* Only include one toast provider to avoid conflicts */}
             <Toaster />
             <BrowserRouter>
-              <div className="min-h-screen flex flex-col overflow-x-hidden">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/compare" element={<Compare />} />
-                  <Route path="/tool/:id" element={<ToolDetail />} />
-                  <Route path="/tool/:id/:name" element={<ToolDetail />} />
-                  <Route path="/categories" element={<Categories />} />
-                  <Route path="/categories/:category" element={<Categories />} />
-                  <Route path="/pricing" element={<Pricing />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:slug" element={<BlogPost />} />
-                  <Route path="/news" element={<ComingSoon title="AI News" />} />
-                  <Route path="/api-docs" element={<ComingSoon title="API Documentation" />} />
-                  <Route path="/community" element={<ComingSoon title="Community" />} />
-                  <Route path="/careers" element={<Careers />} />
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/submit-tool" element={<SubmitTool />} />
-                  <Route path="/advertise" element={<Advertise />} />
-                  <Route path="/login" element={<SignIn />} />
-                  <Route path="/signup" element={<SignUp />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/recommend" element={<ToolRecommender />} />
-                  <Route 
-                    path="/dashboard/*" 
-                    element={
-                      <PrivateRoute>
-                        <Dashboard />
-                      </PrivateRoute>
-                    } 
-                  />
-                  <Route path="/signin" element={<Navigate to="/login" replace />} />
-                  <Route path="/sign-in" element={<Navigate to="/login" replace />} />
-                  <Route path="/sign-up" element={<Navigate to="/signup" replace />} />
-                  <Route path="/register" element={<Navigate to="/signup" replace />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </div>
+              <ScrollToTopWrapper>
+                <div className="min-h-screen flex flex-col overflow-x-hidden">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/compare" element={<Compare />} />
+                    <Route path="/tool/:id" element={<ToolDetail />} />
+                    <Route path="/tool/:id/:name" element={<ToolDetail />} />
+                    <Route path="/categories" element={<Categories />} />
+                    <Route path="/categories/:category" element={<Categories />} />
+                    <Route path="/pricing" element={<Pricing />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/blog/:slug" element={<BlogPost />} />
+                    <Route path="/news" element={<ComingSoon title="AI News" />} />
+                    <Route path="/api-docs" element={<ComingSoon title="API Documentation" />} />
+                    <Route path="/community" element={<ComingSoon title="Community" />} />
+                    <Route path="/careers" element={<Careers />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/submit-tool" element={<SubmitTool />} />
+                    <Route path="/advertise" element={<Advertise />} />
+                    <Route path="/login" element={<SignIn />} />
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/recommend" element={<ToolRecommender />} />
+                    <Route 
+                      path="/dashboard/*" 
+                      element={
+                        <PrivateRoute>
+                          <Dashboard />
+                        </PrivateRoute>
+                      } 
+                    />
+                    <Route path="/signin" element={<Navigate to="/login" replace />} />
+                    <Route path="/sign-in" element={<Navigate to="/login" replace />} />
+                    <Route path="/sign-up" element={<Navigate to="/signup" replace />} />
+                    <Route path="/register" element={<Navigate to="/signup" replace />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </div>
+              </ScrollToTopWrapper>
             </BrowserRouter>
             {/* Add Vercel Analytics and Speed Insights */}
             <Analytics />
