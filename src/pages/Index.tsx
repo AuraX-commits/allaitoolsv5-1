@@ -368,8 +368,8 @@ const Index = () => {
       
       <Navbar />
       <main>
-        {/* SEO Content Section with proper headers */}
-        <section className="bg-background py-8">
+        {/* SEO Content Section - Hidden for UI but visible to search engines */}
+        <section className="sr-only" aria-hidden="true">
           <div className="container px-4">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-4xl font-bold text-foreground mb-6">
