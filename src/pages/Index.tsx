@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -8,6 +7,7 @@ import ComparisonSection from "../components/home/ComparisonSection";
 import CategoryGrid from "../components/home/CategoryGrid";
 import Newsletter from "../components/home/Newsletter";
 import RecommendationPromo from "../components/home/RecommendationPromo";
+import { ScrollToTop } from "../components/common/ScrollToTop";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -428,6 +428,7 @@ const Index = () => {
         <Newsletter />
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };
