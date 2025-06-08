@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -16,43 +17,49 @@ const Index = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const seoDescription = "AllAITools.tech is the world's most comprehensive directory of AI tools featuring 3000+ artificial intelligence solutions. Discover the best AI tools with our comprehensive directory of artificial intelligence solutions. Compare top AI tools for content creation, coding, marketing, design, data analysis, and business automation. Find free AI tools, premium alternatives, and specialized solutions for every industry. Our expert-curated platform features detailed reviews, pricing comparisons, and user ratings for ChatGPT, Midjourney, GitHub Copilot, and thousands more. Whether you need AI writing assistants, image generators, voice tools, or no-code automation platforms, AllAITools helps you discover the perfect AI solution for your specific needs and budget.";
+  const seoDescription = "AllAITools.tech is the world's most comprehensive AI tools directory featuring 3000+ artificial intelligence solutions. Discover the best AI tools with our comprehensive AI tools directory of artificial intelligence solutions. Compare top AI tools for content creation, coding, marketing, design, data analysis, and business automation. Find free AI tools, premium alternatives, and specialized solutions for every industry. Our expert-curated AI tools directory features detailed reviews, pricing comparisons, and user ratings for ChatGPT, Midjourney, GitHub Copilot, and thousands more. Whether you need AI writing assistants, image generators, voice tools, or no-code automation platforms, our AI tools directory helps you discover the perfect AI solution for your specific needs and budget.";
   
-  const enhancedSeoKeywords = "allaitools, AllAITools.tech, AI tools, artificial intelligence tools, AI software directory, AI tool comparison, text generation AI, image AI tools, AI coding assistants, AI chatbots, AI writing tools, best AI tools 2025, free AI tools, AI for business, AI productivity tools, AI content creation, AI design tools, AI data analysis, AI marketing tools, AI for developers, AI research tools, generative AI tools, AI image generators, AI video creators, AI code generators, language model tools, AI transcription services, AI translation tools, AI customer service, AI for education, AI decision support, AI analytics tools, multimodal AI models, enterprise AI solutions, AI recommendation engines, no-code AI tools, large language models, AI automation, ChatGPT alternatives, Midjourney alternatives, DALL-E alternatives, AI voice generators, AI audio tools, AI SEO tools, AI copywriting tools, AI personal assistants, AI project management, AI meeting assistants, GPT-powered tools, enterprise AI software, AI browser extensions, AI APIs, AI-powered search, AI document analysis, AI legal tools, AI healthcare solutions, AI email assistants, AI presentation creators, AI summarization tools, AI grammar checkers, AI trend analysis, AI sentiment analysis, AI photo editors, AI music generators, AI video editors, AI competitive analysis, AI personalization tools, AI-powered CRM, all ai tools, free ai tools, best ai tools, ai tools directory, tools directory, marketing tools, ai marketing, ai marketing tools, ai tools newsletter, ai news, ai newsletter, best ai directory, how to use ai tools, find ai tools, futurepedia, topaitools, indian ai tools, usa ai tools, ai tools near me, productivity ai tools, porn ai tools, nsfw ai tools, compare ai tools, ai girlfriend, ai girlfriend tools, ai boyfriend, ai sex, ai nsfw, nsfw tools, face swapping tools, notion ai, free chatgpt, pricing ai tools, recommend ai tools, compare tools, compare all ai tools, there's an ai for that, futurepedia alternative, alternative ai tool directory, aitoolbazaar, aibazaar, best ai tool for, best ai tool, deepseek free, manus im, manus free, manus credits, manus ai, lovable ai, no code ai tools, marketing ai tools, coding ai tools, image generation ai tools, voice assistant ai tools, research ai tools, language ai tools, 3d ai tools, car ai tools, automation ai tools, designing ai tools, photography ai tools, data ai tools, data analysis ai tool, customer service ai tool, find my ai tool, how to find best ai tool, search for new ai tools, new ai tools, new ai news, discover ai tools, conversational ai tools, text ai tools, ai resume, career ai tools, ai sales, sales ai tool, sales ai tools, content creation ai tools, vidnoz, vidnoz free, free vidnoz, vidnoz credits free, vidnoz credits, vidnoz login, vidnoz affiliate, vidnoz use cases, free vidnoz credits";
+  const enhancedSeoKeywords = "allaitools, AllAITools.tech, AI tools directory, artificial intelligence tools directory, AI software directory, comprehensive AI tools directory, best AI tools directory, AI tool comparison directory, AI tools directory 2025, top AI tools directory, curated AI tools directory, AI directory platform, professional AI tools directory, text generation AI, image AI tools, AI coding assistants, AI chatbots, AI writing tools, best AI tools 2025, free AI tools, AI for business, AI productivity tools, AI content creation, AI design tools, AI data analysis, AI marketing tools, AI for developers, AI research tools, generative AI tools, AI image generators, AI video creators, AI code generators, language model tools, AI transcription services, AI translation tools, AI customer service, AI for education, AI decision support, AI analytics tools, multimodal AI models, enterprise AI solutions, AI recommendation engines, no-code AI tools, large language models, AI automation, ChatGPT alternatives, Midjourney alternatives, DALL-E alternatives, AI voice generators, AI audio tools, AI SEO tools, AI copywriting tools, AI personal assistants, AI project management, AI meeting assistants, GPT-powered tools, enterprise AI software, AI browser extensions, AI APIs, AI-powered search, AI document analysis, AI legal tools, AI healthcare solutions, AI email assistants, AI presentation creators, AI summarization tools, AI grammar checkers, AI trend analysis, AI sentiment analysis, AI photo editors, AI music generators, AI video editors, AI competitive analysis, AI personalization tools, AI-powered CRM, all ai tools, free ai tools, best ai tools, ai tools directory, tools directory, marketing tools, ai marketing, ai marketing tools, ai tools newsletter, ai news, ai newsletter, best ai directory, how to use ai tools, find ai tools, futurepedia, topaitools, indian ai tools, usa ai tools, ai tools near me, productivity ai tools, porn ai tools, nsfw ai tools, compare ai tools, ai girlfriend, ai girlfriend tools, ai boyfriend, ai sex, ai nsfw, nsfw tools, face swapping tools, notion ai, free chatgpt, pricing ai tools, recommend ai tools, compare tools, compare all ai tools, there's an ai for that, futurepedia alternative, alternative ai tool directory, aitoolbazaar, aibazaar, best ai tool for, best ai tool, deepseek free, manus im, manus free, manus credits, manus ai, lovable ai, no code ai tools, marketing ai tools, coding ai tools, image generation ai tools, voice assistant ai tools, research ai tools, language ai tools, 3d ai tools, car ai tools, automation ai tools, designing ai tools, photography ai tools, data ai tools, data analysis ai tool, customer service ai tool, find my ai tool, how to find best ai tool, search for new ai tools, new ai tools, new ai news, discover ai tools, conversational ai tools, text ai tools, ai resume, career ai tools, ai sales, sales ai tool, sales ai tools, content creation ai tools, vidnoz, vidnoz free, free vidnoz, vidnoz credits free, vidnoz credits, vidnoz login, vidnoz affiliate, vidnoz use cases, free vidnoz credits";
 
   // Additional long-tail keywords for deeper topical coverage
   const longTailKeywords = `
-    allaitools comprehensive directory artificial intelligence solutions,
-    best artificial intelligence tools for small business productivity 2025,
-    top AI-powered content creation tools for marketing professionals,
-    advanced machine learning software for data analysis and visualization,
-    compare enterprise-grade AI solutions for customer experience automation,
-    affordable AI tools for independent content creators and freelancers,
-    specialized artificial intelligence applications for healthcare diagnostics,
-    comprehensive directory of AI coding assistants for software development,
-    innovative natural language processing tools for automated writing assistance,
-    cutting-edge computer vision AI tools for image recognition and processing,
-    multimodal AI platforms combining text image and audio generation capabilities,
-    AI-powered decision support systems for business intelligence and analytics,
-    real-time AI translation and transcription services for global communication,
-    generative AI models for creating realistic 3D assets and animations,
-    no-code AI automation tools for workflow optimization and business processes,
-    personalized AI recommendation engines for e-commerce and content platforms,
-    AI tools compatible with popular productivity suites and business software,
-    semantic search and knowledge discovery AI tools for research professionals,
-    AI voice and speech synthesis tools for natural-sounding audio content,
-    proprietary vs open-source AI solutions comparison and feature analysis,
-    AI technologies transforming creative industries and digital content creation,
-    find best AI tool for my specific needs and requirements,
-    how to choose right AI software for business automation,
-    comprehensive comparison of leading AI platforms and services,
-    discover new AI tools and emerging artificial intelligence technologies,
-    AI tool recommendations based on industry and use case analysis
+    allaitools comprehensive AI tools directory artificial intelligence solutions,
+    best artificial intelligence tools directory for small business productivity 2025,
+    top AI-powered content creation tools directory for marketing professionals,
+    advanced machine learning software directory for data analysis and visualization,
+    compare enterprise-grade AI solutions directory for customer experience automation,
+    affordable AI tools directory for independent content creators and freelancers,
+    specialized artificial intelligence applications directory for healthcare diagnostics,
+    comprehensive AI tools directory of AI coding assistants for software development,
+    innovative natural language processing tools directory for automated writing assistance,
+    cutting-edge computer vision AI tools directory for image recognition and processing,
+    multimodal AI platforms directory combining text image and audio generation capabilities,
+    AI-powered decision support systems directory for business intelligence and analytics,
+    real-time AI translation and transcription services directory for global communication,
+    generative AI models directory for creating realistic 3D assets and animations,
+    no-code AI automation tools directory for workflow optimization and business processes,
+    personalized AI recommendation engines directory for e-commerce and content platforms,
+    AI tools directory compatible with popular productivity suites and business software,
+    semantic search and knowledge discovery AI tools directory for research professionals,
+    AI voice and speech synthesis tools directory for natural-sounding audio content,
+    proprietary vs open-source AI solutions directory comparison and feature analysis,
+    AI technologies transforming creative industries directory and digital content creation,
+    find best AI tool for my specific needs directory and requirements,
+    how to choose right AI software directory for business automation,
+    comprehensive comparison of leading AI platforms directory and services,
+    discover new AI tools directory and emerging artificial intelligence technologies,
+    AI tool recommendations directory based on industry and use case analysis
   `;
   
   // Adding 20 three-word keyword phrases for more targeted SEO
   const threeWordKeywords = `
     allaitools directory platform,
+    AI tools directory,
+    comprehensive AI directory,
+    best AI directory,
+    AI directory platform,
+    curated AI directory,
+    professional AI directory,
     AI content creation,
     machine learning tools,
     deep learning software,
@@ -80,7 +87,7 @@ const Index = () => {
     AI recommendation system
   `;
 
-  const pageTitle = "AllAITools - Discover & Compare 3000+ Best AI Tools 2025 - AllAITools.tech";
+  const pageTitle = "AllAITools - Discover & Compare 3000+ Best AI Tools 2025 - AI Tools Directory";
 
   return (
     <div className="min-h-screen overflow-hidden bg-background">
@@ -98,7 +105,7 @@ const Index = () => {
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.allaitools.tech/og-image.png" />
         <meta property="og:url" content="https://www.allaitools.tech" />
-        <meta property="og:site_name" content="AllAITools Directory" />
+        <meta property="og:site_name" content="AllAITools AI Tools Directory" />
         <meta property="og:locale" content="en_US" />
         
         <meta name="twitter:card" content="summary_large_image" />
@@ -116,8 +123,8 @@ const Index = () => {
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="language" content="English" />
         <meta name="revisit-after" content="1 days" />
-        <meta name="author" content="AllAITools Directory Team" />
-        <meta name="generator" content="AllAITools Directory Platform" />
+        <meta name="author" content="AllAITools AI Tools Directory Team" />
+        <meta name="generator" content="AllAITools AI Tools Directory Platform" />
         <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
         <meta name="bingbot" content="index, follow" />
         
@@ -127,8 +134,8 @@ const Index = () => {
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "AllAITools Directory",
-              "alternateName": ["AllAITools.tech", "AI Tools Directory", "Best AI Tools"],
+              "name": "AllAITools AI Tools Directory",
+              "alternateName": ["AllAITools.tech", "AI Tools Directory", "Best AI Tools Directory", "AllAITools Directory"],
               "url": "https://www.allaitools.tech",
               "description": "${seoDescription}",
               "potentialAction": {
@@ -156,7 +163,7 @@ const Index = () => {
               "@context": "https://schema.org",
               "@type": "Organization",
               "@id": "https://www.allaitools.tech/#organization",
-              "name": "AllAITools.tech",
+              "name": "AllAITools.tech - AI Tools Directory",
               "url": "https://www.allaitools.tech",
               "logo": "https://www.allaitools.tech/og-image.png",
               "description": "The world's most comprehensive AI tools directory featuring 3000+ artificial intelligence solutions.",
@@ -164,8 +171,8 @@ const Index = () => {
               "knowsAbout": [
                 "Artificial Intelligence",
                 "Machine Learning",
-                "AI Tools",
-                "Software Directory",
+                "AI Tools Directory",
+                "AI Software Directory",
                 "Technology Comparison",
                 "AI Applications",
                 "Business Automation",
@@ -174,8 +181,9 @@ const Index = () => {
               ],
               "areaServed": "Worldwide",
               "serviceType": [
+                "AI Tools Directory",
                 "AI Tool Discovery",
-                "Software Comparison",
+                "AI Software Comparison",
                 "Technology Reviews",
                 "AI Recommendations"
               ]
@@ -189,19 +197,19 @@ const Index = () => {
             {
               "@context": "https://schema.org",
               "@type": "Service",
-              "name": "AllAITools Directory Service",
+              "name": "AllAITools AI Tools Directory Service",
               "provider": {
                 "@type": "Organization",
                 "name": "AllAITools.tech"
               },
-              "serviceType": "Technology Directory",
-              "description": "Comprehensive directory and comparison platform for artificial intelligence tools and software solutions.",
+              "serviceType": "AI Tools Directory",
+              "description": "Comprehensive AI tools directory and comparison platform for artificial intelligence tools and software solutions.",
               "areaServed": "Worldwide",
               "availableLanguage": "English",
-              "category": "Technology",
+              "category": "Technology Directory",
               "hasOfferCatalog": {
                 "@type": "OfferCatalog",
-                "name": "AI Tools Catalog",
+                "name": "AI Tools Directory Catalog",
                 "itemListElement": [
                   {
                     "@type": "Offer",
@@ -236,8 +244,8 @@ const Index = () => {
             {
               "@context": "https://schema.org",
               "@type": "ItemList",
-              "name": "Best AI Tools 2025",
-              "description": "Comprehensive list of the best artificial intelligence tools across all categories.",
+              "name": "Best AI Tools Directory 2025",
+              "description": "Comprehensive AI tools directory list of the best artificial intelligence tools across all categories.",
               "numberOfItems": "3000+",
               "itemListOrder": "https://schema.org/ItemListOrderDescending",
               "itemListElement": [
@@ -276,42 +284,42 @@ const Index = () => {
               "mainEntity": [
                 {
                   "@type": "Question",
-                  "name": "What are the best AI tools available in 2025?",
+                  "name": "What is the best AI tools directory available in 2025?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "The best AI tools in 2025 include ChatGPT for conversational AI, Midjourney for image generation, GitHub Copilot for coding assistance, Notion AI for productivity, and Claude for advanced reasoning. Our AllAITools directory features 3000+ verified AI tools across 50+ categories."
+                    "text": "AllAITools.tech is the most comprehensive AI tools directory in 2025, featuring 3000+ verified AI tools across 50+ categories. Our AI tools directory includes ChatGPT for conversational AI, Midjourney for image generation, GitHub Copilot for coding assistance, and thousands more AI solutions with detailed comparisons and reviews."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "How do I find the right AI tool for my business?",
+                  "name": "How do I find the right AI tool using an AI tools directory?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Use our AllAITools AI Tool Recommender to get personalized suggestions based on your specific needs, budget, and use case. Simply describe your requirements and our AI will analyze 3000+ tools to find the perfect matches for your business."
+                    "text": "Use our AllAITools AI tools directory AI Tool Recommender to get personalized suggestions based on your specific needs, budget, and use case. Our AI tools directory analyzes 3000+ tools to find the perfect matches for your business requirements."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "Are there free AI tools available?",
+                  "name": "Are there free AI tools in the AI tools directory?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes! Our AllAITools directory includes hundreds of free AI tools across all categories. Many premium tools also offer free tiers or trials. Filter by 'Free' pricing to discover powerful AI solutions that don't require any payment."
+                    "text": "Yes! Our AllAITools AI tools directory includes hundreds of free AI tools across all categories. Many premium tools in our AI tools directory also offer free tiers or trials. Filter by 'Free' pricing in our AI tools directory to discover powerful AI solutions that don't require any payment."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "How often is the AllAITools directory updated?",
+                  "name": "How often is the AllAITools AI tools directory updated?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Our AllAITools directory is updated daily with new tools, feature updates, pricing changes, and user reviews. We continuously monitor the AI landscape to ensure you have access to the latest and most innovative solutions."
+                    "text": "Our AllAITools AI tools directory is updated daily with new tools, feature updates, pricing changes, and user reviews. We continuously monitor the AI landscape to ensure our AI tools directory has access to the latest and most innovative solutions."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "Can I compare different AI tools on AllAITools platform?",
+                  "name": "Can I compare different AI tools in the AI tools directory?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Absolutely! Our AllAITools comparison feature allows you to compare up to 4 AI tools side-by-side, analyzing features, pricing, pros, cons, and user ratings. This helps you make informed decisions based on detailed comparisons."
+                    "text": "Absolutely! Our AllAITools AI tools directory comparison feature allows you to compare up to 4 AI tools side-by-side, analyzing features, pricing, pros, cons, and user ratings. This helps you make informed decisions based on detailed comparisons within our AI tools directory."
                   }
                 }
               ]
@@ -329,7 +337,7 @@ const Index = () => {
                 {
                   "@type": "ListItem",
                   "position": 1,
-                  "name": "AllAITools Directory",
+                  "name": "AllAITools AI Tools Directory",
                   "item": "https://www.allaitools.tech/"
                 }
               ]
@@ -354,7 +362,7 @@ const Index = () => {
         <meta name="language" content="English" />
         
         {/* Publisher Information */}
-        <meta name="publisher" content="AllAITools.tech" />
+        <meta name="publisher" content="AllAITools.tech AI Tools Directory" />
         <meta name="copyright" content="AllAITools.tech" />
         
         {/* Content Classification */}
@@ -378,42 +386,59 @@ const Index = () => {
               
               <div className="prose prose-lg max-w-none text-muted-foreground">
                 <p className="text-lg mb-4">
-                  Welcome to AllAITools.tech, the world's most comprehensive directory of artificial intelligence tools. 
-                  Our platform helps you discover, compare, and choose from over 3000+ AI tools across 50+ categories. 
-                  Whether you're looking for AI content creation tools, coding assistants, or business automation solutions, 
-                  AllAITools has everything you need to find the perfect AI tool for your requirements.
+                  Welcome to AllAITools.tech, the world's most comprehensive AI tools directory featuring artificial intelligence solutions. 
+                  Our AI tools directory platform helps you discover, compare, and choose from over 3000+ AI tools across 50+ categories. 
+                  Whether you're looking for AI content creation tools, coding assistants, or business automation solutions in our AI tools directory, 
+                  AllAITools has everything you need to find the perfect AI tool for your requirements in our curated AI tools directory.
                 </p>
                 
                 <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">
-                  Why Choose AllAITools for Your AI Tool Discovery?
+                  Why Choose AllAITools AI Tools Directory for Your AI Tool Discovery?
                 </h2>
                 
                 <p className="mb-4">
-                  AllAITools.tech stands out as the premier destination for AI tool discovery and comparison. Our expert team 
-                  curates and reviews every tool in our directory, ensuring you get accurate information about features, 
-                  pricing, and user experiences. From free AI tools to enterprise solutions, we cover the entire spectrum 
-                  of artificial intelligence applications.
+                  AllAITools.tech stands out as the premier AI tools directory destination for AI tool discovery and comparison. Our expert team 
+                  curates and reviews every tool in our AI tools directory, ensuring you get accurate information about features, 
+                  pricing, and user experiences. From free AI tools to enterprise solutions in our comprehensive AI tools directory, we cover the entire spectrum 
+                  of artificial intelligence applications available in the best AI tools directory online.
                 </p>
                 
                 <h3 className="text-xl font-semibold text-foreground mt-6 mb-3">
-                  Featured Categories on AllAITools Platform
+                  Featured Categories in AllAITools AI Tools Directory Platform
                 </h3>
                 
                 <ul className="list-disc pl-6 mb-4 space-y-1">
-                  <li>Text Generation and AI Writing Tools</li>
-                  <li>Image Generation and Design AI</li>
-                  <li>Code Generation and Developer Tools</li>
-                  <li>Conversational AI and Chatbots</li>
-                  <li>Marketing and Business Automation</li>
-                  <li>Data Analysis and Research Tools</li>
-                  <li>Video Creation and Editing AI</li>
-                  <li>Voice and Audio Processing</li>
+                  <li>Text Generation and AI Writing Tools in our AI tools directory</li>
+                  <li>Image Generation and Design AI available in our AI tools directory</li>
+                  <li>Code Generation and Developer Tools featured in our AI tools directory</li>
+                  <li>Conversational AI and Chatbots listed in our AI tools directory</li>
+                  <li>Marketing and Business Automation tools in our AI tools directory</li>
+                  <li>Data Analysis and Research Tools available in our AI tools directory</li>
+                  <li>Video Creation and Editing AI featured in our AI tools directory</li>
+                  <li>Voice and Audio Processing tools in our comprehensive AI tools directory</li>
                 </ul>
                 
                 <p className="mb-4">
-                  Start exploring AllAITools today and discover how artificial intelligence can transform your workflow, 
-                  boost productivity, and unlock new creative possibilities. Our AI-powered recommendation engine helps 
-                  you find tools that match your specific needs and budget constraints.
+                  Start exploring our AllAITools AI tools directory today and discover how artificial intelligence can transform your workflow, 
+                  boost productivity, and unlock new creative possibilities. Our AI-powered recommendation engine in the AI tools directory helps 
+                  you find tools that match your specific needs and budget constraints from our extensive AI tools directory database.
+                </p>
+
+                <h3 className="text-xl font-semibold text-foreground mt-6 mb-3">
+                  How Our AI Tools Directory Works
+                </h3>
+                
+                <p className="mb-4">
+                  Our AI tools directory uses advanced filtering and categorization to help you navigate through thousands of AI solutions efficiently. 
+                  The AI tools directory features detailed comparison tools, user reviews, and expert ratings to ensure you make informed decisions. 
+                  Whether you're a startup looking for budget-friendly options or an enterprise seeking comprehensive AI solutions, 
+                  our AI tools directory has the perfect match for your requirements.
+                </p>
+
+                <p className="mb-4">
+                  Browse our AI tools directory by category, pricing model, or specific use case to find exactly what you need. 
+                  Our AI tools directory is constantly updated with the latest AI innovations, ensuring you always have access to 
+                  cutting-edge artificial intelligence solutions through our comprehensive AI tools directory platform.
                 </p>
               </div>
             </div>
