@@ -28,6 +28,7 @@ import SignUp from "./pages/SignUp";
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/auth/PrivateRoute';
 import ToolRecommender from './pages/ToolRecommender';
+import AdminPage from './pages/Admin';
 
 // Component to handle scroll to top on route changes
 const ScrollToTopWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -91,6 +92,7 @@ const App = () => {
                     <Route path="/sign-in" element={<Navigate to="/login" replace />} />
                     <Route path="/sign-up" element={<Navigate to="/signup" replace />} />
                     <Route path="/register" element={<Navigate to="/signup" replace />} />
+                    <Route path="/admin" element={<AdminPage />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </div>
