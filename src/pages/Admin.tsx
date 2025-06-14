@@ -12,15 +12,27 @@ import { Shield, Users, Database, Settings } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/lib/supabaseClient";
 
+const AdminMessageScreen = ({ message }: { message: string }) => (
+  <div className="min-h-screen flex flex-col">
+    <Navbar />
+    <div className="flex-grow flex items-center justify-center">
+      <div className="text-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary mx-auto mb-4"></div>
+        <p>{message}</p>
+      </div>
+    </div>
+    <Footer />
+  </div>
+);
+
 const Admin = () => {
-  const { user, isAdmin, isLoading: authLoading } = useAuth(); // Renamed to authLoading for clarity
+  const { user, isAdmin, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [toolCount, setToolCount] = useState<number>(0);
   const [userCount, setUserCount] = useState<number>(0);
   const [adminEmail, setAdminEmail] = useState<string>('');
   
-  // Log auth state received from context at each render
   console.log('[Admin.tsx] Rendering. Auth state:', { 
     user: !!user, 
     isAdmin, 
@@ -28,16 +40,17 @@ const Admin = () => {
   });
 
   useEffect(() => {
+    // Scroll to top on component mount
     window.scrollTo(0, 0);
     console.log('[Admin.tsx] useEffect triggered. Auth state:', { user: !!user, isAdmin, authLoading });
 
-    if (!authLoading) { // Only proceed if auth context is done loading
+    if (!authLoading) {
       console.log('[Admin.tsx] Auth context finished loading.');
       if (!user) {
         console.log('[Admin.tsx] No user found, redirecting to /login.');
         toast({
           title: "Access Denied",
-          description: "You must be logged in to access the admin dashboard",
+          description: "You must be logged in to access the admin dashboard.",
           variant: "destructive",
         });
         navigate("/login");
@@ -45,13 +58,12 @@ const Admin = () => {
         console.log('[Admin.tsx] User is not admin, redirecting to /dashboard.');
         toast({
           title: "Access Denied",
-          description: "You don't have permission to access the admin dashboard",
+          description: "You don't have permission to access the admin dashboard.",
           variant: "destructive",
         });
         navigate("/dashboard");
       } else {
         console.log('[Admin.tsx] User is admin, fetching stats.');
-        // Fetch counts for admin dashboard
         fetchStats();
         if (user.email) {
           setAdminEmail(user.email);
@@ -69,15 +81,23 @@ const Admin = () => {
         .from('ai_tools')
         .select('*', { count: 'exact', head: true });
       
-      if (toolError) console.error('[Admin.tsx] Error fetching tool count:', toolError);
-      else setToolCount(tools || 0);
+      if (toolError) {
+        console.error('[Admin.tsx] Error fetching tool count:', toolError);
+        toast({ title: "Error", description: `Failed to fetch tool count: ${toolError.message}`, variant: "destructive" });
+      } else {
+        setToolCount(tools || 0);
+      }
       
       const { count: users, error: userError } = await supabase
-        .from('profiles') // Assuming 'profiles' table for user count
+        .from('profiles')
         .select('*', { count: 'exact', head: true });
         
-      if (userError) console.error('[Admin.tsx] Error fetching user count:', userError);
-      else setUserCount(users || 0);
+      if (userError) {
+        console.error('[Admin.tsx] Error fetching user count:', userError);
+        toast({ title: "Error", description: `Failed to fetch user count: ${userError.message}`, variant: "destructive" });
+      } else {
+        setUserCount(users || 0);
+      }
       
       console.log('[Admin.tsx] fetchStats completed.');
     } catch (error) {
@@ -92,28 +112,23 @@ const Admin = () => {
 
   if (authLoading) {
     console.log('[Admin.tsx] Rendering loading screen because authLoading is true.');
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary mx-auto mb-4"></div>
-            <p>Loading Admin Dashboard...</p>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
+    return <AdminMessageScreen message="Loading Admin Dashboard..." />;
   }
 
-  // If auth has loaded, but user is not an admin or not logged in,
-  // useEffect would have navigated away. Returning null prevents flicker.
-  if (!user || !isAdmin) {
-    console.log('[Admin.tsx] Rendering null because user is not admin or not logged in (after auth check).');
-    return null; 
+  // Auth is loaded, now check user and admin status for rendering
+  if (!user) {
+    console.log('[Admin.tsx] Auth loaded, but no user. Showing redirect message.');
+    // useEffect should handle the actual navigation
+    return <AdminMessageScreen message="Redirecting to login..." />;
   }
 
-  // If auth has loaded and user is admin, render the dashboard
+  if (!isAdmin) {
+    console.log('[Admin.tsx] Auth loaded, user exists, but not admin. Showing redirect message.');
+    // useEffect should handle the actual navigation
+    return <AdminMessageScreen message="Access Denied. Redirecting to dashboard..." />;
+  }
+
+  // If auth has loaded and user is admin, render the dashboard content
   console.log('[Admin.tsx] Rendering admin content.');
   return (
     <div className="min-h-screen flex flex-col">

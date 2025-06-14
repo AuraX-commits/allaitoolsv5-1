@@ -29,6 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
 
+  console.log('[AuthContext] Initializing: isLoading state set to true.');
+
   const checkIfAdmin = async (userId: string, userEmail?: string) => {
     console.log(`[AuthContext] Checking admin status for user: ${userId}, email: ${userEmail}`);
     if (!userEmail) {
@@ -66,58 +68,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let mounted = true;
+    console.log('[AuthContext] useEffect mounting. Mounted set to true.');
 
-    // Get the current session on mount
     const getSession = async () => {
+      console.log('[AuthContext] getSession called. Setting isLoading to true.');
       setIsLoading(true);
       try {
         const { data, error } = await supabase.auth.getSession();
         if (error) {
           console.error("[AuthContext] Error getting session:", error);
         } else if (mounted) {
-          console.log("[AuthContext] Initial session data:", data.session);
+          console.log("[AuthContext] Initial session data received:", data.session ? "Session found" : "No session");
           setSession(data.session);
           setUser(data.session?.user || null);
           
           if (data.session?.user) {
             await checkIfAdmin(data.session.user.id, data.session.user.email);
           } else {
-            setIsAdmin(false); // No user, so not admin
+            console.log("[AuthContext] No user in initial session, setting isAdmin to false.");
+            setIsAdmin(false);
           }
+        } else {
+          console.log("[AuthContext] getSession completed but component unmounted.");
         }
       } catch (error) {
         console.error("[AuthContext] Unexpected error during getSession:", error);
       } finally {
         if (mounted) {
+          console.log('[AuthContext] getSession finally block. Setting isLoading to false.');
           setIsLoading(false);
+        } else {
+          console.log('[AuthContext] getSession finally block but component unmounted. isLoading not changed.');
         }
       }
     };
 
     getSession();
 
-    // Subscribe to auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => { // Added async here
-      if (!mounted) return;
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) {
+        console.log("[AuthContext] onAuthStateChange: Component unmounted, ignoring event.");
+        return;
+      }
       
-      console.log("[AuthContext] Auth state change event:", _event, "Session:", session);
+      console.log("[AuthContext] Auth state change event:", _event, "Session:", session ? "Session found" : "No session");
       setSession(session);
       setUser(session?.user || null);
       
       if (session?.user) {
-        await checkIfAdmin(session.user.id, session.user.email); // Added await
+        await checkIfAdmin(session.user.id, session.user.email);
       } else {
-        setIsAdmin(false); // No user, so not admin
+        console.log("[AuthContext] No user in auth state change, setting isAdmin to false.");
+        setIsAdmin(false);
       }
-      
-      // No need to setIsLoading(false) here if getSession already handles it
-      // and this listener might fire multiple times.
-      // Let getSession be the source of truth for initial loading state.
     });
 
     return () => {
+      console.log('[AuthContext] useEffect cleanup. Unsubscribing and setting mounted to false.');
       mounted = false;
       subscription.unsubscribe();
     };
@@ -260,7 +269,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isAdmin,
   };
 
-  console.log("[AuthContext] Provider value:", { user: !!user, session: !!session, isLoading, isAdmin });
+  console.log("[AuthContext] Provider value update:", { user: !!user, session: !!session, isLoading, isAdmin });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
