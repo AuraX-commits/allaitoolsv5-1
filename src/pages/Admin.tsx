@@ -1,29 +1,12 @@
-
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "aidirectorysupersecret"; // Change to your preferred password
+// REMOVE these hardcoded constants:
+// const ADMIN_USERNAME = "admin";
+// const ADMIN_PASSWORD = "aidirectorysupersecret";
 
-type ToolInput = {
-  name: string;
-  logo: string;
-  description: string;
-  shortDescription: string;
-  category: string[];
-  pricing: string;
-  rating: number;
-  reviewCount: number;
-  features: string[];
-  url: string;
-  apiAccess: boolean;
-  pros?: string[];
-  cons?: string[];
-  useCases?: string[];
-};
-
-function parseBulkToolsInput(input: string): ToolInput[] | null {
+function parseBulkToolsInput(input: string) {
   // Try to parse as JSON array first
   try {
     const parsed = JSON.parse(input);
@@ -43,6 +26,7 @@ const AdminPage = () => {
   const [loginState, setLoginState] = useState({ username: "", password: "" });
   const [loggedIn, setLoggedIn] = useState(false);
   const [tab, setTab] = useState<"single" | "bulk">("single");
+  const [loginLoading, setLoginLoading] = useState(false);
 
   // Single tool
   const [singleTool, setSingleTool] = useState<ToolInput>({
@@ -67,15 +51,26 @@ const AdminPage = () => {
   const [uploadResult, setUploadResult] = useState<null | { success: boolean; message: string }> (null);
   const [uploading, setUploading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      loginState.username === ADMIN_USERNAME &&
-      loginState.password === ADMIN_PASSWORD
-    ) {
-      setLoggedIn(true);
-    } else {
-      alert("Invalid admin credentials!");
+    setLoginLoading(true);
+    // Call edge function for secure admin auth
+    try {
+      const res = await fetch("https://favhnurmqbtzttzxvfmm.supabase.co/functions/v1/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginState),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setLoggedIn(true);
+      } else {
+        alert("Invalid admin credentials!");
+      }
+    } catch (err) {
+      alert("Error during login.");
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -218,8 +213,9 @@ const AdminPage = () => {
           <button
             type="submit"
             className="w-full py-2 bg-primary text-white rounded hover:bg-primary/90"
+            disabled={loginLoading}
           >
-            Login
+            {loginLoading ? "Verifying..." : "Login"}
           </button>
         </form>
       ) : (
