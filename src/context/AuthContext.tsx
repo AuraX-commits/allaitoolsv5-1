@@ -40,23 +40,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      // Use .maybeSingle() to avoid error if no row is found
       const { data, error } = await supabase
         .from('admin_users')
         .select('email')
         .eq('email', userEmail)
-        .maybeSingle(); // Changed from .single() to .maybeSingle()
+        .maybeSingle();
 
       if (error) {
-        // An error occurred that is not 'PGRST116' (0 rows)
         console.error("[AuthContext] Error checking admin status:", error);
         setIsAdmin(false);
       } else if (data) {
-        // User's email found in admin_users table
         console.log("[AuthContext] User is admin:", data);
         setIsAdmin(true);
       } else {
-        // User's email not found in admin_users table (data is null)
         console.log("[AuthContext] User is NOT admin.");
         setIsAdmin(false);
       }
@@ -70,59 +66,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true;
     console.log('[AuthContext] useEffect mounting. Mounted set to true.');
 
-    const getSession = async () => {
-      console.log('[AuthContext] getSession called. Setting isLoading to true.');
-      setIsLoading(true);
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("[AuthContext] Error getting session:", error);
-        } else if (mounted) {
-          console.log("[AuthContext] Initial session data received:", data.session ? "Session found" : "No session");
-          setSession(data.session);
-          setUser(data.session?.user || null);
-          
-          if (data.session?.user) {
-            await checkIfAdmin(data.session.user.id, data.session.user.email);
-          } else {
-            console.log("[AuthContext] No user in initial session, setting isAdmin to false.");
-            setIsAdmin(false);
-          }
-        } else {
-          console.log("[AuthContext] getSession completed but component unmounted.");
-        }
-      } catch (error) {
-        console.error("[AuthContext] Unexpected error during getSession:", error);
-      } finally {
-        if (mounted) {
-          console.log('[AuthContext] getSession finally block. Setting isLoading to false.');
-          setIsLoading(false);
-        } else {
-          console.log('[AuthContext] getSession finally block but component unmounted. isLoading not changed.');
-        }
-      }
-    };
-
-    getSession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) {
-        console.log("[AuthContext] onAuthStateChange: Component unmounted, ignoring event.");
-        return;
-      }
-      
-      console.log("[AuthContext] Auth state change event:", _event, "Session:", session ? "Session found" : "No session");
+    // 1. Setup the listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      console.log("[AuthContext] [onAuthStateChange] event:", event, "Session:", session ? "Present" : "Null");
       setSession(session);
-      setUser(session?.user || null);
-      
+      setUser(session?.user ?? null);
+
+      // Defer async side effects to avoid deadlocks
       if (session?.user) {
-        await checkIfAdmin(session.user.id, session.user.email);
+        setTimeout(() => {
+          checkIfAdmin(session.user.id, session.user.email);
+        }, 0);
       } else {
-        console.log("[AuthContext] No user in auth state change, setting isAdmin to false.");
-        setIsAdmin(false);
+        setTimeout(() => {
+          setIsAdmin(false);
+        }, 0);
       }
+
+      setIsLoading(false);
+      console.log("[AuthContext] [onAuthStateChange] setIsLoading(false)");
+    });
+
+    // 2. THEN call getSession
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      console.log("[AuthContext] [getSession] completed. Session", session ? "Present" : "Null");
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      // Defer async side effects
+      if (session?.user) {
+        setTimeout(() => {
+          checkIfAdmin(session.user.id, session.user.email);
+        }, 0);
+      } else {
+        setTimeout(() => {
+          setIsAdmin(false);
+        }, 0);
+      }
+
+      setIsLoading(false);
+      console.log("[AuthContext] [getSession] setIsLoading(false)");
     });
 
     return () => {
@@ -130,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []); // Removed toast from dependencies as it's stable
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
