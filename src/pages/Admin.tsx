@@ -13,19 +13,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { supabase } from "@/lib/supabaseClient";
 
 const Admin = () => {
-  const { user, isAdmin, isLoading } = useAuth();
+  const { user, isAdmin, isLoading: authLoading } = useAuth(); // Renamed to authLoading for clarity
   const { toast } = useToast();
   const navigate = useNavigate();
   const [toolCount, setToolCount] = useState<number>(0);
   const [userCount, setUserCount] = useState<number>(0);
   const [adminEmail, setAdminEmail] = useState<string>('');
   
+  // Log auth state received from context at each render
+  console.log('[Admin.tsx] Rendering. Auth state:', { 
+    user: !!user, 
+    isAdmin, 
+    authLoading 
+  });
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    
-    // Only check admin status after auth has loaded
-    if (!isLoading) {
+    console.log('[Admin.tsx] useEffect triggered. Auth state:', { user: !!user, isAdmin, authLoading });
+
+    if (!authLoading) { // Only proceed if auth context is done loading
+      console.log('[Admin.tsx] Auth context finished loading.');
       if (!user) {
+        console.log('[Admin.tsx] No user found, redirecting to /login.');
         toast({
           title: "Access Denied",
           description: "You must be logged in to access the admin dashboard",
@@ -33,6 +42,7 @@ const Admin = () => {
         });
         navigate("/login");
       } else if (!isAdmin) {
+        console.log('[Admin.tsx] User is not admin, redirecting to /dashboard.');
         toast({
           title: "Access Denied",
           description: "You don't have permission to access the admin dashboard",
@@ -40,53 +50,73 @@ const Admin = () => {
         });
         navigate("/dashboard");
       } else {
+        console.log('[Admin.tsx] User is admin, fetching stats.');
         // Fetch counts for admin dashboard
         fetchStats();
+        if (user.email) {
+          setAdminEmail(user.email);
+        }
       }
+    } else {
+      console.log('[Admin.tsx] Auth context is still loading.');
     }
-  }, [user, isAdmin, isLoading, navigate, toast]);
+  }, [user, isAdmin, authLoading, navigate, toast]);
 
   const fetchStats = async () => {
+    console.log('[Admin.tsx] fetchStats called.');
     try {
-      // Get tool count
-      const { count: toolCount, error: toolError } = await supabase
+      const { count: tools, error: toolError } = await supabase
         .from('ai_tools')
         .select('*', { count: 'exact', head: true });
       
-      if (!toolError) {
-        setToolCount(toolCount || 0);
-      }
+      if (toolError) console.error('[Admin.tsx] Error fetching tool count:', toolError);
+      else setToolCount(tools || 0);
       
-      // Get user count
-      const { count: userCount, error: userError } = await supabase
-        .from('profiles')
+      const { count: users, error: userError } = await supabase
+        .from('profiles') // Assuming 'profiles' table for user count
         .select('*', { count: 'exact', head: true });
         
-      if (!userError) {
-        setUserCount(userCount || 0);
-      }
+      if (userError) console.error('[Admin.tsx] Error fetching user count:', userError);
+      else setUserCount(users || 0);
       
-      // Get admin email
-      if (user) {
-        setAdminEmail(user.email || 'admin@example.com');
-      }
+      console.log('[Admin.tsx] fetchStats completed.');
     } catch (error) {
-      console.error('Error fetching admin stats:', error);
+      console.error('[Admin.tsx] Error in fetchStats:', error);
+      toast({
+        title: "Error fetching stats",
+        description: "Could not load dashboard statistics.",
+        variant: "destructive",
+      });
     }
   };
 
-  // Don't render anything until we've checked admin status
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (authLoading) {
+    console.log('[Admin.tsx] Rendering loading screen because authLoading is true.');
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary mx-auto mb-4"></div>
+            <p>Loading Admin Dashboard...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
-  // Don't render admin content if not admin
+  // If auth has loaded, but user is not an admin or not logged in,
+  // useEffect would have navigated away. Returning null prevents flicker.
   if (!user || !isAdmin) {
-    return null;
+    console.log('[Admin.tsx] Rendering null because user is not admin or not logged in (after auth check).');
+    return null; 
   }
 
+  // If auth has loaded and user is admin, render the dashboard
+  console.log('[Admin.tsx] Rendering admin content.');
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>Admin Dashboard | AI Tools Directory</title>
         <meta name="robots" content="noindex, nofollow" />
@@ -94,7 +124,7 @@ const Admin = () => {
       
       <Navbar />
       
-      <main className="pt-24 pb-20">
+      <main className="flex-grow pt-24 pb-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-2">
@@ -102,7 +132,7 @@ const Admin = () => {
               <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             </div>
             <p className="text-foreground/70 max-w-3xl">
-              Manage your AI tools database and perform administrative tasks.
+              Welcome, {adminEmail || user?.email || 'Admin User'}. Manage your AI tools database and perform administrative tasks.
             </p>
           </div>
           
@@ -137,7 +167,7 @@ const Admin = () => {
                 <Settings className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-sm font-medium truncate">{adminEmail}</div>
+                <div className="text-sm font-medium truncate">{adminEmail || user?.email}</div>
                 <p className="text-xs text-muted-foreground">
                   Current admin access
                 </p>
@@ -150,6 +180,7 @@ const Admin = () => {
               <h2 className="text-xl font-semibold mb-4">Data Management</h2>
               <DataMigration />
             </section>
+            {/* Add more admin sections here as needed */}
           </div>
         </div>
       </main>
