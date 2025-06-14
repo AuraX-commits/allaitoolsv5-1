@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session, Provider } from "@supabase/supabase-js";
@@ -17,7 +18,6 @@ type AuthContextType = {
     data: { user: User | null; session: Session | null };
   }>;
   signOut: () => Promise<void>;
-  isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,41 +26,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
 
   console.log('[AuthContext] Initializing: isLoading state set to true.');
-
-  const checkIfAdmin = async (userId: string, userEmail?: string) => {
-    console.log(`[AuthContext] Checking admin status for user: ${userId}, email: ${userEmail}`);
-    if (!userEmail) {
-      console.log("[AuthContext] No email provided, cannot check admin status.");
-      setIsAdmin(false);
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('email')
-        .eq('email', userEmail)
-        .maybeSingle();
-
-      if (error) {
-        console.error("[AuthContext] Error checking admin status:", error);
-        setIsAdmin(false);
-      } else if (data) {
-        console.log("[AuthContext] User is admin:", data);
-        setIsAdmin(true);
-      } else {
-        console.log("[AuthContext] User is NOT admin.");
-        setIsAdmin(false);
-      }
-    } catch (error) {
-      console.error("[AuthContext] Unexpected error checking admin status:", error);
-      setIsAdmin(false);
-    }
-  };
 
   useEffect(() => {
     let mounted = true;
@@ -72,18 +40,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("[AuthContext] [onAuthStateChange] event:", event, "Session:", session ? "Present" : "Null");
       setSession(session);
       setUser(session?.user ?? null);
-
-      // Defer async side effects to avoid deadlocks
-      if (session?.user) {
-        setTimeout(() => {
-          checkIfAdmin(session.user.id, session.user.email);
-        }, 0);
-      } else {
-        setTimeout(() => {
-          setIsAdmin(false);
-        }, 0);
-      }
-
       setIsLoading(false);
       console.log("[AuthContext] [onAuthStateChange] setIsLoading(false)");
     });
@@ -94,18 +50,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("[AuthContext] [getSession] completed. Session", session ? "Present" : "Null");
       setSession(session);
       setUser(session?.user ?? null);
-
-      // Defer async side effects
-      if (session?.user) {
-        setTimeout(() => {
-          checkIfAdmin(session.user.id, session.user.email);
-        }, 0);
-      } else {
-        setTimeout(() => {
-          setIsAdmin(false);
-        }, 0);
-      }
-
       setIsLoading(false);
       console.log("[AuthContext] [getSession] setIsLoading(false)");
     });
@@ -133,7 +77,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error, data: null };
       }
 
-      // Admin check will be triggered by onAuthStateChange
       toast({
         title: "Sign in successful",
         description: "Welcome back!",
@@ -167,7 +110,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           variant: "destructive",
         });
       }
-      // Admin check will be triggered by onAuthStateChange
     } catch (error) {
       console.error("Unexpected error during provider sign in:", error);
       toast({
@@ -208,7 +150,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "Please check your email for a confirmation link to complete your registration.",
         duration: 6000,
       });
-      // Admin check will be triggered by onAuthStateChange after confirmation and login
 
       return { error: null, data };
     } catch (error) {
@@ -228,7 +169,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
-      // setIsAdmin(false) will be handled by onAuthStateChange
       toast({
         title: "Signed out",
         description: "You have been successfully signed out",
@@ -251,10 +191,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signInWithProvider,
     signUp,
     signOut,
-    isAdmin,
   };
 
-  console.log("[AuthContext] Provider value update:", { user: !!user, session: !!session, isLoading, isAdmin });
+  console.log("[AuthContext] Provider value update:", { user: !!user, session: !!session, isLoading });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -26,7 +26,7 @@ import SubmitTool from "./pages/SubmitTool";
 import Advertise from "./pages/Advertise";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Admin from './pages/Admin';
+- import Admin from './pages/Admin';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/auth/PrivateRoute';
 import ToolRecommender from './pages/ToolRecommender';
@@ -80,7 +80,7 @@ const App = () => {
                     <Route path="/advertise" element={<Advertise />} />
                     <Route path="/login" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />
-                    <Route path="/admin" element={<Admin />} />
+-                   <Route path="/admin" element={<Admin />} />
                     <Route path="/recommend" element={<ToolRecommender />} />
                     <Route 
                       path="/dashboard/*" 
