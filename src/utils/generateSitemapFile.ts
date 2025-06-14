@@ -5,8 +5,7 @@ import {
   generateSitemap, 
   generateImageSitemap,
   generateToolSitemap,
-  generateCategorySitemap,
-  generateBlogSitemap
+  generateCategorySitemap
 } from './sitemapGenerator';
 
 // This function needs to be async since generateSitemap returns a Promise
@@ -41,12 +40,6 @@ const generateSitemapFiles = async () => {
     const categorySitemapPath = path.resolve(publicDir, 'category-sitemap.xml');
     fs.writeFileSync(categorySitemapPath, categorySitemap);
     console.log(`Category sitemap generated at ${categorySitemapPath}`);
-
-    // Generate blog sitemap
-    const blogSitemap = await generateBlogSitemap();
-    const blogSitemapPath = path.resolve(publicDir, 'blog-sitemap.xml');
-    fs.writeFileSync(blogSitemapPath, blogSitemap);
-    console.log(`Blog sitemap generated at ${blogSitemapPath}`);
     
     // Generate sitemap index to link all sitemaps
     const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
@@ -65,10 +58,6 @@ const generateSitemapFiles = async () => {
   </sitemap>
   <sitemap>
     <loc>https://www.allaitools.tech/category-sitemap.xml</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://www.allaitools.tech/blog-sitemap.xml</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
   </sitemap>
 </sitemapindex>`;
