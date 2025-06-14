@@ -22,6 +22,7 @@ Allow: /categories
 Allow: /submit-tool
 Allow: /about
 Allow: /tool
+Allow: /blog
 
 # Crawl delay suggestion (in seconds)
 Crawl-delay: 3
@@ -32,6 +33,7 @@ Sitemap: https://www.allaitools.tech/sitemap.xml
 Sitemap: https://www.allaitools.tech/image-sitemap.xml
 Sitemap: https://www.allaitools.tech/tool-sitemap.xml
 Sitemap: https://www.allaitools.tech/category-sitemap.xml
+Sitemap: https://www.allaitools.tech/blog-sitemap.xml
 
 # Special instructions for major search engines
 User-agent: Googlebot

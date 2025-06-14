@@ -1,4 +1,3 @@
-
 export interface TechHub {
   city: string;
   state?: string;
@@ -224,6 +223,60 @@ export const TECH_HUBS: TechHub[] = [
     keywords: ["robotics", "consumer electronics", "gaming", "deep tech"],
     population: "14M",
     techCompanies: ["Sony", "SoftBank", "Nintendo", "Toyota"]
+  },
+
+  // South America Tech Hubs
+  {
+    city: "São Paulo",
+    country: "Brazil",
+    region: "South America",
+    keywords: ["fintech latam", "e-commerce brazil", "startup ecosystem"],
+    population: "12.3M",
+    techCompanies: ["Nubank", "PagSeguro", "iFood"]
+  },
+  {
+    city: "Buenos Aires",
+    country: "Argentina",
+    region: "South America",
+    keywords: ["mercado libre", "e-commerce", "creative tech", "software factory"],
+    population: "2.9M",
+    techCompanies: ["Mercado Libre", "Globant", "Despegar"]
+  },
+  
+  // Africa Tech Hubs
+  {
+    city: "Lagos",
+    country: "Nigeria",
+    region: "Africa",
+    keywords: ["fintech africa", "flutterwave", "e-commerce", "yaba"],
+    population: "14.8M",
+    techCompanies: ["Flutterwave", "Paystack", "Jumia"]
+  },
+  {
+    city: "Nairobi",
+    country: "Kenya",
+    region: "Africa",
+    keywords: ["silicon savannah", "mobile money", "m-pesa", "impact tech"],
+    population: "4.4M",
+    techCompanies: ["Safaricom", "Cellulant", "BRCK"]
+  },
+
+  // Oceania Tech Hubs
+  {
+    city: "Sydney",
+    country: "Australia",
+    region: "Oceania",
+    keywords: ["atlassian", "canva", "fintech australia", "saas"],
+    population: "5.3M",
+    techCompanies: ["Atlassian", "Canva", "Afterpay"]
+  },
+  {
+    city: "Melbourne",
+    country: "Australia",
+    region: "Oceania",
+    keywords: ["health tech", "e-commerce", "gaming", "startup hub"],
+    population: "5M",
+    techCompanies: ["REA Group", "Carsales.com", "MYOB"]
   }
 ];
 

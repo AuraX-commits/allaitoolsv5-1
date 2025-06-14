@@ -79,17 +79,6 @@ export const generateSitemap = async (): Promise<string> => {
     // Fallback to static content if dynamic content fails
   }
 
-  // Add blog post pages
-  blogPosts.forEach(post => {
-    sitemap += `  <url>
-    <loc>${baseUrl}/blog/${post.slug}</loc>
-    <lastmod>${getCurrentDate()}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-`;
-  });
-
   // Close urlset tag
   sitemap += `</urlset>`;
 
@@ -201,6 +190,29 @@ export const generateImageSitemap = async (): Promise<string> => {
   return sitemap;
 };
 
+// Generate a blog sitemap
+export const generateBlogSitemap = async (): Promise<string> => {
+  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+`;
+
+  // Add blog post pages
+  blogPosts.forEach(post => {
+    sitemap += `  <url>
+    <loc>${baseUrl}/blog/${post.slug}</loc>
+    <lastmod>${getCurrentDate()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+`;
+  });
+
+  // Close urlset tag
+  sitemap += `</urlset>`;
+
+  return sitemap;
+};
+
 // Generate a category sitemap for improved organization
 export const generateCategorySitemap = async (): Promise<string> => {
   let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -253,5 +265,6 @@ export default {
   generateSitemap,
   generateImageSitemap,
   generateToolSitemap,
-  generateCategorySitemap
+  generateCategorySitemap,
+  generateBlogSitemap
 };
