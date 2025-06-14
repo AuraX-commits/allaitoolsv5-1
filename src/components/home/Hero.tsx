@@ -3,6 +3,7 @@ import { useRef, useEffect } from "react";
 import { ArrowDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { ThemeToggle } from "../layout/ThemeToggle";
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -45,16 +46,25 @@ const Hero = () => {
   return (
     <div 
       ref={heroRef}
-      className="min-h-screen relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-white to-secondary/40"
+      className="min-h-screen relative flex items-center justify-center overflow-hidden bg-background"
     >
-      {/* Background grid pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:20px_20px] opacity-30"></div>
+      <div 
+        className="absolute inset-0 z-0 opacity-30"
+        style={{
+          backgroundImage: 'radial-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px)',
+          backgroundSize: '20px 20px',
+        }}
+      ></div>
       
       {/* Floating shapes */}
-      <div className="absolute top-1/4 left-1/6 w-64 h-64 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
-      <div className="absolute bottom-1/3 right-1/6 w-72 h-72 bg-blue-200/30 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{animationDelay: '1s'}}></div>
-      <div className="absolute top-2/3 left-1/3 w-48 h-48 bg-purple-200/20 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-float" style={{animationDelay: '2s'}}></div>
+      <div className="absolute top-1/4 left-1/6 w-64 h-64 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+      <div className="absolute bottom-1/3 right-1/6 w-72 h-72 bg-accent/30 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-blob" style={{animationDelay: '2s'}}></div>
+      <div className="absolute top-2/3 left-1/3 w-48 h-48 bg-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob" style={{animationDelay: '4s'}}></div>
       
+      <div className="absolute top-6 right-6 z-20">
+        <ThemeToggle />
+      </div>
+
       <div 
         ref={textRef}
         className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-200"
@@ -72,7 +82,7 @@ const Hero = () => {
           </span>
         </h1>
         
-        <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
           Your curated directory of cutting-edge AI tools with detailed comparisons, 
           reviews, and insights to help you find the perfect solution.
         </p>
@@ -80,13 +90,13 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <button 
             onClick={scrollToTools}
-            className="px-8 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl hover:shadow-primary/20 transform hover:-translate-y-1 duration-200"
+            className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transform hover:-translate-y-1"
           >
             Explore Tools
           </button>
           <button
             onClick={scrollToCompare}
-            className="px-8 py-3 bg-white text-foreground rounded-full font-medium border border-input hover:bg-secondary transition-colors flex items-center justify-center gap-2"
+            className="px-8 py-3 bg-transparent text-foreground rounded-full font-medium border border-border hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-center gap-2"
           >
             Compare Tools <ChevronRight className="w-4 h-4" />
           </button>
@@ -109,7 +119,7 @@ const Hero = () => {
       </div>
       
       {/* Gradient overlay at the bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-secondary/30 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
     </div>
   );
 };
