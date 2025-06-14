@@ -1,34 +1,9 @@
 
-import { useRef, useEffect } from "react";
 import { ArrowDown, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "../layout/ThemeToggle";
 
 const Hero = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  
-  // Parallax effect for hero section
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!heroRef.current || !textRef.current) return;
-      
-      const scrollY = window.scrollY;
-      const heroHeight = heroRef.current.offsetHeight;
-      const scrollPercentage = Math.min(scrollY / heroHeight, 1);
-      
-      // Parallax for text
-      textRef.current.style.transform = `translateY(${scrollPercentage * 50}px)`;
-      
-      // Opacity effect
-      textRef.current.style.opacity = `${1 - scrollPercentage * 1.5}`;
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const scrollToTools = () => {
     const toolsSection = document.getElementById('tools-directory');
     if (toolsSection) {
@@ -45,40 +20,37 @@ const Hero = () => {
 
   return (
     <div 
-      ref={heroRef}
-      className="min-h-screen relative flex items-center justify-center overflow-hidden bg-background"
+      className="min-h-screen relative flex items-center justify-center overflow-hidden bg-background text-foreground"
     >
-      <div 
-        className="absolute inset-0 z-0 opacity-30"
-        style={{
-          backgroundImage: 'radial-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px)',
-          backgroundSize: '20px 20px',
-        }}
-      ></div>
-      
-      {/* Floating shapes */}
-      <div className="absolute top-1/4 left-1/6 w-64 h-64 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-      <div className="absolute bottom-1/3 right-1/6 w-72 h-72 bg-accent/30 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-blob" style={{animationDelay: '2s'}}></div>
-      <div className="absolute top-2/3 left-1/3 w-48 h-48 bg-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob" style={{animationDelay: '4s'}}></div>
+      {/* Background Grid & Gradient */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,hsl(var(--primary)/0.15),transparent)]"></div>
+        <div 
+          className="absolute inset-0 opacity-40 dark:opacity-20"
+          style={{
+            backgroundImage: 'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
+        ></div>
+      </div>
       
       <div className="absolute top-6 right-6 z-20">
         <ThemeToggle />
       </div>
 
       <div 
-        ref={textRef}
         className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-200"
       >
         <div className="inline-block mb-4 animate-fade-in">
-          <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
             Find The Perfect AI Tool
           </span>
         </div>
         
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up text-balance max-w-4xl mx-auto leading-[1.1]">
-          Discover & Compare <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">
-            AI-Powered Tools
+          Navigate the Future of AI with <br className="hidden sm:block" />
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-cyan-400 to-fuchsia-500">
+            AIDirectory
           </span>
         </h1>
         
@@ -90,20 +62,20 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <button 
             onClick={scrollToTools}
-            className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transform hover:-translate-y-1"
+            className="px-8 py-3 bg-primary text-primary-foreground rounded-md font-medium transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-glow-primary transform hover:-translate-y-1"
           >
             Explore Tools
           </button>
           <button
             onClick={scrollToCompare}
-            className="px-8 py-3 bg-transparent text-foreground rounded-full font-medium border border-border hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-center gap-2"
+            className="px-8 py-3 bg-transparent text-foreground rounded-md font-medium border border-border hover:bg-accent hover:text-accent-foreground hover:border-primary transition-colors flex items-center justify-center gap-2"
           >
             Compare Tools <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
         <div className="mt-4 flex justify-center items-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-          <Link to="/submit-tool" className="text-foreground/70 hover:text-primary transition-colors underline underline-offset-4">
+          <Link to="/submit-tool" className="text-foreground/70 hover:text-primary transition-colors underline-offset-4 text-sm hover:underline">
             Submit Your Tool
           </Link>
         </div>

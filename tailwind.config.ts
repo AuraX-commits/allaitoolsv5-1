@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -135,10 +136,12 @@ export default {
 			},
 			boxShadow: {
 				'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)'
+				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+        'glow-primary': '0 0 15px 0px hsl(var(--primary) / 0.5)',
 			},
 			backdropBlur: {
-				xs: '2px'
+				xs: '2px',
+        sm: '4px',
 			}
 		}
 	},

@@ -16,7 +16,7 @@ const ComparisonSection = () => {
   } = useToolComparison();
 
   return (
-    <section id="compare-section" className="py-20 bg-white border-t border-b border-border">
+    <section id="compare-section" className="py-20 bg-background border-t border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Compare AI Tools</h2>
