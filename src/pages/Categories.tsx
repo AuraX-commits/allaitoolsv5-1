@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
@@ -14,6 +15,7 @@ import { ScrollToTop } from "@/components/common/ScrollToTop";
 import { useToast } from "@/hooks/use-toast";
 import BreadcrumbNav from "@/components/common/BreadcrumbNav";
 import { generateLocalSeoKeywords, generateLocalSeoDescription } from "@/utils/localSeoHelper";
+import { Button } from "@/components/ui/button";
 
 const Categories = () => {
   const { category } = useParams<{ category: string }>();

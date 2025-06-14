@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ExternalLink, Star, Zap, Check } from "lucide-react";
 import Badge from "../common/Badge";
@@ -63,7 +62,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         </div>
 
         {/* Tool Description */}
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+        <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-2 flex-grow">
           {tool.shortDescription}
         </p>
 
@@ -80,7 +79,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         </div>
 
         {/* Tool Features */}
-        <div className="space-y-2 mb-5 flex-grow">
+        <div className="space-y-2 mb-5">
           {tool.features.slice(0, 3).map((feature) => (
             <div key={feature} className="flex items-start">
               <div className="mt-0.5 mr-2 text-primary">
@@ -104,18 +103,17 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               </Badge>
             )}
           </div>
-          <a
-            href={tool.url}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
+              window.open(tool.url, '_blank', 'noopener,noreferrer');
             }}
-            className="text-xs flex items-center text-muted-foreground hover:text-primary transition-colors"
+            className="text-xs flex items-center text-muted-foreground hover:text-primary transition-colors focus:outline-none focus:ring-1 focus:ring-ring rounded px-1"
             aria-label={`Visit ${tool.name} website`}
           >
             Visit <ExternalLink className="w-3 h-3 ml-1" aria-hidden="true" />
-          </a>
+          </button>
         </div>
       </div>
     </div>
