@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ExternalLink, Star, Zap, Check } from "lucide-react";
 import Badge from "../common/Badge";
@@ -14,12 +13,7 @@ interface ToolCardProps {
 }
 
 const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: ToolCardProps) => {
-  const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseEnter = () => setIsHovered(true);
-  const handleMouseLeave = () => setIsHovered(false);
-
-  // Create descriptive alt text for the tool
   const getAltText = () => {
     return `${tool.name} logo - AI tool for ${tool.category.join(', ')}`;
   };
@@ -27,19 +21,16 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
   return (
     <div 
       className={cn(
-        "group rounded-xl overflow-hidden bg-white border border-border/60 transition-all duration-300 h-full",
-        showSelection && selected ? "ring-2 ring-primary" : "",
-        isHovered ? "shadow-lg translate-y-[-4px]" : "shadow-subtle"
+        "group rounded-xl overflow-hidden bg-card/60 border border-border/30 transition-all duration-300 h-full hover:border-primary/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10",
+        showSelection && selected ? "ring-2 ring-primary" : "shadow-md shadow-black/5"
       )}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
-      <div className="p-6 relative h-full flex flex-col">
+      <div className="p-6 relative h-full flex flex-col backdrop-blur-xl">
         {/* Tool Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-lg overflow-hidden bg-secondary/30 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg overflow-hidden bg-secondary/20 flex items-center justify-center border border-border/20">
               <img 
                 src={tool.logo} 
                 alt={getAltText()}
@@ -48,11 +39,11 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">{tool.name}</h3>
+              <h3 className="font-semibold text-lg text-foreground">{tool.name}</h3>
               <div className="flex items-center mt-1">
                 <div className="flex items-center">
                   <Star className="w-4 h-4 text-amber-500 fill-amber-500" aria-hidden="true" />
-                  <span className="ml-1 text-sm font-medium">{tool.rating}</span>
+                  <span className="ml-1 text-sm font-medium text-muted-foreground">{tool.rating}</span>
                 </div>
                 <span className="mx-2 text-muted-foreground text-sm">•</span>
                 <span className="text-sm text-muted-foreground">{tool.reviewCount} reviews</span>
@@ -72,19 +63,19 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         </div>
 
         {/* Tool Description */}
-        <p className="text-sm text-foreground/80 mb-4 line-clamp-2">
+        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
           {tool.shortDescription}
         </p>
 
         {/* Tool Categories */}
         <div className="flex flex-wrap gap-2 mb-4">
           {tool.category.slice(0, 2).map((cat) => (
-            <Badge key={cat} variant="muted">
+            <Badge key={cat} variant="secondary">
               {cat}
             </Badge>
           ))}
           {tool.category.length > 2 && (
-            <Badge variant="muted">+{tool.category.length - 2} more</Badge>
+            <Badge variant="secondary">+{tool.category.length - 2} more</Badge>
           )}
         </div>
 
@@ -95,7 +86,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               <div className="mt-0.5 mr-2 text-primary">
                 <Check className="w-4 h-4" aria-hidden="true" />
               </div>
-              <span className="text-sm text-foreground/80">{feature}</span>
+              <span className="text-sm text-muted-foreground">{feature}</span>
             </div>
           ))}
         </div>
@@ -103,26 +94,28 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         {/* Pricing & API Info */}
         <div className="flex justify-between items-center mt-auto">
           <div className="flex items-center space-x-2">
-            <Badge variant={tool.pricing === "Free" || tool.pricing === "Freemium" ? "default" : "outline"}>
+            <Badge variant={tool.pricing === "Free" || tool.pricing === "Freemium" ? "default" : "secondary"}>
               {tool.pricing}
             </Badge>
             {tool.apiAccess && (
-              <Badge variant="outline" className="flex items-center">
+              <Badge variant="secondary" className="flex items-center">
                 <Zap className="w-3 h-3 mr-1" aria-hidden="true" />
                 API
               </Badge>
             )}
           </div>
-          <button 
+          <a
+            href={tool.url}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={(e) => {
               e.stopPropagation();
-              window.open(tool.url, '_blank', 'noopener,noreferrer');
             }}
-            className="text-xs flex items-center text-primary hover:text-primary/80 transition-colors"
+            className="text-xs flex items-center text-muted-foreground hover:text-primary transition-colors"
             aria-label={`Visit ${tool.name} website`}
           >
             Visit <ExternalLink className="w-3 h-3 ml-1" aria-hidden="true" />
-          </button>
+          </a>
         </div>
       </div>
     </div>
