@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session, Provider } from "@supabase/supabase-js";
@@ -31,21 +30,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
 
   const checkIfAdmin = async (userId: string, userEmail?: string) => {
+    console.log(`[AuthContext] Checking admin status for user: ${userId}, email: ${userEmail}`);
+    if (!userEmail) {
+      console.log("[AuthContext] No email provided, cannot check admin status.");
+      setIsAdmin(false);
+      return;
+    }
+
     try {
-      // Check if the user's email exists in the admin_users table
+      // Use .maybeSingle() to avoid error if no row is found
       const { data, error } = await supabase
         .from('admin_users')
         .select('email')
         .eq('email', userEmail)
-        .single();
+        .maybeSingle(); // Changed from .single() to .maybeSingle()
 
-      if (error && error.code !== 'PGRST116') {
-        console.error("Error checking admin status:", error);
+      if (error) {
+        // An error occurred that is not 'PGRST116' (0 rows)
+        console.error("[AuthContext] Error checking admin status:", error);
+        setIsAdmin(false);
+      } else if (data) {
+        // User's email found in admin_users table
+        console.log("[AuthContext] User is admin:", data);
+        setIsAdmin(true);
+      } else {
+        // User's email not found in admin_users table (data is null)
+        console.log("[AuthContext] User is NOT admin.");
+        setIsAdmin(false);
       }
-
-      setIsAdmin(!!data);
     } catch (error) {
-      console.error("Unexpected error checking admin status:", error);
+      console.error("[AuthContext] Unexpected error checking admin status:", error);
       setIsAdmin(false);
     }
   };
@@ -59,18 +73,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const { data, error } = await supabase.auth.getSession();
         if (error) {
-          console.error("Error getting session:", error);
+          console.error("[AuthContext] Error getting session:", error);
         } else if (mounted) {
+          console.log("[AuthContext] Initial session data:", data.session);
           setSession(data.session);
           setUser(data.session?.user || null);
           
-          // Check if user is admin
           if (data.session?.user) {
-            checkIfAdmin(data.session.user.id, data.session.user.email);
+            await checkIfAdmin(data.session.user.id, data.session.user.email);
+          } else {
+            setIsAdmin(false); // No user, so not admin
           }
         }
       } catch (error) {
-        console.error("Unexpected error during getSession:", error);
+        console.error("[AuthContext] Unexpected error during getSession:", error);
       } finally {
         if (mounted) {
           setIsLoading(false);
@@ -83,28 +99,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Subscribe to auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => { // Added async here
       if (!mounted) return;
       
-      console.log("Auth state change event:", _event);
+      console.log("[AuthContext] Auth state change event:", _event, "Session:", session);
       setSession(session);
       setUser(session?.user || null);
       
-      // Check if user is admin
       if (session?.user) {
-        checkIfAdmin(session.user.id, session.user.email);
+        await checkIfAdmin(session.user.id, session.user.email); // Added await
       } else {
-        setIsAdmin(false);
+        setIsAdmin(false); // No user, so not admin
       }
       
-      setIsLoading(false);
+      // No need to setIsLoading(false) here if getSession already handles it
+      // and this listener might fire multiple times.
+      // Let getSession be the source of truth for initial loading state.
     });
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, []); // Removed toast from dependencies as it's stable
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -122,6 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error, data: null };
       }
 
+      // Admin check will be triggered by onAuthStateChange
       toast({
         title: "Sign in successful",
         description: "Welcome back!",
@@ -155,6 +173,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           variant: "destructive",
         });
       }
+      // Admin check will be triggered by onAuthStateChange
     } catch (error) {
       console.error("Unexpected error during provider sign in:", error);
       toast({
@@ -167,14 +186,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, name?: string) => {
     try {
-      // Include name in user metadata if provided
       const options = {
         emailRedirectTo: `${window.location.origin}/login`,
         data: name ? { name } : undefined
       };
 
-      console.log("SignUp options:", options);
-      console.log("Redirect URL:", `${window.location.origin}/login`);
+      console.log("[AuthContext] SignUp options:", options);
+      console.log("[AuthContext] Redirect URL:", `${window.location.origin}/login`);
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -196,6 +214,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: "Please check your email for a confirmation link to complete your registration.",
         duration: 6000,
       });
+      // Admin check will be triggered by onAuthStateChange after confirmation and login
 
       return { error: null, data };
     } catch (error) {
@@ -215,6 +234,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
+      // setIsAdmin(false) will be handled by onAuthStateChange
       toast({
         title: "Signed out",
         description: "You have been successfully signed out",
@@ -239,6 +259,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signOut,
     isAdmin,
   };
+
+  console.log("[AuthContext] Provider value:", { user: !!user, session: !!session, isLoading, isAdmin });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
