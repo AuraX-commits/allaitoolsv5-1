@@ -6,6 +6,23 @@ import { supabase } from "@/integrations/supabase/client";
 // const ADMIN_USERNAME = "admin";
 // const ADMIN_PASSWORD = "aidirectorysupersecret";
 
+interface ToolInput {
+  name: string;
+  logo: string;
+  description: string;
+  shortDescription: string;
+  category: string[];
+  pricing: string;
+  rating: number;
+  reviewCount: number;
+  features: string[];
+  url: string;
+  apiAccess: boolean;
+  pros: string[];
+  cons: string[];
+  useCases: string[];
+}
+
 function parseBulkToolsInput(input: string) {
   // Try to parse as JSON array first
   try {
