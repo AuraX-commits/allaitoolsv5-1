@@ -1,7 +1,5 @@
-
 import { ArrowDown, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ThemeToggle } from "../layout/ThemeToggle";
 
 const Hero = () => {
   const scrollToTools = () => {
@@ -22,76 +20,67 @@ const Hero = () => {
     <div 
       className="min-h-screen relative flex items-center justify-center overflow-hidden bg-background text-foreground"
     >
-      {/* Background Grid & Gradient */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,hsl(var(--primary)/0.15),transparent)]"></div>
-        <div 
-          className="absolute inset-0 opacity-40 dark:opacity-20"
-          style={{
-            backgroundImage: 'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        ></div>
-      </div>
-      
-      <div className="absolute top-6 right-6 z-20">
-        <ThemeToggle />
-      </div>
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-background via-background to-secondary/30 dark:to-secondary/10" />
+      <div 
+        className="absolute inset-0 z-0 opacity-20 dark:opacity-10"
+        style={{
+          backgroundImage: 'radial-gradient(circle, hsl(var(--primary)/0.05) 1px, transparent 1px)',
+          backgroundSize: '20px 20px',
+        }}
+      ></div>
+      <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-background to-transparent z-10" />
 
       <div 
-        className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-200"
+        className="container relative z-20 mx-auto px-4 sm:px-6 lg:px-8 text-center"
       >
         <div className="inline-block mb-4 animate-fade-in">
-          <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
-            Find The Perfect AI Tool
-          </span>
+          <Link to="/categories" className="px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors">
+            Over 3000+ AI Tools
+          </Link>
         </div>
         
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up text-balance max-w-4xl mx-auto leading-[1.1]">
-          Navigate the Future of AI with <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-cyan-400 to-fuchsia-500">
-            AIDirectory
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-slide-up text-balance max-w-4xl mx-auto leading-tight">
+          The Ultimate Directory
+          <br className="hidden sm:block" />
+          for <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-fuchsia-500 to-amber-500 animate-background-pan bg-[200%_auto]">
+            Artificial Intelligence
           </span>
         </h1>
         
-        <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          Your curated directory of cutting-edge AI tools with detailed comparisons, 
-          reviews, and insights to help you find the perfect solution.
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          Discover, compare, and master the best AI tools. Your curated guide to the future of technology, updated daily.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <button 
             onClick={scrollToTools}
-            className="px-8 py-3 bg-primary text-primary-foreground rounded-md font-medium transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-glow-primary transform hover:-translate-y-1"
+            className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-glow-primary transform hover:-translate-y-1"
           >
-            Explore Tools
+            Explore All Tools
           </button>
           <button
             onClick={scrollToCompare}
-            className="px-8 py-3 bg-transparent text-foreground rounded-md font-medium border border-border hover:bg-accent hover:text-accent-foreground hover:border-primary transition-colors flex items-center justify-center gap-2"
+            className="px-8 py-4 bg-secondary text-secondary-foreground rounded-lg font-semibold text-lg hover:bg-secondary/80 flex items-center justify-center gap-2"
           >
-            Compare Tools <ChevronRight className="w-4 h-4" />
+            Compare Tools <ChevronRight className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="mt-4 flex justify-center items-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-          <Link to="/submit-tool" className="text-foreground/70 hover:text-primary transition-colors underline-offset-4 text-sm hover:underline">
+        <div className="mt-8 flex justify-center items-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+          <Link to="/submit-tool" className="text-muted-foreground hover:text-primary transition-colors underline-offset-4 text-sm hover:underline">
             Submit Your Tool
           </Link>
         </div>
         
-        <div className="mt-16 md:mt-24 animate-pulse">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 mt-16 md:mt-24 animate-pulse">
           <button 
             onClick={scrollToTools}
             className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-foreground/20 hover:border-primary/40 transition-colors group"
           >
-            <ArrowDown className="w-5 h-5 text-foreground/70 group-hover:text-primary transition-colors" />
+            <ArrowDown className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
           </button>
         </div>
       </div>
-      
-      {/* Gradient overlay at the bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
     </div>
   );
 };

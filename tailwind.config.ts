@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -78,6 +77,15 @@ export default {
 					from: { height: 'var(--radix-accordion-content-height)' },
 					to: { height: '0' }
 				},
+        'background-pan': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '100%': { backgroundPosition: '200% 50%' },
+        },
+        'border-spin': {
+          '100%': {
+            transform: 'rotate(360deg)',
+          },
+        },
 				'fade-in': {
 					from: { opacity: '0' },
 					to: { opacity: '1' }
@@ -120,6 +128,8 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
+        'background-pan': 'background-pan 15s linear infinite',
+        'border-spin': 'border-spin 7s linear infinite',
 				'fade-in': 'fade-in 0.5s ease-out forwards',
 				'fade-out': 'fade-out 0.5s ease-out forwards',
 				'slide-up': 'slide-up 0.6s ease-out forwards',
@@ -137,7 +147,7 @@ export default {
 			boxShadow: {
 				'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
 				'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
-        'glow-primary': '0 0 15px 0px hsl(var(--primary) / 0.5)',
+        'glow-primary': '0 0 20px 0px hsl(var(--primary) / 0.5)',
 			},
 			backdropBlur: {
 				xs: '2px',
