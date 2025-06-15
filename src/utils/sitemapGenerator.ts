@@ -1,3 +1,4 @@
+
 import { supabase } from "@/lib/supabaseClient";
 import { blogPosts } from "./blogData";
 import { mapRowToAITool } from "./toolsData";
@@ -73,6 +74,26 @@ export const generateSitemap = async (): Promise<string> => {
 `;
       });
     }
+    
+    // Add category pages - extract unique categories from all tools
+    const allCategories = new Set<string>();
+    aiTools?.forEach(toolRow => {
+      const tool = mapRowToAITool(toolRow);
+      tool.category.forEach(cat => allCategories.add(cat));
+    });
+    
+    const categories = Array.from(allCategories);
+    console.log(`Adding ${categories.length} categories to sitemap`);
+    
+    categories.forEach(category => {
+      sitemap += `  <url>
+    <loc>${baseUrl}/categories/${encodeURIComponent(category)}</loc>
+    <lastmod>${getCurrentDate()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+`;
+    });
 
   } catch (error) {
     console.error('Error generating dynamic sitemap content:', error);

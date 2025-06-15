@@ -83,24 +83,6 @@ export const TECH_HUBS: TechHub[] = [
     population: "2.7M",
     techCompanies: ["Boeing", "Abbott", "McDonald's", "Groupon"]
   },
-  {
-    city: "Raleigh",
-    state: "North Carolina",
-    country: "USA",
-    region: "North America",
-    keywords: ["research triangle park", "biotech", "gaming", "analytics"],
-    population: "475k",
-    techCompanies: ["SAS Institute", "Red Hat", "Lenovo", "Epic Games"]
-  },
-  {
-    city: "San Diego",
-    state: "California",
-    country: "USA",
-    region: "North America",
-    keywords: ["biotech", "telecom", "defense tech", "life sciences"],
-    population: "1.4M",
-    techCompanies: ["Qualcomm", "Illumina", "General Atomics", "Viasat"]
-  },
   
   // Europe Tech Hubs
   {
@@ -182,48 +164,6 @@ export const TECH_HUBS: TechHub[] = [
     keywords: ["automotive tech", "bmw", "siemens", "engineering", "iot"],
     population: "1.5M",
     techCompanies: ["BMW", "Siemens", "SAP", "Infineon"]
-  },
-  {
-    city: "Helsinki",
-    country: "Finland",
-    region: "Europe",
-    keywords: ["gaming", "nokia", "mobile tech", "health tech"],
-    population: "650k",
-    techCompanies: ["Nokia", "Supercell", "Rovio", "Wolt"]
-  },
-  {
-    city: "Lisbon",
-    country: "Portugal",
-    region: "Europe",
-    keywords: ["web summit", "startup visa", "fintech", "remote work hub"],
-    population: "505k",
-    techCompanies: ["Farfetch", "OutSystems", "Talkdesk", "Unbabel"]
-  },
-
-  // Asia Tech Hubs
-  {
-    city: "Singapore",
-    country: "Singapore",
-    region: "Asia",
-    keywords: ["fintech hub", "smart city", "e-commerce", "data centers"],
-    population: "5.7M",
-    techCompanies: ["Grab", "Sea Group", "Lazada", "Razer"]
-  },
-  {
-    city: "Bangalore",
-    country: "India",
-    region: "Asia",
-    keywords: ["silicon valley of india", "it services", "outsourcing", "startup ecosystem"],
-    population: "12.3M",
-    techCompanies: ["Infosys", "Wipro", "Flipkart", "Byju's"]
-  },
-  {
-    city: "Tokyo",
-    country: "Japan",
-    region: "Asia",
-    keywords: ["robotics", "consumer electronics", "gaming", "deep tech"],
-    population: "14M",
-    techCompanies: ["Sony", "SoftBank", "Nintendo", "Toyota"]
   }
 ];
 

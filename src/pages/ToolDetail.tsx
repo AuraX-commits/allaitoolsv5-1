@@ -213,7 +213,7 @@ const ToolDetail = () => {
         "@type": "Organization",
         "name": "AI Tool Developer"
       },
-      "datePublished": tool.createdAt && tool.createdAt > 0 ? new Date(tool.createdAt).toISOString().split('T')[0] : "2024-01-01",
+      "datePublished": "2024-01-01",
       "dateModified": new Date().toISOString().split('T')[0],
       "image": tool.logo,
       "url": tool.url,
@@ -446,7 +446,15 @@ const ToolDetail = () => {
                 "name": `What are the main features of ${tool?.name}?`,
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": tool?.features?.join(', ') || `The main features for ${tool?.name} include its core functionalities for ${tool?.category[0]}.`
+                  "text": `${tool?.name} key features include: ${tool?.features.slice(0, 5).join(', ')}.`
+                }
+              },
+              {
+                "@type": "Question",
+                "name": `Is ${tool?.name} available in major tech hubs?`,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": `Yes, ${tool?.name} is widely used by tech professionals in Silicon Valley, New York, London, Berlin, and other major tech hubs worldwide.`
                 }
               }
             ]

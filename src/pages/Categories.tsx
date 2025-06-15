@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
@@ -15,7 +14,6 @@ import { ScrollToTop } from "@/components/common/ScrollToTop";
 import { useToast } from "@/hooks/use-toast";
 import BreadcrumbNav from "@/components/common/BreadcrumbNav";
 import { generateLocalSeoKeywords, generateLocalSeoDescription } from "@/utils/localSeoHelper";
-import { Button } from "@/components/ui/button";
 
 const Categories = () => {
   const { category } = useParams<{ category: string }>();
@@ -331,33 +329,25 @@ const Categories = () => {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen">
         <Navbar />
         <main className="pt-24 pb-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-8">
-              <Skeleton className="h-6 w-32 mb-2" />
-              <Skeleton className="h-8 w-64 mb-2" />
-              <Skeleton className="h-4 w-96" />
+              <div className="h-6 w-32 bg-gray-200 rounded animate-pulse mb-2"></div>
+              <div className="h-8 w-64 bg-gray-300 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-96 bg-gray-200 rounded animate-pulse"></div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-card/60 rounded-lg overflow-hidden border border-border/30 p-5">
-                    <div className="flex items-center space-x-4 mb-4">
-                      <Skeleton className="h-12 w-12 rounded-lg" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-6 w-32" />
-                        <Skeleton className="h-4 w-24" />
-                      </div>
-                    </div>
-                    <Skeleton className="h-4 w-full mb-2" />
+                <div key={i} className="bg-card rounded-lg shadow-sm overflow-hidden border border-border">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-5">
+                    <Skeleton className="h-6 w-2/3 mb-2" />
                     <Skeleton className="h-4 w-full mb-4" />
-                    <div className="space-y-2 mt-4">
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-4 w-3/4" />
-                    </div>
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -371,16 +361,16 @@ const Categories = () => {
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen">
         <Navbar />
         <main className="pt-24 pb-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-16">
-              <h1 className="text-2xl font-bold text-destructive mb-2">Error Loading Data</h1>
-              <p className="text-muted-foreground mb-4">
+              <h1 className="text-2xl font-bold text-red-600 mb-2">Error Loading Data</h1>
+              <p className="text-foreground/70 mb-4">
                 We encountered a problem loading the AI tools data. Please try again later.
               </p>
-              <p className="text-sm text-muted-foreground/50">
+              <p className="text-sm text-foreground/50">
                 Error details: {error instanceof Error ? error.message : 'Unknown error'}
               </p>
             </div>
@@ -392,7 +382,7 @@ const Categories = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen">
       <Helmet>
         <title>{getAdvancedPageTitle()}</title>
         <meta name="description" content={getAdvancedPageDescription()} />
@@ -488,14 +478,14 @@ const Categories = () => {
           />
 
           <div className="mb-8">
-            <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-primary transition-colors">
+            <Link to="/" className="inline-flex items-center text-foreground/70 hover:text-primary transition-colors">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
             </Link>
             <h1 className="text-3xl font-bold mt-4 mb-2">
               {currentCategory ? `${currentCategory} AI Tools` : 'All AI Categories'}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-foreground/70">
               {currentCategory 
                 ? `Explore the best ${currentCategory} AI tools in our directory` 
                 : 'Browse our comprehensive AI tools directory by category'}
@@ -511,7 +501,7 @@ const Categories = () => {
               <input
                 type="text"
                 placeholder="Search AI tools..."
-                className="block w-full pl-10 pr-10 py-3 border border-border bg-background hover:border-primary/30 focus:bg-card focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary transition-colors duration-300 rounded-lg"
+                className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -555,12 +545,12 @@ const Categories = () => {
                 <p className="text-muted-foreground mb-4">
                   Try adjusting your search or filters to find what you're looking for.
                 </p>
-                <Button
+                <button
                   onClick={resetAllFilters}
-                  variant="default"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Reset Filters
-                </Button>
+                </button>
               </div>
             ))}
           </div>

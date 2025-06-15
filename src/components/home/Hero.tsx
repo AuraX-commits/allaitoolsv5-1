@@ -1,7 +1,33 @@
+
+import { useRef, useEffect } from "react";
 import { ArrowDown, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  
+  // Parallax effect for hero section
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!heroRef.current || !textRef.current) return;
+      
+      const scrollY = window.scrollY;
+      const heroHeight = heroRef.current.offsetHeight;
+      const scrollPercentage = Math.min(scrollY / heroHeight, 1);
+      
+      // Parallax for text
+      textRef.current.style.transform = `translateY(${scrollPercentage * 50}px)`;
+      
+      // Opacity effect
+      textRef.current.style.opacity = `${1 - scrollPercentage * 1.5}`;
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const scrollToTools = () => {
     const toolsSection = document.getElementById('tools-directory');
     if (toolsSection) {
@@ -18,69 +44,72 @@ const Hero = () => {
 
   return (
     <div 
-      className="min-h-screen relative flex items-center justify-center overflow-hidden bg-background text-foreground"
+      ref={heroRef}
+      className="min-h-screen relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-white to-secondary/40"
     >
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-background via-background to-secondary/30 dark:to-secondary/10" />
+      {/* Background grid pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:20px_20px] opacity-30"></div>
+      
+      {/* Floating shapes */}
+      <div className="absolute top-1/4 left-1/6 w-64 h-64 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
+      <div className="absolute bottom-1/3 right-1/6 w-72 h-72 bg-blue-200/30 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{animationDelay: '1s'}}></div>
+      <div className="absolute top-2/3 left-1/3 w-48 h-48 bg-purple-200/20 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-float" style={{animationDelay: '2s'}}></div>
+      
       <div 
-        className="absolute inset-0 z-0 opacity-20 dark:opacity-10"
-        style={{
-          backgroundImage: 'radial-gradient(circle, hsl(var(--primary)/0.05) 1px, transparent 1px)',
-          backgroundSize: '20px 20px',
-        }}
-      ></div>
-      <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-background to-transparent z-10" />
-
-      <div 
-        className="container relative z-20 mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        ref={textRef}
+        className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 text-center transition-all duration-200"
       >
         <div className="inline-block mb-4 animate-fade-in">
-          <Link to="/categories" className="px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors">
-            Over 3000+ AI Tools
-          </Link>
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+            Find The Perfect AI Tool
+          </span>
         </div>
         
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-slide-up text-balance max-w-4xl mx-auto leading-tight">
-          The Ultimate Directory
-          <br className="hidden sm:block" />
-          for <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-fuchsia-500 to-amber-500 animate-background-pan bg-[200%_auto]">
-            Artificial Intelligence
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up text-balance max-w-4xl mx-auto leading-[1.1]">
+          Discover & Compare <br className="hidden sm:block" />
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">
+            AI-Powered Tools
           </span>
         </h1>
         
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          Discover, compare, and master the best AI tools. Your curated guide to the future of technology, updated daily.
+        <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          Your curated directory of cutting-edge AI tools with detailed comparisons, 
+          reviews, and insights to help you find the perfect solution.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <button 
             onClick={scrollToTools}
-            className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-glow-primary transform hover:-translate-y-1"
+            className="px-8 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl hover:shadow-primary/20 transform hover:-translate-y-1 duration-200"
           >
-            Explore All Tools
+            Explore Tools
           </button>
           <button
             onClick={scrollToCompare}
-            className="px-8 py-4 bg-secondary text-secondary-foreground rounded-lg font-semibold text-lg hover:bg-secondary/80 flex items-center justify-center gap-2"
+            className="px-8 py-3 bg-white text-foreground rounded-full font-medium border border-input hover:bg-secondary transition-colors flex items-center justify-center gap-2"
           >
-            Compare Tools <ChevronRight className="w-5 h-5" />
+            Compare Tools <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="mt-8 flex justify-center items-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-          <Link to="/submit-tool" className="text-muted-foreground hover:text-primary transition-colors underline-offset-4 text-sm hover:underline">
+        <div className="mt-4 flex justify-center items-center gap-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+          <Link to="/submit-tool" className="text-foreground/70 hover:text-primary transition-colors underline underline-offset-4">
             Submit Your Tool
           </Link>
         </div>
         
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 mt-16 md:mt-24 animate-pulse">
+        <div className="mt-16 md:mt-24 animate-pulse">
           <button 
             onClick={scrollToTools}
             className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-foreground/20 hover:border-primary/40 transition-colors group"
           >
-            <ArrowDown className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+            <ArrowDown className="w-5 h-5 text-foreground/70 group-hover:text-primary transition-colors" />
           </button>
         </div>
       </div>
+      
+      {/* Gradient overlay at the bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-secondary/30 to-transparent"></div>
     </div>
   );
 };
