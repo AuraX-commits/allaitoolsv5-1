@@ -72,7 +72,7 @@ const DashboardOverview = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.email}</h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.email?.split('@')[0] || 'User'}</h1>
         <p className="text-muted-foreground">
           Manage your account, saved tools, and preferences.
         </p>
@@ -90,7 +90,7 @@ const DashboardOverview = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{recentTools.length > 0 ? recentTools.length + 100 : '100+'}</p>
+            <p className="text-3xl font-bold">500+</p>
           </CardContent>
         </Card>
         

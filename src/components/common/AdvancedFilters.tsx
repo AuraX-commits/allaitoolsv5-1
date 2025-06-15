@@ -80,7 +80,7 @@ const AdvancedFilters = ({
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="inline-flex items-center py-2 px-4 border border-input rounded-lg bg-white hover:bg-secondary transition-colors text-foreground"
+          className="inline-flex items-center py-2 px-4 border border-input rounded-lg bg-background hover:bg-secondary transition-colors text-foreground dark:bg-background dark:border-border dark:text-foreground dark:hover:bg-secondary"
         >
           <Filter className="h-4 w-4 mr-2" />
           {showFilters ? "Hide Filters" : "Show Advanced Filters"}
@@ -89,7 +89,7 @@ const AdvancedFilters = ({
         {hasActiveFilters() && (
           <button
             onClick={resetFilters}
-            className="text-sm text-primary hover:underline"
+            className="text-sm text-primary hover:underline dark:text-primary"
           >
             Reset All
           </button>
@@ -99,13 +99,13 @@ const AdvancedFilters = ({
       {/* Expanded Filters */}
       <div
         className={cn(
-          "grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 overflow-hidden transition-all duration-300 bg-secondary/20 p-4 rounded-lg border border-border/50",
+          "grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 overflow-hidden transition-all duration-300 bg-secondary/20 dark:bg-secondary/20 p-4 rounded-lg border border-border/50 dark:border-border/50",
           showFilters ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0 p-0 border-0"
         )}
       >
         <div className="space-y-4">
           <div>
-            <h3 className="text-sm font-medium mb-2">Categories</h3>
+            <h3 className="text-sm font-medium mb-2 text-foreground dark:text-foreground">Categories</h3>
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <button
@@ -114,8 +114,8 @@ const AdvancedFilters = ({
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
                     localFilters.category === category
-                      ? "bg-primary text-white"
-                      : "bg-white hover:bg-secondary border border-input text-foreground"
+                      ? "bg-primary text-white dark:bg-primary dark:text-white"
+                      : "bg-background hover:bg-secondary border border-input text-foreground dark:bg-background dark:hover:bg-secondary dark:border-border dark:text-foreground"
                   )}
                 >
                   {category}
@@ -125,7 +125,7 @@ const AdvancedFilters = ({
           </div>
           
           <div>
-            <h3 className="text-sm font-medium mb-2">Pricing Options</h3>
+            <h3 className="text-sm font-medium mb-2 text-foreground dark:text-foreground">Pricing Options</h3>
             <div className="flex flex-wrap gap-2">
               {pricingOptions.map((option) => (
                 <button
@@ -134,8 +134,8 @@ const AdvancedFilters = ({
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
                     localFilters.pricing === option
-                      ? "bg-primary text-white"
-                      : "bg-white hover:bg-secondary border border-input text-foreground"
+                      ? "bg-primary text-white dark:bg-primary dark:text-white"
+                      : "bg-background hover:bg-secondary border border-input text-foreground dark:bg-background dark:hover:bg-secondary dark:border-border dark:text-foreground"
                   )}
                 >
                   {option}
@@ -147,7 +147,7 @@ const AdvancedFilters = ({
         
         <div className="space-y-4">
           <div>
-            <h3 className="text-sm font-medium mb-2">Minimum Rating</h3>
+            <h3 className="text-sm font-medium mb-2 text-foreground dark:text-foreground">Minimum Rating</h3>
             <div className="flex gap-2">
               {[null, 3, 4, 4.5].map((rating) => (
                 <button
@@ -156,8 +156,8 @@ const AdvancedFilters = ({
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
                     localFilters.rating === rating
-                      ? "bg-primary text-white"
-                      : "bg-white hover:bg-secondary border border-input text-foreground"
+                      ? "bg-primary text-white dark:bg-primary dark:text-white"
+                      : "bg-background hover:bg-secondary border border-input text-foreground dark:bg-background dark:hover:bg-secondary dark:border-border dark:text-foreground"
                   )}
                 >
                   {rating === null ? 'Any' : (
@@ -171,7 +171,7 @@ const AdvancedFilters = ({
           </div>
           
           <div>
-            <h3 className="text-sm font-medium mb-2">Sort By</h3>
+            <h3 className="text-sm font-medium mb-2 text-foreground dark:text-foreground">Sort By</h3>
             <div className="flex flex-wrap gap-2">
               {[
                 { value: "rating", label: "Highest Rated" },
@@ -184,8 +184,8 @@ const AdvancedFilters = ({
                   className={cn(
                     "px-3 py-1.5 rounded-full text-sm transition-colors",
                     localFilters.sortBy === option.value
-                      ? "bg-primary text-white"
-                      : "bg-white hover:bg-secondary border border-input text-foreground"
+                      ? "bg-primary text-white dark:bg-primary dark:text-white"
+                      : "bg-background hover:bg-secondary border border-input text-foreground dark:bg-background dark:hover:bg-secondary dark:border-border dark:text-foreground"
                   )}
                 >
                   {option.label}

@@ -18,7 +18,6 @@ type AuthContextType = {
     data: { user: User | null; session: Session | null };
   }>;
   signOut: () => Promise<void>;
-  isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,80 +26,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
 
-  const checkIfAdmin = async (userId: string, userEmail?: string) => {
-    try {
-      // Check if the user's email exists in the admin_users table
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('email')
-        .eq('email', userEmail)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error("Error checking admin status:", error);
-      }
-
-      setIsAdmin(!!data);
-    } catch (error) {
-      console.error("Unexpected error checking admin status:", error);
-      setIsAdmin(false);
-    }
-  };
+  console.log('[AuthContext] Initializing: isLoading state set to true.');
 
   useEffect(() => {
     let mounted = true;
+    console.log('[AuthContext] useEffect mounting. Mounted set to true.');
 
-    // Get the current session on mount
-    const getSession = async () => {
-      setIsLoading(true);
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Error getting session:", error);
-        } else if (mounted) {
-          setSession(data.session);
-          setUser(data.session?.user || null);
-          
-          // Check if user is admin
-          if (data.session?.user) {
-            checkIfAdmin(data.session.user.id, data.session.user.email);
-          }
-        }
-      } catch (error) {
-        console.error("Unexpected error during getSession:", error);
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    getSession();
-
-    // Subscribe to auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    // 1. Setup the listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!mounted) return;
-      
-      console.log("Auth state change event:", _event);
+      console.log("[AuthContext] [onAuthStateChange] event:", event, "Session:", session ? "Present" : "Null");
       setSession(session);
-      setUser(session?.user || null);
-      
-      // Check if user is admin
-      if (session?.user) {
-        checkIfAdmin(session.user.id, session.user.email);
-      } else {
-        setIsAdmin(false);
-      }
-      
+      setUser(session?.user ?? null);
       setIsLoading(false);
+      console.log("[AuthContext] [onAuthStateChange] setIsLoading(false)");
+    });
+
+    // 2. THEN call getSession
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      console.log("[AuthContext] [getSession] completed. Session", session ? "Present" : "Null");
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+      console.log("[AuthContext] [getSession] setIsLoading(false)");
     });
 
     return () => {
+      console.log('[AuthContext] useEffect cleanup. Unsubscribing and setting mounted to false.');
       mounted = false;
       subscription.unsubscribe();
     };
@@ -167,14 +122,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, name?: string) => {
     try {
-      // Include name in user metadata if provided
       const options = {
         emailRedirectTo: `${window.location.origin}/login`,
         data: name ? { name } : undefined
       };
 
-      console.log("SignUp options:", options);
-      console.log("Redirect URL:", `${window.location.origin}/login`);
+      console.log("[AuthContext] SignUp options:", options);
+      console.log("[AuthContext] Redirect URL:", `${window.location.origin}/login`);
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -237,8 +191,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signInWithProvider,
     signUp,
     signOut,
-    isAdmin,
   };
+
+  console.log("[AuthContext] Provider value update:", { user: !!user, session: !!session, isLoading });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -17,8 +17,8 @@ const blogStyles = `
     font-weight: 700;
     margin-top: 2rem;
     margin-bottom: 1rem;
-    color: #222;
-    border-bottom: 2px solid #f1f0fb;
+    color: hsl(var(--foreground));
+    border-bottom: 2px solid hsl(var(--border));
     padding-bottom: 0.5rem;
   }
   
@@ -27,12 +27,13 @@ const blogStyles = `
     font-weight: 600;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
-    color: #1A1F2C;
+    color: hsl(var(--foreground));
   }
   
   .blog-content p {
     margin-bottom: 1.25rem;
     line-height: 1.7;
+    color: hsl(var(--foreground));
   }
   
   .blog-content ul, .blog-content ol {
@@ -43,6 +44,7 @@ const blogStyles = `
   .blog-content ul li, .blog-content ol li {
     margin-bottom: 0.5rem;
     position: relative;
+    color: hsl(var(--foreground));
   }
   
   .blog-content ul {
@@ -54,13 +56,13 @@ const blogStyles = `
   }
   
   .blog-content blockquote {
-    border-left: 4px solid #9b87f5;
+    border-left: 4px solid hsl(var(--primary));
     padding: 1rem 1.5rem;
     margin: 1.5rem 0;
-    background-color: #f1f0fb;
+    background-color: hsl(var(--muted));
     border-radius: 0.25rem;
     font-style: italic;
-    color: #1A1F2C;
+    color: hsl(var(--foreground));
   }
   
   .blog-content blockquote p {
@@ -68,13 +70,13 @@ const blogStyles = `
   }
   
   .blog-content a {
-    color: #7E69AB;
+    color: hsl(var(--primary));
     text-decoration: underline;
     text-underline-offset: 2px;
   }
   
   .blog-content a:hover {
-    color: #6E59A5;
+    opacity: 0.8;
   }
   
   .blog-content img {
@@ -85,24 +87,26 @@ const blogStyles = `
   }
   
   .blog-content code {
-    background-color: #f1f0fb;
+    background-color: hsl(var(--muted));
     padding: 0.2rem 0.4rem;
     border-radius: 0.25rem;
     font-family: monospace;
+    color: hsl(var(--foreground));
   }
   
   .blog-content pre {
-    background-color: #1A1F2C;
-    color: #fff;
+    background-color: hsl(var(--muted));
+    color: hsl(var(--foreground));
     padding: 1rem;
     border-radius: 0.5rem;
     overflow-x: auto;
     margin: 1.5rem 0;
+    border: 1px solid hsl(var(--border));
   }
   
   .blog-content pre code {
     background-color: transparent;
-    color: #fff;
+    color: inherit;
     padding: 0;
   }
   
@@ -110,7 +114,7 @@ const blogStyles = `
     margin: 2rem 0;
     border: 0;
     height: 1px;
-    background-color: #f1f0fb;
+    background-color: hsl(var(--border));
   }
   
   .blog-content table {
@@ -120,13 +124,14 @@ const blogStyles = `
   }
   
   .blog-content th, .blog-content td {
-    border: 1px solid #f1f0fb;
+    border: 1px solid hsl(var(--border));
     padding: 0.75rem;
     text-align: left;
+    color: hsl(var(--foreground));
   }
   
   .blog-content th {
-    background-color: #f1f0fb;
+    background-color: hsl(var(--muted));
     font-weight: 600;
   }
 `;
@@ -165,7 +170,7 @@ const BlogPost = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background transition-colors duration-300">
       <Helmet>
         <title>{post.title} | AIDirectory Blog</title>
         <meta 
@@ -209,8 +214,8 @@ const BlogPost = () => {
                   <Calendar className="w-4 h-4 mr-1" /> {post.date}
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold mb-4">{post.title}</h1>
-              <p className="text-lg text-foreground/80 mb-6">{post.excerpt}</p>
+              <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-foreground">{post.title}</h1>
+              <p className="text-lg text-muted-foreground mb-6">{post.excerpt}</p>
               
               <div className="flex items-center">
                 <img 
@@ -219,7 +224,7 @@ const BlogPost = () => {
                   className="w-12 h-12 rounded-full mr-4"
                 />
                 <div>
-                  <p className="font-medium">{post.author.name}</p>
+                  <p className="font-medium text-foreground">{post.author.name}</p>
                   <p className="text-sm text-muted-foreground">{post.author.title}</p>
                 </div>
               </div>
@@ -243,23 +248,23 @@ const BlogPost = () => {
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-12">
               {post.tags.map((tag) => (
-                <div key={tag} className="flex items-center px-3 py-1.5 bg-secondary rounded-full">
+                <div key={tag} className="flex items-center px-3 py-1.5 bg-secondary dark:bg-secondary rounded-full border border-border">
                   <Tag className="w-3.5 h-3.5 mr-1.5 text-primary" />
-                  <span className="text-sm">{tag}</span>
+                  <span className="text-sm text-foreground">{tag}</span>
                 </div>
               ))}
             </div>
             
             {/* Comment Section */}
-            <div className="border-t pt-8">
-              <h3 className="text-xl font-bold mb-6 flex items-center">
+            <div className="border-t border-border pt-8">
+              <h3 className="text-xl font-bold mb-6 flex items-center text-foreground">
                 <MessageSquare className="w-5 h-5 mr-2" />
                 Leave a Comment
               </h3>
               
               <form onSubmit={handleCommentSubmit}>
                 <Textarea 
-                  className="mb-4" 
+                  className="mb-4 bg-background border-border text-foreground" 
                   placeholder="Share your thoughts..."
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}

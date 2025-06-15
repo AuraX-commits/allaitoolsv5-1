@@ -45,15 +45,15 @@ const Hero = () => {
   return (
     <div 
       ref={heroRef}
-      className="min-h-screen relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-white to-secondary/40"
+      className="min-h-screen relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-background to-secondary/40 transition-colors duration-300"
     >
       {/* Background grid pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:20px_20px] opacity-30"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--muted-foreground)/0.3)_1px,transparent_1px)] [background-size:20px_20px] opacity-30"></div>
       
       {/* Floating shapes */}
       <div className="absolute top-1/4 left-1/6 w-64 h-64 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
-      <div className="absolute bottom-1/3 right-1/6 w-72 h-72 bg-blue-200/30 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{animationDelay: '1s'}}></div>
-      <div className="absolute top-2/3 left-1/3 w-48 h-48 bg-purple-200/20 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-float" style={{animationDelay: '2s'}}></div>
+      <div className="absolute bottom-1/3 right-1/6 w-72 h-72 bg-blue-200/30 dark:bg-blue-800/20 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-float" style={{animationDelay: '1s'}}></div>
+      <div className="absolute top-2/3 left-1/3 w-48 h-48 bg-purple-200/20 dark:bg-purple-800/20 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-float" style={{animationDelay: '2s'}}></div>
       
       <div 
         ref={textRef}
@@ -65,7 +65,7 @@ const Hero = () => {
           </span>
         </div>
         
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up text-balance max-w-4xl mx-auto leading-[1.1]">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up text-balance max-w-4xl mx-auto leading-[1.1] text-foreground">
           Discover & Compare <br className="hidden sm:block" />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">
             AI-Powered Tools
@@ -80,13 +80,13 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <button 
             onClick={scrollToTools}
-            className="px-8 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl hover:shadow-primary/20 transform hover:-translate-y-1 duration-200"
+            className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-primary/20 transform hover:-translate-y-1"
           >
             Explore Tools
           </button>
           <button
             onClick={scrollToCompare}
-            className="px-8 py-3 bg-white text-foreground rounded-full font-medium border border-input hover:bg-secondary transition-colors flex items-center justify-center gap-2"
+            className="px-8 py-3 bg-card text-card-foreground rounded-full font-medium border border-border hover:bg-secondary transition-all duration-300 flex items-center justify-center gap-2"
           >
             Compare Tools <ChevronRight className="w-4 h-4" />
           </button>
@@ -101,7 +101,7 @@ const Hero = () => {
         <div className="mt-16 md:mt-24 animate-pulse">
           <button 
             onClick={scrollToTools}
-            className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-foreground/20 hover:border-primary/40 transition-colors group"
+            className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-border hover:border-primary/40 transition-colors group"
           >
             <ArrowDown className="w-5 h-5 text-foreground/70 group-hover:text-primary transition-colors" />
           </button>

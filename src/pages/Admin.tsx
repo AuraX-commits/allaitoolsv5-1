@@ -1,163 +1,360 @@
-
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../components/layout/Navbar";
-import Footer from "../components/layout/Footer";
-import { DataMigration } from "@/components/admin/DataMigration";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { ScrollToTop } from "@/components/common/ScrollToTop";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/context/AuthContext";
-import { Shield, Users, Database, Settings } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 
-const Admin = () => {
-  const { user, isAdmin, isLoading } = useAuth();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const [toolCount, setToolCount] = useState<number>(0);
-  const [userCount, setUserCount] = useState<number>(0);
-  const [adminEmail, setAdminEmail] = useState<string>('');
-  
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    
-    // Only check admin status after auth has loaded
-    if (!isLoading) {
-      if (!user) {
-        toast({
-          title: "Access Denied",
-          description: "You must be logged in to access the admin dashboard",
-          variant: "destructive",
-        });
-        navigate("/login");
-      } else if (!isAdmin) {
-        toast({
-          title: "Access Denied",
-          description: "You don't have permission to access the admin dashboard",
-          variant: "destructive",
-        });
-        navigate("/dashboard");
-      } else {
-        // Fetch counts for admin dashboard
-        fetchStats();
-      }
+// REMOVE these hardcoded constants:
+// const ADMIN_USERNAME = "admin";
+// const ADMIN_PASSWORD = "aidirectorysupersecret";
+
+interface ToolInput {
+  name: string;
+  logo: string;
+  description: string;
+  shortDescription: string;
+  category: string[];
+  pricing: string;
+  rating: number;
+  reviewCount: number;
+  features: string[];
+  url: string;
+  apiAccess: boolean;
+  pros: string[];
+  cons: string[];
+  useCases: string[];
+}
+
+function parseBulkToolsInput(input: string) {
+  // Try to parse as JSON array first
+  try {
+    const parsed = JSON.parse(input);
+    if (Array.isArray(parsed)) {
+      return parsed;
+    } else if (typeof parsed === "object") {
+      return [parsed];
     }
-  }, [user, isAdmin, isLoading, navigate, toast]);
+  } catch {
+    // Not JSON, try CSV
+  }
+  // For demo, only support JSON
+  return null;
+}
 
-  const fetchStats = async () => {
+const AdminPage = () => {
+  const [loginState, setLoginState] = useState({ username: "", password: "" });
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [tab, setTab] = useState<"single" | "bulk">("single");
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  // Single tool
+  const [singleTool, setSingleTool] = useState<ToolInput>({
+    name: "",
+    logo: "",
+    description: "",
+    shortDescription: "",
+    category: [],
+    pricing: "",
+    rating: 5,
+    reviewCount: 0,
+    features: [],
+    url: "",
+    apiAccess: false,
+    pros: [],
+    cons: [],
+    useCases: [],
+  });
+
+  // Bulk tools
+  const [bulkToolsString, setBulkToolsString] = useState("");
+  const [uploadResult, setUploadResult] = useState<null | { success: boolean; message: string }> (null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginLoading(true);
+    // Call edge function for secure admin auth
     try {
-      // Get tool count
-      const { count: toolCount, error: toolError } = await supabase
-        .from('ai_tools')
-        .select('*', { count: 'exact', head: true });
-      
-      if (!toolError) {
-        setToolCount(toolCount || 0);
+      const res = await fetch("https://favhnurmqbtzttzxvfmm.supabase.co/functions/v1/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginState),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setLoggedIn(true);
+      } else {
+        alert("Invalid admin credentials!");
       }
-      
-      // Get user count
-      const { count: userCount, error: userError } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
-        
-      if (!userError) {
-        setUserCount(userCount || 0);
-      }
-      
-      // Get admin email
-      if (user) {
-        setAdminEmail(user.email || 'admin@example.com');
-      }
-    } catch (error) {
-      console.error('Error fetching admin stats:', error);
+    } catch (err) {
+      alert("Error during login.");
+    } finally {
+      setLoginLoading(false);
     }
   };
 
-  // Don't render anything until we've checked admin status
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  async function handleSingleUpload(e: React.FormEvent) {
+    e.preventDefault();
+    setUploading(true);
+    setUploadResult(null);
+
+    // Validate essential fields
+    if (!singleTool.name) {
+      setUploadResult({ success: false, message: "Tool name is required" });
+      setUploading(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("ai_tools")
+        .insert([
+          {
+            name: singleTool.name,
+            logo: singleTool.logo,
+            description: singleTool.description,
+            shortdescription: singleTool.shortDescription,
+            category: singleTool.category,
+            pricing: singleTool.pricing,
+            rating: singleTool.rating,
+            reviewcount: singleTool.reviewCount,
+            features: singleTool.features,
+            url: singleTool.url,
+            apiaccess: singleTool.apiAccess,
+            pros: singleTool.pros,
+            cons: singleTool.cons,
+            usecases: singleTool.useCases,
+          },
+        ]);
+
+      if (error) {
+        setUploadResult({ success: false, message: error.message });
+      } else {
+        setUploadResult({ success: true, message: "Tool uploaded!" });
+        setSingleTool({
+          name: "",
+          logo: "",
+          description: "",
+          shortDescription: "",
+          category: [],
+          pricing: "",
+          rating: 5,
+          reviewCount: 0,
+          features: [],
+          url: "",
+          apiAccess: false,
+          pros: [],
+          cons: [],
+          useCases: [],
+        });
+      }
+    } catch (err) {
+      setUploadResult({ success: false, message: "Unknown error" });
+    } finally {
+      setUploading(false);
+    }
   }
 
-  // Don't render admin content if not admin
-  if (!user || !isAdmin) {
-    return null;
+  async function handleBulkUpload(e: React.FormEvent) {
+    e.preventDefault();
+    setUploading(true);
+    setUploadResult(null);
+
+    const tools = parseBulkToolsInput(bulkToolsString);
+    if (!tools || !Array.isArray(tools)) {
+      setUploadResult({ success: false, message: "Unable to parse JSON input! Make sure you input a valid array of tools." });
+      setUploading(false);
+      return;
+    }
+
+    const formattedTools = tools.map(tool => ({
+      name: tool.name,
+      logo: tool.logo,
+      description: tool.description,
+      shortdescription: tool.shortDescription,
+      category: tool.category,
+      pricing: tool.pricing,
+      rating: tool.rating,
+      reviewcount: tool.reviewCount,
+      features: tool.features,
+      url: tool.url,
+      apiaccess: tool.apiAccess,
+      pros: tool.pros,
+      cons: tool.cons,
+      usecases: tool.useCases,
+    }));
+
+    try {
+      const { error } = await supabase
+        .from("ai_tools")
+        .insert(formattedTools);
+
+      if (error) {
+        setUploadResult({ success: false, message: error.message });
+      } else {
+        setUploadResult({ success: true, message: `${formattedTools.length} tools uploaded!` });
+        setBulkToolsString("");
+      }
+    } catch (err) {
+      setUploadResult({ success: false, message: "Unknown error" });
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background flex flex-col items-center py-8">
       <Helmet>
-        <title>Admin Dashboard | AI Tools Directory</title>
-        <meta name="robots" content="noindex, nofollow" />
+        <title>Admin Tool Upload | AIDirectory</title>
       </Helmet>
-      
-      <Navbar />
-      
-      <main className="pt-24 pb-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12">
-            <div className="flex items-center gap-2 mb-2">
-              <Shield className="h-6 w-6 text-primary" />
-              <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8">Admin: Upload Tool(s)</h1>
+      {!loggedIn ? (
+        <form className="w-full max-w-sm p-6 bg-white rounded-lg shadow space-y-4" onSubmit={handleLogin}>
+          <div>
+            <label className="block font-semibold mb-1">Username</label>
+            <input 
+              type="text"
+              className="w-full border rounded px-3 py-2"
+              value={loginState.username}
+              onChange={e => setLoginState(s => ({ ...s, username: e.target.value }))}
+              autoFocus
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-1">Password</label>
+            <input
+              type="password"
+              className="w-full border rounded px-3 py-2"
+              value={loginState.password}
+              onChange={e => setLoginState(s => ({ ...s, password: e.target.value }))}
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-primary text-white rounded hover:bg-primary/90"
+            disabled={loginLoading}
+          >
+            {loginLoading ? "Verifying..." : "Login"}
+          </button>
+        </form>
+      ) : (
+        <div className="w-full max-w-2xl bg-white rounded-lg shadow p-6">
+          <div className="flex space-x-4 mb-6">
+            <button
+              className={`px-4 py-2 rounded ${tab === "single" ? "bg-primary text-white" : "bg-gray-200 text-gray-800"}`}
+              onClick={() => setTab("single")}
+            >
+              Upload Single Tool
+            </button>
+            <button
+              className={`px-4 py-2 rounded ${tab === "bulk" ? "bg-primary text-white" : "bg-gray-200 text-gray-800"}`}
+              onClick={() => setTab("bulk")}
+            >
+              Bulk Upload (JSON)
+            </button>
+          </div>
+
+          {tab === "single" && (
+            <form onSubmit={handleSingleUpload} className="space-y-3">
+              <div>
+                <label className="block font-semibold mb-1">Name</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.name} onChange={e => setSingleTool(s => ({ ...s, name: e.target.value }))} required />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Logo URL</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.logo} onChange={e => setSingleTool(s => ({ ...s, logo: e.target.value }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Description</label>
+                <textarea className="w-full border rounded px-3 py-2" rows={2} value={singleTool.description} onChange={e => setSingleTool(s => ({ ...s, description: e.target.value }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Short Description</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.shortDescription} onChange={e => setSingleTool(s => ({ ...s, shortDescription: e.target.value }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Category (comma separated)</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.category.join(",")} onChange={e => setSingleTool(s => ({ ...s, category: e.target.value.split(",").map(str => str.trim()).filter(Boolean) }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Pricing</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.pricing} onChange={e => setSingleTool(s => ({ ...s, pricing: e.target.value }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">URL</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.url} onChange={e => setSingleTool(s => ({ ...s, url: e.target.value }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Features (comma separated)</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.features.join(",")} onChange={e => setSingleTool(s => ({ ...s, features: e.target.value.split(",").map(str => str.trim()).filter(Boolean) }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">API Access</label>
+                <select className="w-full border rounded px-3 py-2" value={singleTool.apiAccess ? 'true' : 'false'} onChange={e => setSingleTool(s => ({ ...s, apiAccess: e.target.value === "true" }))}>
+                  <option value="false">No</option>
+                  <option value="true">Yes</option>
+                </select>
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Pros (comma separated)</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.pros?.join(",") ?? ""} onChange={e => setSingleTool(s => ({ ...s, pros: e.target.value.split(",").map(str => str.trim()).filter(Boolean) }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Cons (comma separated)</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.cons?.join(",") ?? ""} onChange={e => setSingleTool(s => ({ ...s, cons: e.target.value.split(",").map(str => str.trim()).filter(Boolean) }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Use Cases (comma separated)</label>
+                <input className="w-full border rounded px-3 py-2" value={singleTool.useCases?.join(",") ?? ""} onChange={e => setSingleTool(s => ({ ...s, useCases: e.target.value.split(",").map(str => str.trim()).filter(Boolean) }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Rating</label>
+                <input type="number" min={0} max={5} step={0.1} className="w-full border rounded px-3 py-2" value={singleTool.rating} onChange={e => setSingleTool(s => ({ ...s, rating: parseFloat(e.target.value) || 0 }))} />
+              </div>
+              <div>
+                <label className="block font-semibold mb-1">Review Count</label>
+                <input type="number" min={0} className="w-full border rounded px-3 py-2" value={singleTool.reviewCount} onChange={e => setSingleTool(s => ({ ...s, reviewCount: parseInt(e.target.value, 10) || 0 }))} />
+              </div>
+              <button
+                type="submit"
+                className="w-full py-2 bg-primary text-white rounded hover:bg-primary/90"
+                disabled={uploading}
+              >
+                {uploading ? "Uploading..." : "Upload Tool"}
+              </button>
+            </form>
+          )}
+
+          {tab === "bulk" && (
+            <form onSubmit={handleBulkUpload} className="space-y-4">
+              <div>
+                <label className="block font-semibold mb-1">
+                  Paste JSON array (array of tool objects):
+                </label>
+                <textarea
+                  className="w-full h-40 border rounded px-3 py-2 font-mono resize-y"
+                  value={bulkToolsString}
+                  onChange={e => setBulkToolsString(e.target.value)}
+                  placeholder='[{"name":"Tool1",...}, {...}]'
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="w-full py-2 bg-primary text-white rounded hover:bg-primary/90"
+                disabled={uploading}
+              >
+                {uploading ? "Uploading..." : "Bulk Upload"}
+              </button>
+            </form>
+          )}
+
+          {uploadResult && (
+            <div className={`mt-6 p-4 rounded ${uploadResult.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+              {uploadResult.message}
             </div>
-            <p className="text-foreground/70 max-w-3xl">
-              Manage your AI tools database and perform administrative tasks.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Tools</CardTitle>
-                <Database className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{toolCount}</div>
-                <p className="text-xs text-muted-foreground">
-                  AI tools in the directory
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{userCount}</div>
-                <p className="text-xs text-muted-foreground">
-                  Registered users on the platform
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Admin Email</CardTitle>
-                <Settings className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm font-medium truncate">{adminEmail}</div>
-                <p className="text-xs text-muted-foreground">
-                  Current admin access
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-8">
-            <section>
-              <h2 className="text-xl font-semibold mb-4">Data Management</h2>
-              <DataMigration />
-            </section>
-          </div>
+          )}
         </div>
-      </main>
-      
-      <ScrollToTop />
-      <Footer />
+      )}
     </div>
   );
 };
 
-export default Admin;
+export default AdminPage;

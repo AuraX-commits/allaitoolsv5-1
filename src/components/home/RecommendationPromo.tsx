@@ -8,9 +8,9 @@ const RecommendationPromo = () => {
   const navigate = useNavigate();
   
   return (
-    <section className="py-12 bg-gradient-to-b from-secondary/10 to-background">
+    <section className="py-12 bg-gradient-to-b from-secondary/10 to-background transition-colors duration-300">
       <div className="container px-4">
-        <Card className="overflow-hidden border-primary/20 shadow-lg">
+        <Card className="overflow-hidden border-primary/20 shadow-lg dark:shadow-2xl dark:shadow-black/10">
           <div className="grid grid-cols-1 md:grid-cols-5">
             <div className="md:col-span-3 p-8">
               <CardHeader className="p-0 mb-4">
@@ -42,7 +42,7 @@ const RecommendationPromo = () => {
                 </div>
               </CardContent>
             </div>
-            <div className="md:col-span-2 bg-primary/5 flex items-center justify-center p-8">
+            <div className="md:col-span-2 bg-primary/5 dark:bg-primary/10 flex items-center justify-center p-8 transition-colors duration-300">
               <div className="max-w-xs text-center">
                 <Sparkles className="h-16 w-16 mx-auto mb-4 text-primary" />
                 <h4 className="text-xl font-medium mb-2">How it works</h4>
