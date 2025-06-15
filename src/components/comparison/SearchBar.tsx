@@ -17,7 +17,7 @@ export const SearchBar = ({ searchTerm, onSearchChange, onClear }: SearchBarProp
         <input
           type="text"
           placeholder="Search for tools to compare..."
-          className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300"
+          className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300 dark:bg-background dark:border-border dark:text-foreground"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
         />

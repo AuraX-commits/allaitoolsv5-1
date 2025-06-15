@@ -15,7 +15,7 @@ const Blog = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background transition-colors duration-300">
       <Helmet>
         <title>AI Tools Blog | Latest Insights & Tutorials | AIDirectory</title>
         <meta 
@@ -45,8 +45,8 @@ const Blog = () => {
       <main className="flex-grow pt-28 pb-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h1 className="text-4xl font-bold mb-4">AI Tools Blog</h1>
-            <p className="text-lg text-foreground/80">
+            <h1 className="text-4xl font-bold mb-4 text-foreground">AI Tools Blog</h1>
+            <p className="text-lg text-muted-foreground">
               Discover insights, tutorials, and the latest news about AI tools and technologies.
             </p>
           </div>
@@ -54,7 +54,7 @@ const Blog = () => {
           {/* Featured Post */}
           <div className="mb-16">
             <Link to={`/blog/${blogPosts[0].slug}`} className="block">
-              <div className="grid md:grid-cols-5 gap-8 bg-white rounded-2xl overflow-hidden shadow-subtle hover:shadow-lg transition-shadow p-6">
+              <div className="grid md:grid-cols-5 gap-8 bg-card dark:bg-card rounded-2xl overflow-hidden shadow-subtle dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl transition-all duration-300 p-6 border border-border">
                 <div className="md:col-span-2">
                   <img 
                     src={blogPosts[0].coverImage} 
@@ -72,10 +72,10 @@ const Blog = () => {
                         <Clock className="w-4 h-4 mr-1" /> {blogPosts[0].readingTime}
                       </span>
                     </div>
-                    <h2 className="text-2xl font-bold mb-3 hover:text-primary transition-colors">
+                    <h2 className="text-2xl font-bold mb-3 hover:text-primary transition-colors text-foreground">
                       {blogPosts[0].title}
                     </h2>
-                    <p className="text-foreground/80 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       {blogPosts[0].excerpt}
                     </p>
                   </div>
@@ -87,11 +87,11 @@ const Blog = () => {
                         className="w-10 h-10 rounded-full mr-3"
                       />
                       <div>
-                        <p className="font-medium">{blogPosts[0].author.name}</p>
+                        <p className="font-medium text-foreground">{blogPosts[0].author.name}</p>
                         <p className="text-sm text-muted-foreground">{blogPosts[0].date}</p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" className="text-primary">
+                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
                       Read Article <ChevronRight className="ml-1 w-4 h-4" />
                     </Button>
                   </div>
@@ -104,7 +104,7 @@ const Blog = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.slice(1).map((post) => (
               <Link key={post.id} to={`/blog/${post.slug}`}>
-                <div className="bg-white rounded-xl overflow-hidden shadow-subtle hover:shadow-md transition-shadow h-full flex flex-col">
+                <div className="bg-card dark:bg-card rounded-xl overflow-hidden shadow-subtle dark:shadow-lg hover:shadow-md dark:hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-border">
                   <img 
                     src={post.coverImage} 
                     alt={`Cover image for article: ${post.title}`} 
@@ -119,10 +119,10 @@ const Blog = () => {
                         <Clock className="w-3 h-3 mr-1" /> {post.readingTime}
                       </span>
                     </div>
-                    <h2 className="text-xl font-bold mb-2 hover:text-primary transition-colors">
+                    <h2 className="text-xl font-bold mb-2 hover:text-primary transition-colors text-foreground">
                       {post.title}
                     </h2>
-                    <p className="text-foreground/80 text-sm mb-4 line-clamp-2 flex-grow">
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-grow">
                       {post.excerpt}
                     </p>
                     <div className="flex items-center justify-between mt-auto">
@@ -133,7 +133,7 @@ const Blog = () => {
                           className="w-8 h-8 rounded-full mr-2"
                         />
                         <div>
-                          <p className="text-sm font-medium">{post.author.name}</p>
+                          <p className="text-sm font-medium text-foreground">{post.author.name}</p>
                           <p className="text-xs text-muted-foreground">{post.date}</p>
                         </div>
                       </div>
@@ -146,12 +146,12 @@ const Blog = () => {
 
           {/* Tags Section */}
           <div className="mt-16">
-            <h3 className="text-xl font-bold mb-4">Popular Topics</h3>
+            <h3 className="text-xl font-bold mb-4 text-foreground">Popular Topics</h3>
             <div className="flex flex-wrap gap-2">
               {Array.from(new Set(blogPosts.flatMap(post => post.tags))).map((tag) => (
-                <div key={tag} className="flex items-center px-3 py-1.5 bg-secondary rounded-full">
+                <div key={tag} className="flex items-center px-3 py-1.5 bg-secondary dark:bg-secondary rounded-full border border-border">
                   <Tag className="w-3.5 h-3.5 mr-1.5 text-primary" />
-                  <span className="text-sm">{tag}</span>
+                  <span className="text-sm text-foreground">{tag}</span>
                 </div>
               ))}
             </div>
