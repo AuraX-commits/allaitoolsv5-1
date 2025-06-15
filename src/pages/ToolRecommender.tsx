@@ -148,7 +148,7 @@ const ToolRecommender = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50/20 via-background to-purple-50/20 dark:from-blue-900/20 dark:to-purple-900/20">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50/20 via-white to-purple-50/20">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
@@ -378,22 +378,22 @@ const ToolRecommender = () => {
               <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent">
                 Find Your Perfect AI Tool
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
                 Get instant, personalized AI tool recommendations tailored to your specific needs, budget, and use case. 
                 Our intelligent matching system analyzes 3,000+ tools to find your ideal solutions.
               </p>
               
               {/* Trust indicators */}
               <div className="flex flex-wrap justify-center items-center gap-8 mb-12">
-                <div className="flex items-center text-muted-foreground">
+                <div className="flex items-center text-gray-600">
                   <Users className="w-5 h-5 mr-2 text-blue-500" />
                   <span className="font-medium">50,000+ Users Trust Us</span>
                 </div>
-                <div className="flex items-center text-muted-foreground">
+                <div className="flex items-center text-gray-600">
                   <Star className="w-5 h-5 mr-2 text-yellow-500" />
                   <span className="font-medium">4.9/5 Satisfaction Rate</span>
                 </div>
-                <div className="flex items-center text-muted-foreground">
+                <div className="flex items-center text-gray-600">
                   <Award className="w-5 h-5 mr-2 text-green-500" />
                   <span className="font-medium">Expert Curated Database</span>
                 </div>
@@ -402,33 +402,33 @@ const ToolRecommender = () => {
 
             {/* Feature highlights */}
             <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <Card className="text-center border-0 shadow-lg bg-card/80 backdrop-blur-sm">
+              <Card className="text-center border-0 shadow-lg bg-white/80 backdrop-blur-sm">
                 <CardHeader>
                   <Target className="w-12 h-12 mx-auto mb-4 text-blue-500" />
                   <CardTitle className="text-xl">Precision Matching</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">Our AI analyzes 50+ parameters to find tools that perfectly match your requirements</p>
+                  <p className="text-gray-600">Our AI analyzes 50+ parameters to find tools that perfectly match your requirements</p>
                 </CardContent>
               </Card>
               
-              <Card className="text-center border-0 shadow-lg bg-card/80 backdrop-blur-sm">
+              <Card className="text-center border-0 shadow-lg bg-white/80 backdrop-blur-sm">
                 <CardHeader>
                   <Clock className="w-12 h-12 mx-auto mb-4 text-purple-500" />
                   <CardTitle className="text-xl">Instant Results</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">Get personalized recommendations in seconds, not hours of research</p>
+                  <p className="text-gray-600">Get personalized recommendations in seconds, not hours of research</p>
                 </CardContent>
               </Card>
               
-              <Card className="text-center border-0 shadow-lg bg-card/80 backdrop-blur-sm">
+              <Card className="text-center border-0 shadow-lg bg-white/80 backdrop-blur-sm">
                 <CardHeader>
                   <Shield className="w-12 h-12 mx-auto mb-4 text-teal-500" />
                   <CardTitle className="text-xl">Always Current</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">Daily database updates ensure you discover the latest and greatest AI tools</p>
+                  <p className="text-gray-600">Daily database updates ensure you discover the latest and greatest AI tools</p>
                 </CardContent>
               </Card>
             </div>
@@ -438,7 +438,7 @@ const ToolRecommender = () => {
         {/* Main recommendation form */}
         <section className="py-16 px-4">
           <div className="container max-w-4xl mx-auto">
-            <Card className="shadow-2xl border-0 bg-card/95 backdrop-blur-sm">
+            <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
               <CardHeader className="text-center pb-8">
                 <div className="flex justify-center mb-4">
                   <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full">
@@ -448,7 +448,7 @@ const ToolRecommender = () => {
                 <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Describe Your AI Needs
                 </CardTitle>
-                <CardDescription className="text-lg text-muted-foreground mt-4">
+                <CardDescription className="text-lg text-gray-600 mt-4">
                   The more details you provide, the more accurate and personalized your recommendations will be
                 </CardDescription>
               </CardHeader>
@@ -522,14 +522,14 @@ const ToolRecommender = () => {
                 <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                   Your Personalized Recommendations
                 </h2>
-                <p className="text-xl text-muted-foreground">
+                <p className="text-xl text-gray-600">
                   Here are the AI tools that perfectly match your requirements
                 </p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {recommendations.map((tool, index) => (
-                  <Card key={tool.id} className="overflow-hidden flex flex-col h-full shadow-xl border-0 bg-card/95 backdrop-blur-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                  <Card key={tool.id} className="overflow-hidden flex flex-col h-full shadow-xl border-0 bg-white/95 backdrop-blur-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-4">
@@ -562,13 +562,13 @@ const ToolRecommender = () => {
                     </CardHeader>
                     
                     <CardContent className="pb-4 flex-grow">
-                      <p className="text-muted-foreground mb-6 leading-relaxed">{tool.description}</p>
-                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border-l-4 border-blue-500">
-                        <h4 className="text-sm font-semibold mb-2 text-blue-900 dark:text-blue-200 flex items-center">
+                      <p className="text-gray-600 mb-6 leading-relaxed">{tool.description}</p>
+                      <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                        <h4 className="text-sm font-semibold mb-2 text-blue-900 flex items-center">
                           <TrendingUp className="w-4 h-4 mr-1" />
                           Why this tool is perfect for you:
                         </h4>
-                        <p className="text-sm text-blue-800 dark:text-blue-300 leading-relaxed">{tool.reasoning}</p>
+                        <p className="text-sm text-blue-800 leading-relaxed">{tool.reasoning}</p>
                       </div>
                     </CardContent>
                     
@@ -586,7 +586,7 @@ const ToolRecommender = () => {
               </div>
               
               <div className="text-center mt-12">
-                <p className="text-muted-foreground mb-4">Need different recommendations?</p>
+                <p className="text-gray-600 mb-4">Need different recommendations?</p>
                 <Button 
                   variant="outline" 
                   onClick={() => {
@@ -604,20 +604,20 @@ const ToolRecommender = () => {
         )}
 
         {/* Testimonials Section */}
-        <section className="py-16 px-4 bg-secondary">
+        <section className="py-16 px-4 bg-gradient-to-r from-blue-50 to-purple-50">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Trusted by Thousands of Professionals
               </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 See how our AI Tool Recommender has helped professionals across industries find their perfect AI solutions
               </p>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {testimonials.map((testimonial, index) => (
-                <Card key={index} className="border-0 shadow-lg bg-card/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                <Card key={index} className="border-0 shadow-lg bg-white/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                   <CardContent className="pt-8">
                     <div className="flex items-center mb-4">
                       <div className="w-12 h-12 rounded-full overflow-hidden mr-3 ring-2 ring-blue-200">
@@ -629,12 +629,12 @@ const ToolRecommender = () => {
                       </div>
                       <div>
                         <h4 className="font-semibold text-sm">{testimonial.name}</h4>
-                        <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                        <p className="text-xs text-gray-600">{testimonial.role}</p>
                         <p className="text-xs text-blue-600">{testimonial.company}</p>
                       </div>
                     </div>
                     <Quote className="w-6 h-6 text-blue-500 mb-3" />
-                    <p className="text-foreground/80 text-sm leading-relaxed italic">
+                    <p className="text-gray-700 text-sm leading-relaxed italic">
                       "{testimonial.quote}"
                     </p>
                     <div className="flex mt-4">
@@ -650,11 +650,11 @@ const ToolRecommender = () => {
         </section>
 
         {/* Additional SEO content section */}
-        <section className="py-16 px-4 bg-secondary/50">
+        <section className="py-16 px-4 bg-gray-50">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Why Use Our AI Tool Recommender?</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 Save time, money, and avoid decision paralysis with our expert-powered recommendation engine
               </p>
             </div>
@@ -662,31 +662,31 @@ const ToolRecommender = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <Card className="text-center border-0 shadow-lg">
                 <CardContent className="pt-8">
-                  <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Zap className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Zap className="w-8 h-8 text-blue-600" />
                   </div>
                   <h3 className="text-xl font-bold mb-3">Lightning Fast</h3>
-                  <p className="text-muted-foreground">Get recommendations in under 30 seconds instead of spending weeks researching</p>
+                  <p className="text-gray-600">Get recommendations in under 30 seconds instead of spending weeks researching</p>
                 </CardContent>
               </Card>
               
               <Card className="text-center border-0 shadow-lg">
                 <CardContent className="pt-8">
-                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Target className="w-8 h-8 text-green-600 dark:text-green-400" />
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Target className="w-8 h-8 text-green-600" />
                   </div>
                   <h3 className="text-xl font-bold mb-3">Highly Accurate</h3>
-                  <p className="text-muted-foreground">94% user satisfaction rate with our AI-powered matching algorithm</p>
+                  <p className="text-gray-600">94% user satisfaction rate with our AI-powered matching algorithm</p>
                 </CardContent>
               </Card>
               
               <Card className="text-center border-0 shadow-lg">
                 <CardContent className="pt-8">
-                  <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Shield className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="w-8 h-8 text-purple-600" />
                   </div>
                   <h3 className="text-xl font-bold mb-3">Unbiased Results</h3>
-                  <p className="text-muted-foreground">No sponsored listings - only genuine recommendations based on your needs</p>
+                  <p className="text-gray-600">No sponsored listings - only genuine recommendations based on your needs</p>
                 </CardContent>
               </Card>
             </div>
