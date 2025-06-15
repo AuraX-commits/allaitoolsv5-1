@@ -8,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 import { Skeleton } from "../ui/skeleton";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
-import { useSecurity } from "@/hooks/useSecurity";
 import {
   Pagination,
   PaginationContent,
@@ -33,8 +32,6 @@ const ToolsDirectory = () => {
   const [filteredTools, setFilteredTools] = useState<AITool[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   
-  const { checkRateLimit, sanitizeUserInput, isRateLimited } = useSecurity();
-  
   // Fetch tools from Supabase
   const { data: aiTools = [], isLoading, error } = useQuery({
     queryKey: ['aiTools'],
@@ -52,16 +49,6 @@ const ToolsDirectory = () => {
       return data.map(mapRowToAITool);
     }
   });
-
-  // Enhanced search with security measures
-  const handleSearchChange = (value: string) => {
-    if (!checkRateLimit('search')) {
-      return;
-    }
-    
-    const sanitizedValue = sanitizeUserInput(value);
-    setSearchTerm(sanitizedValue);
-  };
 
   // Filter and sort tools whenever filters change
   useEffect(() => {
@@ -260,9 +247,7 @@ const ToolsDirectory = () => {
               placeholder="Search AI tools..."
               className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300 dark:bg-background dark:border-border dark:text-foreground"
               value={searchTerm}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              disabled={isRateLimited}
-              maxLength={100}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
               <button

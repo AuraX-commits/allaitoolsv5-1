@@ -29,7 +29,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabaseClient";
-import { useSecurity } from "@/hooks/useSecurity";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -99,46 +98,24 @@ const SubmitTool = () => {
 
   const seoKeywords = "submit AI tool free, list AI software free, free AI directory submission, add AI tool listing free, promote AI application free, AI tool directory inclusion free, get AI tool listed free, AI product submission free, AI software directory listing free, AI tool promotion free, artificial intelligence tool submission free, submit new AI tool free, AI directory application free, list AI product free, AI marketplace submission free, add to AI directory free, AI tool exposure free, AI directory listing form free, register AI tool free, AI software promotion free, AI tool visibility free, AI listing service free, AI product directory free, AI tool registration free, AI directory inclusion free, add AI solution free, AI company listing free, submit AI software free, AI developer directory free, AI tool submission guidelines free, submit ai tool, list ai tool, add ai tool, free ai tool listing, ai tool directory, ai tools submission, ai software listing, submit artificial intelligence tool, ai tool promotion, ai directory submission, ai tool registration, list my ai tool, add my ai tool, ai tool marketplace, ai tool visibility, ai software directory, ai tool exposure, ai product listing, ai startup listing, new ai tool submission, ai innovation listing, ai tool discovery, submit ai application, ai tool catalog, ai directory listing, ai tool database, submit ai product, ai tool showcase, ai software catalog, ai tool platform, ai development listing, ai solution submission, ai tool repository, submit chatgpt alternative, submit ai writing tool, submit ai image generator, submit ai code assistant, submit ai video tool, submit ai voice tool, submit ai marketing tool, submit ai productivity tool, submit ai design tool, submit ai data tool, submit ai research tool, submit ai automation tool, submit ai business tool, submit ai education tool, submit ai health tool, submit ai finance tool, submit ai gaming tool, submit ai music tool, submit ai photo tool, submit ai translation tool, submit ai transcription tool, submit ai analytics tool, submit ai security tool, submit ai hr tool, submit ai legal tool, submit ai real estate tool, submit ai ecommerce tool, submit ai social media tool, submit ai content tool, submit ai seo tool, submit ai email tool, submit ai crm tool, submit ai project management tool, submit ai collaboration tool, submit ai communication tool, submit ai video editing tool, submit ai audio editing tool, submit ai photo editing tool, submit ai graphic design tool, submit ai ui design tool, submit ai ux design tool, submit ai logo design tool, submit ai presentation tool, submit ai document tool, submit ai spreadsheet tool, submit ai database tool, submit ai cloud tool, submit ai mobile app, submit ai web app, submit ai chrome extension, submit ai browser tool, submit ai desktop app, submit ai api tool, submit ai developer tool, submit ai no code tool, submit ai low code tool, submit ai workflow tool, submit ai integration tool, submit ai plugin tool, submit ai widget tool, submit ai saas tool, submit ai enterprise tool, submit ai startup tool, submit ai indie tool, submit ai open source tool, submit ai free tool, submit ai freemium tool, submit ai paid tool, submit ai subscription tool, submit ai one time purchase tool";
 
-  const { checkRateLimit, sanitizeUserInput, sanitizeUserUrl, isRateLimited } = useSecurity();
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!checkRateLimit('submit')) {
-      return;
-    }
-
+  const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
 
     try {
-      // Sanitize all input values
-      const sanitizedValues = {
-        name: sanitizeUserInput(values.name),
-        website: sanitizeUserUrl(values.website),
-        category: sanitizeUserInput(values.category),
-        pricing: sanitizeUserInput(values.pricing),
-        shortDescription: sanitizeUserInput(values.shortDescription),
-        description: sanitizeUserInput(values.description),
-        email: sanitizeUserInput(values.email),
-        logoUrl: values.logoUrl ? sanitizeUserUrl(values.logoUrl) : null,
-        founderName: values.founderName ? sanitizeUserInput(values.founderName) : null,
-        founderEmail: values.founderEmail ? sanitizeUserInput(values.founderEmail) : null,
-        submitterName: values.submitterName ? sanitizeUserInput(values.submitterName) : null,
-        submitterRole: values.submitterRole ? sanitizeUserInput(values.submitterRole) : null,
-      };
-
       const { data, error } = await supabase.from("tool_submissions").insert([
         {
-          name: sanitizedValues.name,
-          website: sanitizedValues.website,
-          category: sanitizedValues.category,
-          pricing: sanitizedValues.pricing,
-          short_description: sanitizedValues.shortDescription,
-          description: sanitizedValues.description,
-          email: sanitizedValues.email,
-          logo_url: sanitizedValues.logoUrl,
-          founder_name: sanitizedValues.founderName,
-          founder_email: sanitizedValues.founderEmail,
-          submitter_name: sanitizedValues.submitterName,
-          submitter_role: sanitizedValues.submitterRole,
+          name: values.name,
+          website: values.website,
+          category: values.category,
+          pricing: values.pricing,
+          short_description: values.shortDescription,
+          description: values.description,
+          email: values.email,
+          logo_url: values.logoUrl || null,
+          founder_name: values.founderName || null,
+          founder_email: values.founderEmail || null,
+          submitter_name: values.submitterName || null,
+          submitter_role: values.submitterRole || null,
         },
       ]);
 
@@ -154,8 +131,8 @@ const SubmitTool = () => {
     } catch (error) {
       console.error("Error submitting tool:", error);
       toast({
-        title: "Error",
-        description: "Failed to submit tool. Please try again.",
+        title: "Error submitting tool",
+        description: "There was a problem submitting your tool. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -761,7 +738,7 @@ const SubmitTool = () => {
                 </ul>
               </div>
 
-              <Button type="submit" className="w-full text-lg py-6" disabled={isSubmitting || isRateLimited}>
+              <Button type="submit" className="w-full text-lg py-6" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Submitting Your AI Tool...
