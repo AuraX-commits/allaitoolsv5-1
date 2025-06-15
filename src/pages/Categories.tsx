@@ -478,14 +478,14 @@ const Categories = () => {
           />
 
           <div className="mb-8">
-            <Link to="/" className="inline-flex items-center text-foreground/70 hover:text-primary transition-colors">
+            <Link to="/" className="inline-flex items-center text-foreground/70 hover:text-primary transition-colors dark:text-foreground/70">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
             </Link>
-            <h1 className="text-3xl font-bold mt-4 mb-2">
+            <h1 className="text-3xl font-bold mt-4 mb-2 text-foreground dark:text-foreground">
               {currentCategory ? `${currentCategory} AI Tools` : 'All AI Categories'}
             </h1>
-            <p className="text-foreground/70">
+            <p className="text-foreground/70 dark:text-foreground/70">
               {currentCategory 
                 ? `Explore the best ${currentCategory} AI tools in our directory` 
                 : 'Browse our comprehensive AI tools directory by category'}
@@ -496,18 +496,18 @@ const Categories = () => {
           <div className="max-w-xl mx-auto mb-6">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-muted-foreground" />
+                <Search className="h-5 w-5 text-muted-foreground dark:text-muted-foreground" />
               </div>
               <input
                 type="text"
                 placeholder="Search AI tools..."
-                className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition text-foreground placeholder:text-muted-foreground dark:bg-background dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               {searchTerm && (
                 <button
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-foreground"
                   onClick={handleClearSearch}
                   aria-label="Clear search"
                 >
@@ -541,13 +541,13 @@ const Categories = () => {
               ))
             ) : (!isLoading && (
               <div className="col-span-3 py-16 text-center">
-                <h3 className="text-xl font-medium mb-2">No tools found</h3>
-                <p className="text-muted-foreground mb-4">
+                <h3 className="text-xl font-medium mb-2 text-foreground dark:text-foreground">No tools found</h3>
+                <p className="text-muted-foreground mb-4 dark:text-muted-foreground">
                   Try adjusting your search or filters to find what you're looking for.
                 </p>
                 <button
                   onClick={resetAllFilters}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors dark:bg-primary dark:text-white"
                 >
                   Reset Filters
                 </button>
