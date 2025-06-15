@@ -106,15 +106,23 @@ const SubmitTool = () => {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
       // Sanitize all input values
       const sanitizedValues = {
-        ...values,
         name: sanitizeUserInput(values.name),
+        website: sanitizeUserUrl(values.website),
+        category: sanitizeUserInput(values.category),
+        pricing: sanitizeUserInput(values.pricing),
+        shortDescription: sanitizeUserInput(values.shortDescription),
         description: sanitizeUserInput(values.description),
-        url: sanitizeUserUrl(values.url),
-        logo: values.logo ? sanitizeUserUrl(values.logo) : undefined,
-        features: values.features.map(feature => sanitizeUserInput(feature))
+        email: sanitizeUserInput(values.email),
+        logoUrl: values.logoUrl ? sanitizeUserUrl(values.logoUrl) : null,
+        founderName: values.founderName ? sanitizeUserInput(values.founderName) : null,
+        founderEmail: values.founderEmail ? sanitizeUserInput(values.founderEmail) : null,
+        submitterName: values.submitterName ? sanitizeUserInput(values.submitterName) : null,
+        submitterRole: values.submitterRole ? sanitizeUserInput(values.submitterRole) : null,
       };
 
       const { data, error } = await supabase.from("tool_submissions").insert([
@@ -126,11 +134,11 @@ const SubmitTool = () => {
           short_description: sanitizedValues.shortDescription,
           description: sanitizedValues.description,
           email: sanitizedValues.email,
-          logo_url: sanitizedValues.logoUrl || null,
-          founder_name: sanitizedValues.founderName || null,
-          founder_email: sanitizedValues.founderEmail || null,
-          submitter_name: sanitizedValues.submitterName || null,
-          submitter_role: sanitizedValues.submitterRole || null,
+          logo_url: sanitizedValues.logoUrl,
+          founder_name: sanitizedValues.founderName,
+          founder_email: sanitizedValues.founderEmail,
+          submitter_name: sanitizedValues.submitterName,
+          submitter_role: sanitizedValues.submitterRole,
         },
       ]);
 
@@ -145,7 +153,11 @@ const SubmitTool = () => {
       navigate("/");
     } catch (error) {
       console.error("Error submitting tool:", error);
-      toast.error("Failed to submit tool. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to submit tool. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }

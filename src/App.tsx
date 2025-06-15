@@ -1,14 +1,14 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import Index from './pages/Index';
 import Categories from './pages/Categories';
-import CategoryPage from './pages/CategoryPage';
-import ToolPage from './pages/ToolPage';
+import ToolDetail from './pages/ToolDetail';
 import SubmitTool from './pages/SubmitTool';
-import CompareTools from './pages/CompareTools';
+import Compare from './pages/Compare';
 import Pricing from './pages/Pricing';
-import Recommendation from './pages/Recommendation';
-import { ThemeProvider } from './components/theme-provider';
+import ToolRecommender from './pages/ToolRecommender';
+import { ThemeProvider } from 'next-themes';
 import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'sonner';
 import {
@@ -31,14 +31,14 @@ function App() {
               <BrowserRouter>
                 <div className="min-h-screen bg-background text-foreground">
                   <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Index />} />
                     <Route path="/categories" element={<Categories />} />
-                    <Route path="/categories/:categoryName" element={<CategoryPage />} />
-                    <Route path="/tool/:toolId/:toolName" element={<ToolPage />} />
+                    <Route path="/categories/:categoryName" element={<ToolDetail />} />
+                    <Route path="/tool/:toolId/:toolName" element={<ToolDetail />} />
                     <Route path="/submit-tool" element={<SubmitTool />} />
-                    <Route path="/compare" element={<CompareTools />} />
+                    <Route path="/compare" element={<Compare />} />
                     <Route path="/pricing" element={<Pricing />} />
-                    <Route path="/recommend" element={<Recommendation />} />
+                    <Route path="/recommend" element={<ToolRecommender />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <Toaster />
