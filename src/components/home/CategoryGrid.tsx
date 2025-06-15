@@ -33,7 +33,7 @@ const CategoryGrid = () => {
   const displayCategories = categories.filter(cat => cat !== "All");
   
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-background transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Categories</h2>
@@ -47,10 +47,10 @@ const CategoryGrid = () => {
             <Link
               key={category}
               to={`/categories/${encodeURIComponent(category)}`}
-              className="flex items-center justify-between bg-white p-4 rounded-lg border border-input hover:border-primary hover:shadow-md transition-all group"
+              className="flex items-center justify-between bg-card p-4 rounded-lg border border-border hover:border-primary hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-primary/10 transition-all duration-300 group"
             >
-              <span className="font-medium">{category}</span>
-              <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="font-medium text-card-foreground">{category}</span>
+              <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors duration-200" />
             </Link>
           ))}
         </div>
@@ -58,7 +58,7 @@ const CategoryGrid = () => {
         <div className="text-center mt-8">
           <Link 
             to="/categories" 
-            className="inline-flex items-center px-6 py-3 bg-secondary/50 text-foreground rounded-lg font-medium hover:bg-secondary transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-secondary/50 text-foreground rounded-lg font-medium hover:bg-secondary transition-all duration-300"
           >
             View All Categories <ArrowRight className="ml-2 w-5 h-5" />
           </Link>

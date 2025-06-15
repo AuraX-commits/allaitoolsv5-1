@@ -27,9 +27,9 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
   return (
     <div 
       className={cn(
-        "group rounded-xl overflow-hidden bg-white border border-border/60 transition-all duration-300 h-full",
-        showSelection && selected ? "ring-2 ring-primary" : "",
-        isHovered ? "shadow-lg translate-y-[-4px]" : "shadow-subtle"
+        "group rounded-xl overflow-hidden bg-card border border-border/60 transition-all duration-300 h-full",
+        showSelection && selected ? "ring-2 ring-primary shadow-lg shadow-primary/20" : "",
+        isHovered ? "shadow-lg dark:shadow-2xl dark:shadow-black/20 translate-y-[-4px] border-border" : "shadow-subtle"
       )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -48,11 +48,11 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">{tool.name}</h3>
+              <h3 className="font-semibold text-lg text-card-foreground">{tool.name}</h3>
               <div className="flex items-center mt-1">
                 <div className="flex items-center">
                   <Star className="w-4 h-4 text-amber-500 fill-amber-500" aria-hidden="true" />
-                  <span className="ml-1 text-sm font-medium">{tool.rating}</span>
+                  <span className="ml-1 text-sm font-medium text-card-foreground">{tool.rating}</span>
                 </div>
                 <span className="mx-2 text-muted-foreground text-sm">•</span>
                 <span className="text-sm text-muted-foreground">{tool.reviewCount} reviews</span>
@@ -61,10 +61,10 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
           </div>
           {showSelection && (
             <div className={cn(
-              "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors",
+              "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300",
               selected 
-                ? "bg-primary border-primary text-white" 
-                : "border-muted-foreground/30 group-hover:border-primary/50"
+                ? "bg-primary border-primary text-primary-foreground scale-110" 
+                : "border-muted-foreground/30 group-hover:border-primary/50 group-hover:scale-105"
             )}>
               {selected && <Check className="w-3.5 h-3.5" aria-hidden="true" />}
             </div>
@@ -72,7 +72,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
         </div>
 
         {/* Tool Description */}
-        <p className="text-sm text-foreground/80 mb-4 line-clamp-2">
+        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
           {tool.shortDescription}
         </p>
 
@@ -95,7 +95,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               <div className="mt-0.5 mr-2 text-primary">
                 <Check className="w-4 h-4" aria-hidden="true" />
               </div>
-              <span className="text-sm text-foreground/80">{feature}</span>
+              <span className="text-sm text-muted-foreground">{feature}</span>
             </div>
           ))}
         </div>
@@ -118,7 +118,7 @@ const ToolCard = ({ tool, selected = false, onClick, showSelection = false }: To
               e.stopPropagation();
               window.open(tool.url, '_blank', 'noopener,noreferrer');
             }}
-            className="text-xs flex items-center text-primary hover:text-primary/80 transition-colors"
+            className="text-xs flex items-center text-primary hover:text-primary/80 transition-colors duration-200"
             aria-label={`Visit ${tool.name} website`}
           >
             Visit <ExternalLink className="w-3 h-3 ml-1" aria-hidden="true" />
