@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
 import { AITool, mapRowToAITool } from "@/utils/toolsData";
@@ -246,13 +245,13 @@ const ToolsDirectory = () => {
             <input
               type="text"
               placeholder="Search AI tools..."
-              className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition shadow-sm"
+              className="block w-full pl-10 pr-10 py-3 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-300 dark:bg-background dark:border-border dark:text-foreground"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
               <button
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground transition-colors duration-200"
                 onClick={() => setSearchTerm("")}
                 aria-label="Clear search"
               >

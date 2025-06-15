@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -286,7 +285,7 @@ const Compare: React.FC = () => {
             <div className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tools.map((tool, index) => (
-                  <Card key={tool.id} className="shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 bg-gradient-to-br from-white to-gray-50">
+                  <Card key={tool.id} className="shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 bg-gradient-to-br from-card to-card/80 dark:from-card dark:to-card/80">
                     <CardHeader className="pb-4">
                       <CardTitle className="text-xl font-bold flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -298,7 +297,7 @@ const Compare: React.FC = () => {
                               e.currentTarget.src = '/placeholder.svg';
                             }}
                           />
-                          {tool.name}
+                          <span className="text-foreground dark:text-foreground">{tool.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <ReplaceToolButton
@@ -313,7 +312,7 @@ const Compare: React.FC = () => {
                       <CardDescription>
                         <a 
                           href={`/tool/${tool.id}`} 
-                          className="text-blue-600 hover:text-blue-800 hover:underline flex items-center font-medium"
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:underline flex items-center font-medium"
                         >
                           Visit Tool Page <ExternalLink className="h-4 w-4 ml-1" />
                         </a>
@@ -322,34 +321,34 @@ const Compare: React.FC = () => {
                     <CardContent className="space-y-4">
                       <div className="flex flex-wrap gap-2">
                         {tool.category.map((cat, i) => (
-                          <Badge key={i} variant="secondary" className="bg-blue-100 text-blue-800">
+                          <Badge key={i} variant="secondary" className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
                             {cat}
                           </Badge>
                         ))}
-                        <Badge variant="outline" className="border-green-200 text-green-700">
+                        <Badge variant="outline" className="border-green-200 text-green-700 dark:border-green-700 dark:text-green-300">
                           {tool.pricing}
                         </Badge>
                       </div>
                       
-                      <p className="text-sm text-gray-600">{tool.description}</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">{tool.description}</p>
                       
                       <div className="flex items-center gap-2">
                         <div className="flex items-center">
                           <Star className="h-5 w-5 text-yellow-500 fill-current" />
-                          <span className="ml-1 font-semibold">{tool.rating}</span>
+                          <span className="ml-1 font-semibold text-foreground dark:text-foreground">{tool.rating}</span>
                         </div>
-                        <span className="text-sm text-gray-500">({tool.reviewCount} reviews)</span>
+                        <span className="text-sm text-muted-foreground dark:text-muted-foreground">({tool.reviewCount} reviews)</span>
                       </div>
                       
-                      <Separator />
+                      <Separator className="dark:bg-border" />
                       
                       <div>
-                        <h4 className="font-semibold mb-3 text-gray-800">Key Features:</h4>
+                        <h4 className="font-semibold mb-3 text-foreground dark:text-foreground">Key Features:</h4>
                         <div className="space-y-2">
                           {tool.features && tool.features.slice(0, 5).map((feature: string, i: number) => (
                             <div key={i} className="flex items-center gap-2">
                               <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                              <span className="text-sm text-gray-700">{feature}</span>
+                              <span className="text-sm text-muted-foreground dark:text-muted-foreground">{feature}</span>
                             </div>
                           ))}
                         </div>
@@ -359,7 +358,7 @@ const Compare: React.FC = () => {
                 ))}
 
                 {tools.length < 3 && (
-                  <Card className="shadow-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                  <Card className="shadow-lg border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center bg-card dark:bg-card">
                     <CardContent className="flex items-center justify-center p-8">
                       <Dialog open={addToolDialogOpen} onOpenChange={setAddToolDialogOpen}>
                         <DialogTrigger asChild>
