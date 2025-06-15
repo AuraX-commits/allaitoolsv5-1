@@ -121,11 +121,11 @@ const Pricing = () => {
       
       <Navbar />
       
-      <main className="pt-24 pb-20">
+      <main className="pt-24 pb-20 bg-background dark:bg-background transition-colors">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-12">
-            <h1 className="text-3xl font-bold mb-4">AI Tools by Pricing</h1>
-            <p className="text-foreground/80">
+            <h1 className="text-3xl font-bold mb-4 text-foreground dark:text-foreground">AI Tools by Pricing</h1>
+            <p className="text-foreground/80 dark:text-foreground/80">
               Browse our collection of AI tools by pricing model to find the perfect solution that fits your budget and needs.
             </p>
           </div>
@@ -139,8 +139,8 @@ const Pricing = () => {
                   onClick={() => setSelectedPricing(option)}
                   className={`px-4 py-2 rounded-full text-sm transition-colors ${
                     selectedPricing === option
-                      ? "bg-primary text-white"
-                      : "bg-white hover:bg-secondary border border-input text-foreground"
+                      ? "bg-primary text-white dark:bg-primary dark:text-white"
+                      : "bg-card hover:bg-secondary border border-border text-foreground dark:bg-card dark:hover:bg-secondary dark:border-border dark:text-foreground"
                   }`}
                 >
                   {option}
@@ -151,7 +151,7 @@ const Pricing = () => {
           
           {/* Pricing Sections */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-2xl font-bold mb-6 text-foreground dark:text-foreground">
               {selectedPricing === "All" 
                 ? "All Pricing Options" 
                 : `${selectedPricing} AI Tools`}
@@ -173,13 +173,13 @@ const Pricing = () => {
                 ))
               ) : (
                 <div className="col-span-3 py-16 text-center">
-                  <h3 className="text-xl font-medium mb-2">No tools found</h3>
-                  <p className="text-muted-foreground mb-4">
+                  <h3 className="text-xl font-medium mb-2 text-foreground dark:text-foreground">No tools found</h3>
+                  <p className="text-muted-foreground dark:text-muted-foreground mb-4">
                     There are currently no tools available with the selected pricing model.
                   </p>
                   <button
                     onClick={() => setSelectedPricing("All")}
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors dark:bg-primary dark:text-white dark:hover:bg-primary/90"
                   >
                     View All Tools
                   </button>
@@ -190,36 +190,36 @@ const Pricing = () => {
           
           {/* Pricing FAQ */}
           <div className="max-w-3xl mx-auto mt-16">
-            <h2 className="text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-foreground dark:text-foreground">Frequently Asked Questions</h2>
             
             <div className="space-y-6">
-              <div className="bg-white p-6 rounded-lg shadow-subtle border border-border/60">
-                <h3 className="text-lg font-semibold mb-2">What does "Freemium" mean?</h3>
-                <p className="text-foreground/80">
+              <div className="bg-card p-6 rounded-lg shadow-subtle border border-border dark:bg-card dark:border-border">
+                <h3 className="text-lg font-semibold mb-2 text-foreground dark:text-foreground">What does "Freemium" mean?</h3>
+                <p className="text-foreground/80 dark:text-foreground/80">
                   Freemium AI tools offer a basic version for free, with additional features available through paid plans. 
                   This pricing model allows you to try the tool before committing to a paid subscription.
                 </p>
               </div>
               
-              <div className="bg-white p-6 rounded-lg shadow-subtle border border-border/60">
-                <h3 className="text-lg font-semibold mb-2">What is a "Credit-based" pricing model?</h3>
-                <p className="text-foreground/80">
+              <div className="bg-card p-6 rounded-lg shadow-subtle border border-border dark:bg-card dark:border-border">
+                <h3 className="text-lg font-semibold mb-2 text-foreground dark:text-foreground">What is a "Credit-based" pricing model?</h3>
+                <p className="text-foreground/80 dark:text-foreground/80">
                   Credit-based tools charge based on usage. You purchase credits that are consumed as you use the tool's features,
                   allowing for flexible usage patterns without a recurring subscription.
                 </p>
               </div>
               
-              <div className="bg-white p-6 rounded-lg shadow-subtle border border-border/60">
-                <h3 className="text-lg font-semibold mb-2">What does "Self-hosted" mean?</h3>
-                <p className="text-foreground/80">
+              <div className="bg-card p-6 rounded-lg shadow-subtle border border-border dark:bg-card dark:border-border">
+                <h3 className="text-lg font-semibold mb-2 text-foreground dark:text-foreground">What does "Self-hosted" mean?</h3>
+                <p className="text-foreground/80 dark:text-foreground/80">
                   Self-hosted tools are typically open-source solutions that you can install and run on your own servers or hardware. 
                   While the software itself may be free, you'll need to cover hosting and maintenance costs.
                 </p>
               </div>
               
-              <div className="bg-white p-6 rounded-lg shadow-subtle border border-border/60">
-                <h3 className="text-lg font-semibold mb-2">How do subscription models typically work?</h3>
-                <p className="text-foreground/80">
+              <div className="bg-card p-6 rounded-lg shadow-subtle border border-border dark:bg-card dark:border-border">
+                <h3 className="text-lg font-semibold mb-2 text-foreground dark:text-foreground">How do subscription models typically work?</h3>
+                <p className="text-foreground/80 dark:text-foreground/80">
                   Subscription-based AI tools charge a recurring fee, usually monthly or annually. These plans often come in tiers
                   (like Basic, Pro, Enterprise) with different feature sets and usage limits for each tier.
                 </p>
